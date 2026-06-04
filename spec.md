@@ -1,5 +1,10 @@
 ![[desktop.png]]![[mobile.png]]
 
-create index.html responsive for desktop and mobile add the text "Lovable-like experience" white  "for Private AI" yellow 
-- on desktop is fixed aligned to the logo  on top horizontal
-- on mobile is centered, aligned to the top, vertical
+![[docs/trustable-website/landingpage/trustable-logo.svg]]
+
+create an index.html responsive , showing the background desktop or mobile when approriate
+the logo and the text "Trustable" black
+then  the text  "Lovable-like experience" white 
+then "for Private AI" yellow 
+
+make the text flow properly on desktop and mobile
