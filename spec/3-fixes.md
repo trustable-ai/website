@@ -10,6 +10,9 @@ call-to-action fixes.
   viewport and is stretched by the `1200 / 520` aspect ratio. Cap it at its
   natural width (1200px) and keep it shrinking only when the panel is narrower
   than that, so it never renders wider than the source.
+- The size is set by **horizontal width only**. There must be no viewport-height
+  term in the width calculation: a short window would otherwise collapse the
+  video to a thumbnail, which is worse than letting the panel scroll.
 - Add a **"Read the documentation"** button under the caption, linking to the
   documentation section (`@/documentation/_index.md`).
 

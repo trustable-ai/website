@@ -372,17 +372,13 @@
 
       .anim-video {
         /*
-         * Fixed at the source width: the file is 1200x520, so anything wider
-         * is upscaling and reads as horizontally stretched. It only shrinks
-         * when the panel is narrower, or when the viewport is too short for
-         * the caption below — --anim-room is the viewport height minus the
-         * fixed chrome above and below the video (masthead, nav, panel
-         * padding, heading, lede, caption, button); the height cap must be
-         * expressed on width because max-height loses to width +
-         * aspect-ratio.
+         * Sized on width alone. The file is 1200x520, so anything wider is
+         * upscaling; it only shrinks when the panel itself is narrower.
+         * Deliberately not capped against the viewport height: a short window
+         * would then collapse the video to a thumbnail, which is worse than
+         * letting the panel scroll.
          */
-        --anim-room: calc(100vh - 620px);
-        width: min(1200px, 100%, var(--anim-room) * (1200 / 520));
+        width: min(1200px, 100%);
         height: auto;
         /* Reserve the box while the file loads so the slot never shifts. */
         aspect-ratio: 1200 / 520;
