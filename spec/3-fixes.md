@@ -1,7 +1,17 @@
 # Landing page fixes
 
-Two panels of the landing page (`templates/landing.html`) need layout and
-call-to-action fixes.
+The landing page (`templates/landing.html`) needs a masthead change plus layout
+and call-to-action fixes on two of its panels.
+
+## Masthead
+
+The lockup reads **`IT` is `<trustable wordmark>`.it`** — the domain pun, not
+"It is Trustable!". `IT` stays at the full hero size; `is` and `.it` are the
+small connective parts at half that size, lowercase against the block's
+uppercase, and **vertically centred** on the wordmark's axis rather than sitting
+on the baseline of a word twice their height. The `.it` is punctuation on the
+mark, so it is pulled back against it (cancelling the flex gap) and set in the
+mark's near-black. The old `!` is gone.
 
 ## Build with AI
 

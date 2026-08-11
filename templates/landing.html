@@ -67,7 +67,7 @@
 
       /*
        * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
-       * Bold uppercase is the closest web font, so "It is …!" reads as part of
+       * Bold uppercase is the closest web font, so "IT is …" reads as part of
        * the mark rather than as page copy set next to it.
        */
       .hero-title {
@@ -91,11 +91,26 @@
       }
 
       /*
-       * Pulled back against the wordmark and set in the mark's own near-black
-       * so the "!" reads as punctuation on TRUSTABLE, not as a separate word.
+       * "is" and ".it" are the small connective parts of "IT is trustable.it":
+       * half the size of the shouted IT, lowercase against the block's
+       * uppercase, and centred on the wordmark's own axis rather than sitting
+       * on the baseline of a word twice their height.
        */
-      .hero-bang {
-        margin-left: -0.35rem;
+      .hero-small {
+        align-self: center;
+        font-size: 0.5em;
+        text-transform: lowercase;
+        letter-spacing: 0.02em;
+        color: var(--muted);
+      }
+
+      /*
+       * The TLD is punctuation on the wordmark, not a separate word: pull it
+       * back against the mark and set it in the mark's own near-black.
+       */
+      .hero-tld {
+        /* Cancels the flex gap so the TLD sits tight against the wordmark. */
+        margin-left: -0.45rem;
         color: #1c1c1c;
       }
 
@@ -547,14 +562,15 @@
     <header class="masthead">
       <div class="wrap">
         <h1 class="hero-title">
-          <span class="hero-word">It is</span>
+          <span class="hero-word">IT</span>
+          <span class="hero-word hero-small">is</span>
           <img
             class="hero-logo"
             src="/logo-trustable.png"
             alt="Trustable"
             width="420"
           />
-          <span class="hero-word hero-bang">!</span>
+          <span class="hero-word hero-small hero-tld">.it</span>
         </h1>
         <p class="motto">Lovable-like experience for Private AI</p>
       </div>
