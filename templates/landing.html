@@ -241,6 +241,37 @@
         text-align: center;
       }
 
+      /* ---------- call to action ---------- */
+
+      .cta-row {
+        margin-top: 1.75rem;
+        text-align: center;
+      }
+
+      .cta {
+        display: inline-block;
+        background: var(--blue);
+        color: #fff;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 0.7rem 1.6rem;
+        border-radius: 999px;
+        transition: background var(--fade) ease;
+      }
+
+      .cta:hover {
+        background: var(--navy);
+      }
+
+      .cta:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
       /* ---------- Start: three columns with vertical rules ---------- */
 
       .trio {
@@ -286,24 +317,19 @@
         max-height: 186px;
       }
 
-      /* ---------- Build / Deploy: two columns ---------- */
+      /* ---------- Deploy: appliance beside the stack, text below ---------- */
 
+      /*
+       * Both columns sized to their render's real width rather than a flat
+       * 50%: a narrow product shot centered in half the band leaves a wide
+       * dead gap between the two.
+       */
       .duo {
         display: grid;
-        /*
-         * Size the image column to the render's real width instead of a flat
-         * 50%: a narrow product shot centered in half the band leaves a wide
-         * dead gap between the two columns.
-         */
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto auto;
         gap: 2.5rem;
         align-items: center;
         justify-content: center;
-      }
-
-      .duo p {
-        color: var(--muted);
-        max-width: 44ch;
       }
 
       /* Keep tall product renders inside the fixed slot height. */
@@ -314,19 +340,25 @@
       }
 
       .duo-figure img {
-        max-height: 420px;
+        max-height: 340px;
         width: auto;
       }
 
       /* Card keeps the diagram reading as one distinct object. */
       .stack-diagram {
-        margin-top: 1.75rem;
         background: var(--card);
         border: 1px solid var(--hairline);
         border-radius: 12px;
         padding: 0.85rem;
-        max-height: 300px;
+        max-height: 340px;
         width: auto;
+      }
+
+      .duo-text {
+        margin: 2rem auto 0;
+        max-width: 68ch;
+        text-align: center;
+        color: var(--muted);
       }
 
       /* ---------- Build: centered animation ---------- */
@@ -340,14 +372,17 @@
 
       .anim-video {
         /*
-         * 80% of the content width, but never so tall that the caption below
-         * drops off screen. --anim-room is the viewport height minus the
+         * Fixed at the source width: the file is 1200x520, so anything wider
+         * is upscaling and reads as horizontally stretched. It only shrinks
+         * when the panel is narrower, or when the viewport is too short for
+         * the caption below — --anim-room is the viewport height minus the
          * fixed chrome above and below the video (masthead, nav, panel
-         * padding, heading, lede, caption); the cap must be expressed on
-         * width because max-height loses to width + aspect-ratio.
+         * padding, heading, lede, caption, button); the height cap must be
+         * expressed on width because max-height loses to width +
+         * aspect-ratio.
          */
-        --anim-room: calc(100vh - 560px);
-        width: min(80%, var(--anim-room) * (1200 / 520));
+        --anim-room: calc(100vh - 620px);
+        width: min(1200px, 100%, var(--anim-room) * (1200 / 520));
         height: auto;
         /* Reserve the box while the file loads so the slot never shifts. */
         aspect-ratio: 1200 / 520;
@@ -590,6 +625,12 @@
               stack, on your own hardware.
             </figcaption>
           </figure>
+
+          <p class="cta-row">
+            <a class="cta" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
+              >Read the documentation</a
+            >
+          </p>
         </div>
       </section>
 
@@ -664,14 +705,7 @@
                 loading="lazy"
               />
             </div>
-            <div>
-              <p>
-                Frontend, APIs, database and storage, hosting, compute, FAAS,
-                security, rate limiting, caching, load balancing, logging and
-                recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and
-                Velero, ready to use, integrated and running on your
-                infrastructure.
-              </p>
+            <div class="duo-figure">
               <img
                 class="stack-diagram"
                 src="/nuvolaris-stack.png"
@@ -680,6 +714,19 @@
               />
             </div>
           </div>
+
+          <p class="duo-text">
+            Frontend, APIs, database and storage, hosting, compute, FAAS,
+            security, rate limiting, caching, load balancing, logging and
+            recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and Velero,
+            ready to use, integrated and running on your infrastructure.
+          </p>
+
+          <p class="cta-row">
+            <a class="cta" href="{{ get_url(path='@/architecture/_index.md') | safe }}"
+              >Read the architecture</a
+            >
+          </p>
         </div>
       </section>
 
