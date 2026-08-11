@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trustable — A Lovable-like Experience for Private AI</title>
+    <meta
+      name="description"
+      content="Trustable is a Lovable-like experience for Private AI: build with AI, start from templates, deploy anywhere and scale from Local AI to Sovereign AI — all on your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- header ---------- */
+
+      .masthead {
+        padding: 1.75rem 0 1.25rem;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 1.1rem + 2vw, 2.6rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      /*
+       * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
+       * Bold uppercase is the closest web font, so "It is …!" reads as part of
+       * the mark rather than as page copy set next to it.
+       */
+      .hero-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-size: clamp(1.8rem, 1.1rem + 3vw, 3.4rem);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* Scales with the words so the lockup holds together at every width. */
+      .hero-logo {
+        width: auto;
+        height: clamp(2.6rem, 1.4rem + 5vw, 5rem);
+        margin: 0;
+      }
+
+      /*
+       * Pulled back against the wordmark and set in the mark's own near-black
+       * so the "!" reads as punctuation on TRUSTABLE, not as a separate word.
+       */
+      .hero-bang {
+        margin-left: -0.35rem;
+        color: #1c1c1c;
+      }
+
+      .motto {
+        margin: 1rem 0 0;
+        font-size: clamp(1rem, 0.85rem + 0.7vw, 1.35rem);
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      /*
+       * Matches the Nuvolaris wordmark (#1DA1CE), darkened along the same hue
+       * to clear 3:1 on the page background — the exact logo value is 2.78:1.
+       */
+      h1 .accent {
+        color: var(--logo-blue);
+      }
+
+      /* ---------- sticky step nav ---------- */
+
+      .stepnav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .step {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .step-link {
+        appearance: none;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--navy);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .step-link:hover {
+        background: #e6ecf8;
+      }
+
+      .step-link:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .step-link[aria-current="step"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .step-arrow {
+        color: var(--blue);
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      /* ---------- section slot / cross-fade ---------- */
+
+      /* Base (no-JS) state: every section stacked and visible. */
+      .slot {
+        position: relative;
+      }
+
+      .panel {
+        padding: 2.5rem 0 3rem;
+      }
+
+      /* JS takes over: one panel at a time, stacked in the same slot. */
+      .js .slot {
+        display: grid;
+      }
+
+      .js .panel {
+        grid-area: 1 / 1;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity var(--fade) ease,
+          visibility 0s linear var(--fade);
+      }
+
+      .js .panel.is-active {
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity var(--fade) ease,
+          visibility 0s;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .lede {
+        margin: 0.6rem auto 2rem;
+        max-width: 46ch;
+        font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* Product mark inside the Start section, below the lede. */
+      .product-logo {
+        width: 250px;
+        margin: 0 auto 2rem;
+      }
+
+      .panel-head {
+        text-align: center;
+      }
+
+      /* ---------- Start: three columns with vertical rules ---------- */
+
+      .trio {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+      }
+
+      .trio > * + * {
+        border-left: 1px solid var(--hairline);
+      }
+
+      .trio-item {
+        padding: 0 1.75rem;
+        text-align: center;
+      }
+
+      .trio-item h3 {
+        margin: 0 0 1.5rem;
+        font-size: 1.28rem;
+        font-weight: 700;
+        line-height: 1.25;
+        white-space: nowrap;
+      }
+
+      /* The email shot is drawn larger than its siblings; match them. */
+      .trio-figure {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .trio-figure img {
+        max-height: 300px;
+        width: auto;
+      }
+
+      /*
+       * Needs the same specificity as `.trio-figure img` above, or that rule's
+       * 300px cap wins and this one silently does nothing.
+       */
+      .trio-figure img.email-shot {
+        max-height: 186px;
+      }
+
+      /* ---------- Build / Deploy: two columns ---------- */
+
+      .duo {
+        display: grid;
+        /*
+         * Size the image column to the render's real width instead of a flat
+         * 50%: a narrow product shot centered in half the band leaves a wide
+         * dead gap between the two columns.
+         */
+        grid-template-columns: auto 1fr;
+        gap: 2.5rem;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .duo p {
+        color: var(--muted);
+        max-width: 44ch;
+      }
+
+      /* Keep tall product renders inside the fixed slot height. */
+      .duo-figure {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .duo-figure img {
+        max-height: 420px;
+        width: auto;
+      }
+
+      /* Card keeps the diagram reading as one distinct object. */
+      .stack-diagram {
+        margin-top: 1.75rem;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.85rem;
+        max-height: 300px;
+        width: auto;
+      }
+
+      /* ---------- Build: centered animation ---------- */
+
+      .anim {
+        /* Pull up against the lede's 2.75rem gap: the video reads as one
+           unit with the heading, leaving room for the caption below. */
+        margin: -0.75rem 0 0;
+        text-align: center;
+      }
+
+      .anim-video {
+        /*
+         * 80% of the content width, but never so tall that the caption below
+         * drops off screen. --anim-room is the viewport height minus the
+         * fixed chrome above and below the video (masthead, nav, panel
+         * padding, heading, lede, caption); the cap must be expressed on
+         * width because max-height loses to width + aspect-ratio.
+         */
+        --anim-room: calc(100vh - 560px);
+        width: min(80%, var(--anim-room) * (1200 / 520));
+        height: auto;
+        /* Reserve the box while the file loads so the slot never shifts. */
+        aspect-ratio: 1200 / 520;
+        margin-inline: auto;
+        border-radius: 12px;
+      }
+
+      .anim-caption {
+        margin: 1.5rem auto 0;
+        max-width: 68ch;
+        font-size: 1.02rem;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+
+      /* ---------- Scale: three columns joined by arrows ---------- */
+
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: start;
+        gap: 1.5rem;
+      }
+
+      /* Sit the arrows level with the product shots, not the text below. */
+      .flow-arrow {
+        margin-top: 75px;
+      }
+
+      .flow-item {
+        text-align: center;
+      }
+
+      .flow-figure {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        min-height: 170px;
+      }
+
+      .flow-figure img {
+        max-height: 170px;
+        width: auto;
+      }
+
+      .flow-scope {
+        margin: 1.25rem 0 0.35rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .flow-caption {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.05rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--blue);
+      }
+
+      .flow-note {
+        margin: 0.6rem auto 0;
+        max-width: 30ch;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .flow-footnote {
+        margin: 2.5rem auto 0;
+        max-width: 62ch;
+        text-align: center;
+        font-size: 0.98rem;
+        color: var(--muted);
+      }
+
+      .flow-footnote::before {
+        content: "";
+        display: block;
+        width: 48px;
+        height: 2px;
+        background: var(--cyan);
+        margin: 0 auto 1.25rem;
+      }
+
+      .flow-arrow {
+        width: 56px;
+        height: 26px;
+        background: var(--blue);
+        clip-path: polygon(
+          0 32%,
+          60% 32%,
+          60% 0,
+          100% 50%,
+          60% 100%,
+          60% 68%,
+          0 68%
+        );
+      }
+
+      /* footer styles come from base.html */
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .trio,
+        .duo {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+
+        .trio > * + * {
+          border-left: 0;
+          border-top: 1px solid var(--hairline);
+          padding-top: 3rem;
+        }
+
+        .trio-item {
+          padding-inline: 0;
+        }
+
+        /* Full-width columns: let long titles wrap rather than overflow. */
+        .trio-item h3 {
+          white-space: normal;
+        }
+
+        .flow {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          justify-items: center;
+        }
+
+        /* arrows point down when the flow stacks */
+        .flow-arrow {
+          transform: rotate(90deg);
+          margin-top: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+
+        .js .panel,
+        .js .panel.is-active {
+          transition: none;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+
+    <header class="masthead">
+      <div class="wrap">
+        <h1 class="hero-title">
+          <span class="hero-word">It is</span>
+          <img
+            class="hero-logo"
+            src="/logo-trustable.png"
+            alt="Trustable"
+            width="420"
+          />
+          <span class="hero-word hero-bang">!</span>
+        </h1>
+        <p class="motto">Lovable-like experience for Private AI</p>
+      </div>
+    </header>
+
+
+    
+<nav class="stepnav" aria-label="Platform steps">
+      <div class="wrap">
+        <ul class="steps">
+          <li class="step">
+            <a class="step-link" href="#build" data-step="build">Build with AI</a>
+          </li>
+          <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
+          <li class="step">
+            <a class="step-link" href="#start" data-step="start"
+              >Start with Templates</a
+            >
+          </li>
+          <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
+          <li class="step">
+            <a class="step-link" href="#deploy" data-step="deploy"
+              >Deploy Anywhere</a
+            >
+          </li>
+          <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
+          <li class="step">
+            <a class="step-link" href="#scale" data-step="scale"
+              >Scale Everywhere</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="slot" id="slot">
+      <!-- ---------------- Build ---------------- -->
+      <section class="panel" id="build" data-panel="build">
+        <div class="wrap">
+          <div class="panel-head">
+            <h2>Build with AI</h2>
+            <p class="lede">
+              Customize and build your AI application with AI coding with
+              Trustable.
+            </p>
+          </div>
+
+          <figure class="anim">
+            <video
+              class="anim-video"
+              src="/trustable-anim.mp4"
+              width="1200"
+              height="520"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              aria-label="Trustable building an application from a written description."
+            ></video>
+            <figcaption class="anim-caption">
+              Describe what you want and Trustable writes it — frontend, backend
+              actions and data wiring. It is Nuvolaris technology inside the
+              platform, not a third-party tool: what it builds runs on your own
+              stack, on your own hardware.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ---------------- Start ---------------- -->
+      <section class="panel" id="start" data-panel="start">
+        <div class="wrap">
+          <div class="panel-head">
+            <h2>Start with Templates</h2>
+            <p class="lede">
+              Start immediately with ready-to-use Private AI applications.
+            </p>
+            <img
+              class="product-logo"
+              src="/logo-nuvolaria.png"
+              alt="NuvolarIA"
+              width="250"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="trio">
+            <div class="trio-item">
+              <h3>Private AI for Documents</h3>
+              <div class="trio-figure">
+                <img
+                  src="/private-document.png"
+                  alt="Private AI for Documents: a secured document vault and wiki answering questions about a Q2 report."
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div class="trio-item">
+              <h3>Private AI for Email</h3>
+              <div class="trio-figure">
+                <img
+                  class="email-shot"
+                  src="/priave-email.png"
+                  alt="Private AI for Email: a searchable mailbox with assisted compose and send."
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div class="trio-item">
+              <h3>Private AI for Databases</h3>
+              <div class="trio-figure">
+                <img
+                  src="/private-database.png"
+                  alt="Private AI for Databases: a natural-language query returning a table of customer renewals."
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------------- Deploy ---------------- -->
+      <section class="panel" id="deploy" data-panel="deploy">
+        <div class="wrap">
+          <div class="panel-head">
+            <h2>Deploy Anywhere</h2>
+            <p class="lede">
+              Deploy in your private server with a complete stack for AI.
+            </p>
+          </div>
+
+          <div class="duo">
+            <div class="duo-figure">
+              <img
+                src="/local-ai.png"
+                alt="The NuvolarIA appliance: a compact AI compute unit stacked on a Nuvolaris server."
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <p>
+                Frontend, APIs, database and storage, hosting, compute, FAAS,
+                security, rate limiting, caching, load balancing, logging and
+                recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and
+                Velero, ready to use, integrated and running on your
+                infrastructure.
+              </p>
+              <img
+                class="stack-diagram"
+                src="/nuvolaris-stack.png"
+                alt="The complete Nuvolaris AI stack: layered platform services alongside S3, PostgreSQL, Kubernetes, Redis, Prometheus and Velero, and the load-balanced controller, Kafka and multi-runtime invoker architecture."
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------------- Scale ---------------- -->
+      <section class="panel" id="scale" data-panel="scale">
+        <div class="wrap">
+          <div class="panel-head">
+            <h2>Scale Everywhere</h2>
+            <p class="lede">
+              Scale from your Local AI to an organization Private AI, and to a
+              Sovereign AI provider.
+            </p>
+          </div>
+
+          <div class="flow">
+            <div class="flow-item">
+              <div class="flow-figure">
+                <img
+                  src="/local-ai.png"
+                  alt="Local AI: the NuvolarIA desktop appliance."
+                  loading="lazy"
+                />
+              </div>
+              <p class="flow-scope">One desk</p>
+              <h3 class="flow-caption">Local AI</h3>
+              <p class="flow-note">
+                The NuvolarIA appliance on your own desk. Your models and your
+                data never leave the machine.
+              </p>
+            </div>
+
+            <div class="flow-arrow" aria-hidden="true"></div>
+
+            <div class="flow-item">
+              <div class="flow-figure">
+                <img
+                  src="/private-ai.png"
+                  alt="Private AI: a rack-mounted GPU server for an organization."
+                  loading="lazy"
+                />
+              </div>
+              <p class="flow-scope">One organization</p>
+              <h3 class="flow-caption">Private AI</h3>
+              <p class="flow-note">
+                A GPU server in your own rack, serving whole teams behind your
+                firewall.
+              </p>
+            </div>
+
+            <div class="flow-arrow" aria-hidden="true"></div>
+
+            <div class="flow-item">
+              <div class="flow-figure">
+                <img
+                  src="/sovereign-ai.png"
+                  alt="Sovereign AI: a data centre building operated as an AI provider."
+                  loading="lazy"
+                />
+              </div>
+              <p class="flow-scope">One country</p>
+              <h3 class="flow-caption">Sovereign AI</h3>
+              <p class="flow-note">
+                A full data centre run as an AI provider, under your own
+                jurisdiction and control.
+              </p>
+            </div>
+          </div>
+
+          <p class="flow-footnote">
+            Same platform, same applications, same tooling at every tier — only
+            the hardware underneath changes. You are never migrating, only
+            growing.
+          </p>
+        </div>
+      </section>
+    </main>
+
+<script>
+      (function () {
+        var ORDER = ["build", "start", "deploy", "scale"];
+        var HOLD = 7000;
+
+        var root = document.documentElement;
+        var panels = {};
+        var links = {};
+        var index = 0;
+        var timer = null;
+        var stopped = false;
+
+        ORDER.forEach(function (name) {
+          panels[name] = document.querySelector('[data-panel="' + name + '"]');
+          links[name] = document.querySelector('[data-step="' + name + '"]');
+        });
+
+        // Only hide panels once JS is running, so the no-JS page stays readable.
+        root.classList.add("js");
+
+        function show(name) {
+          index = ORDER.indexOf(name);
+          ORDER.forEach(function (other) {
+            var isActive = other === name;
+            panels[other].classList.toggle("is-active", isActive);
+            if (isActive) {
+              links[other].setAttribute("aria-current", "step");
+            } else {
+              links[other].removeAttribute("aria-current");
+            }
+          });
+        }
+
+        function advance() {
+          show(ORDER[(index + 1) % ORDER.length]);
+        }
+
+        function play() {
+          if (stopped || timer !== null) return;
+          timer = setInterval(advance, HOLD);
+        }
+
+        function pause() {
+          if (timer === null) return;
+          clearInterval(timer);
+          timer = null;
+        }
+
+        // A nav click hands control to the visitor: stop the loop for good.
+        ORDER.forEach(function (name) {
+          links[name].addEventListener("click", function (event) {
+            event.preventDefault();
+            stopped = true;
+            pause();
+            show(name);
+          });
+        });
+
+        // Don't race through the steps in a backgrounded tab.
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) pause();
+          else play();
+        });
+
+        show(ORDER[0]);
+
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (reduced.matches) stopped = true;
+        else play();
+      })();
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.ai/starter/">Starter</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

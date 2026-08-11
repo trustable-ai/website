@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Introducing Nuvolaris — Trustable</title>
+    <meta
+      name="description"
+      content="Multi-cloud compatibility, integrated frontend and backend services, an extensible CLI, a low-code console and a full-code cloud IDE."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="" />
+          <span>Trustable</span>
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.ai/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.ai/starter/">Starter</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Architecture</h2>
+        <nav aria-label="Nuvolaris Architecture">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.ai/architecture/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/introducing-nuvolaris/"
+                aria-current="page"
+                >Introducing Nuvolaris</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/serverless-engine/"
+                
+                >The Serverless Engine</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/components/"
+                
+                >Nuvolaris Components</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/integrated-services/"
+                
+                >Integrated Services</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/supported-clouds/"
+                
+                >Supported Clouds</a
+              >
+            </li>
+            
+            
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>Introducing Nuvolaris</h1>
+        <p>Nuvolaris is a cloud-native platform implementing a complete serverless
+environment. Figure 1 gives a bird’s eye view of Nuvolaris.</p>
+<p><img src="https://trustable.ai/architecture/introducing-nuvolaris/_page_2_Figure_3.jpeg" alt="Bird’s eye view of the Nuvolaris platform" /></p>
+<p><strong>Figure 1</strong></p>
+<p>Nuvolaris provides a powerful and flexible environment designed for developing and deploying modern cloud-native applications efficiently. Here’s a more in-depth look at its key features and capabilities:</p>
+<h2 id="1-multi-cloud-and-private-cloud-compatibility-with-kubernetes">1. Multi-Cloud and Private Cloud Compatibility with Kubernetes</h2>
+<p>Nuvolaris is built to work seamlessly across a wide range of Kubernetes distributions. This adaptability means that whether you’re using public cloud providers (like AWS, Google Cloud, or Azure) or operating within a private cloud setup, Nuvolaris can run smoothly. The flexibility of Kubernetes orchestration is fully leveraged here, allowing users to scale applications across diverse environments while ensuring robust deployment and management consistency.</p>
+<h2 id="2-integrated-development-services-for-both-frontend-and-backend">2. Integrated Development Services for Both Frontend and Backend</h2>
+<p>Nuvolaris provides a suite of integrated tools and services designed specifically to support full-stack development. Backend functionality is supported seamlessly, allowing for microservices and serverless architectures that are scalable and performant. For frontend needs, it integrates tools to streamline UI development, making it easier to build and deploy end-to-end applications in a single environment.</p>
+<h2 id="3-a-rich-extensible-cli-for-administration-and-development">3. A Rich, Extensible CLI for Administration and Development</h2>
+<p>The Nuvolaris Command Line Interface (CLI) is one of its core strengths. Designed to support both administration and development, the CLI is highly extensible, enabling users to customise and expand its functionalities as needed. This CLI allows for straightforward setup, management, and maintenance of deployments and resources, catering to both developers’ needs and system administrators’ requirements. By combining administrative and development capabilities into a single, robust CLI, Nuvolaris simplifies interaction and control for all roles involved in the software lifecycle.</p>
+<h2 id="4-low-code-administrative-console-for-rapid-prototyping-and-editing">4. Low-Code Administrative Console for Rapid Prototyping and Editing</h2>
+<p>Nuvolaris includes a low-code administrative console, a user-friendly interface that allows both technical and non-technical users to build, edit, and quickly prototype applications. This console is particularly useful for projects requiring frequent updates or iterative changes, as it allows for swift modifications without needing extensive code changes.</p>
+<h2 id="5-full-code-development-environment-with-cloud-based-ide-support">5. Full-Code Development Environment with Cloud-Based IDE Support</h2>
+<p>For developers seeking a full-code experience, Nuvolaris offers a complete, cloud-based development environment that is compatible with CodeSpace and other popular IDEs. This full-code support in the cloud allows for comprehensive application development, testing, and deployment from a single online workspace. Developers benefit from the flexibility to code freely while leveraging cloud resources, thus ensuring high productivity without the constraints of local environments.</p>
+<p>In essence, Nuvolaris combines multi-cloud flexibility, a full-stack development ecosystem, powerful CLI tooling, a low-code console, and a fully functional coding environment to streamline and enhance the entire development pipeline from start to finish. These features collectively make Nuvolaris an adaptable and efficient platform for teams looking to build, deploy and manage applications across a variety of environments with ease and precision.</p>
+<p>Next: <a href="https://trustable.ai/architecture/serverless-engine/">The Serverless Engine</a>.</p>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.ai/starter/">Starter</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>
