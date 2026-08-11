@@ -7,7 +7,7 @@ build_search_index = false
 generate_feeds = false
 
 # Content lives in content/ and is written as ordinary markdown with `@/`
-# links between pages (@/manual/provider.md); those resolve as internal links,
+# links between pages (@/documentation/provider.md); those resolve as internal links,
 # so a broken cross-reference fails the build instead of the site.
 [markdown]
 highlight_code = true

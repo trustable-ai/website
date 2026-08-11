@@ -14,12 +14,12 @@ Always save the plan in the issue as soon as the plan is finished — never leav
 
 Wait for an express request from the user to implement (for example "implement issue N"). Only then create the branch issue-<issuenr> and start implementing.
 
-Implement only the plan writte in the issue.
+Implement only the plan written in the issue.
 
-Once implemented, update the issue with what was actually done (deviations from the plan included), then commit all the subodules to the branch issue-<issuenr> and create a pull request to main to the top level to link everything to the main.
+Once implemented, update the issue with what was actually done (deviations from the plan included),  and create a pull request to main.
 
 When creating a PR always add a comment listing all the open PR related to the implemented issue.
 
-When I ask to merge, merge all the submodules and the main module to the main branch.
+When I ask to complete, create the PR, merge in the main and switch to the updated main.
 
 

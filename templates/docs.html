@@ -222,11 +222,11 @@
 {% block content %}
     <main class="wrap docs">
       {#
-        The sidebar lists the section the reader is currently in — the manual,
-        the architecture paper or the tutorial — not a single site-wide index.
-        For a page that is its own section's ancestor chain, `ancestors` ends
-        with the containing section; a tutorial lesson is itself a section, so
-        take the second entry from the end when the last one is the lesson.
+        The sidebar lists the section the reader is currently in — the
+        documentation, the starters or the architecture paper — not a single
+        site-wide index. For a page that is its own section's ancestor chain,
+        `ancestors` ends with the containing section; a nested page is itself a
+        section, so take the second entry from the end when the last one is it.
       #}
       {% if page %}
         {% set index = get_section(path=page.ancestors | last) %}

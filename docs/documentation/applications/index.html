@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Supported Clouds — Trustable</title>
+    <title>Application List — Trustable</title>
     <meta
       name="description"
-      content="Nuvolaris is provider-agnostic: it runs on public cloud Kubernetes, private cloud distributions and bare-metal hardware."
+      content="Create applications from a starter, browse what you have, and use the per-application actions."
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -449,12 +449,12 @@
         
       
       <aside class="sidebar">
-        <h2>Architecture</h2>
-        <nav aria-label="Nuvolaris Architecture">
+        <h2>Documentation</h2>
+        <nav aria-label="Trustable Documentation">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/architecture/"
+                href="https://trustable.ai/documentation/"
                 
                 >Overview</a
               >
@@ -463,45 +463,18 @@
             
             <li>
               <a
-                href="https://trustable.ai/architecture/introducing-nuvolaris/"
+                href="https://trustable.ai/documentation/provider/"
                 
-                >Introducing Nuvolaris</a
+                >Choose Provider</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/architecture/serverless-engine/"
-                
-                >The Serverless Engine</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/components/"
-                
-                >Nuvolaris Components</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/integrated-services/"
-                
-                >Integrated Services</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/supported-clouds/"
+                href="https://trustable.ai/documentation/applications/"
                 aria-current="page"
-                >Supported Clouds</a
+                >Application List</a
               >
             </li>
             
@@ -513,26 +486,110 @@
 
       <article class="prose">
         
-        <h1>Supported Clouds</h1>
-        <p>Nuvolaris is designed as a flexible, provider-agnostic serverless platform, making it compatible with a wide range of cloud solutions.</p>
-<p>This versatility allows users to choose the infrastructure that best suits their needs, whether it’s public cloud, private cloud or bare-metal setups.</p>
-<p>Here’s a detailed overview of the supported options.</p>
-<h2 id="1-public-cloud">1. Public Cloud</h2>
+        <h1>Application List</h1>
+        <p>The application list is the home screen of the Trustable workbench. It shows
+everything you have built, what state each application is in, and gives you the
+actions to edit, run, publish and remove them.</p>
+<h2 id="list-applications">List applications</h2>
+<p><img src="https://trustable.ai/documentation/applications/image-33.png" alt="The Trustable workbench inventory listing applications" /></p>
+<h3 id="header">Header</h3>
+<p>The top bar carries the Trustable mark, the version and build identifier
+(<code>V0.4.0 · ISSUE-129</code> in the screenshot), and two actions:</p>
 <ul>
-<li><strong>AWS (Amazon Web Services):</strong> Nuvolaris integrates seamlessly with AWS, leveraging its Kubernetes services, such as EKS, for scalable deployment. AWS users can take advantage of the wide array of AWS-native services for additional functionality, paired with Nuvolaris’ serverless environment.</li>
-<li><strong>GCP (Google Cloud Platform):</strong> With GCP, Nuvolaris utilises Google Kubernetes Engine (GKE) to offer robust and managed Kubernetes environments, facilitating high-availability deployments and enabling quick scalability.</li>
-<li><strong>Microsoft Azure:</strong> Nuvolaris supports Azure Kubernetes Service (AKS), allowing Azure users to run serverless functions within Azure’s cloud-native ecosystem, combining the simplicity of Nuvolaris with Azure’s enterprise-grade cloud infrastructure.</li>
+<li><strong>Configure</strong> — provider and model settings. See
+<a href="https://trustable.ai/documentation/provider/">Choose Provider</a>.</li>
+<li><strong>Add App</strong> — create a new application. See <a href="https://trustable.ai/documentation/applications/#add-application">Add application</a>
+below.</li>
 </ul>
-<h2 id="2-private-cloud">2. Private Cloud</h2>
+<h3 id="summary-counters">Summary counters</h3>
+<p>Four counters give you the state of the workbench at a glance:</p>
+<table><thead><tr><th>Counter</th><th>What it counts</th></tr></thead><tbody>
+<tr><td><strong>Applications</strong></td><td>Every application registered in the workbench.</td></tr>
+<tr><td><strong>Production</strong></td><td>Applications currently published and serving on your cluster.</td></tr>
+<tr><td><strong>Development</strong></td><td>Applications checked out and running locally for editing.</td></tr>
+<tr><td><strong>Repositories</strong></td><td>Git repositories backing those applications.</td></tr>
+</tbody></table>
+<p>An application can be counted in both Production and Development at once: the
+published version keeps serving while you iterate on the next one.</p>
+<h3 id="workbench-inventory">Workbench inventory</h3>
+<p>Below the counters is the list itself, with the tools to navigate it:</p>
 <ul>
-<li><strong>Rancher (k3s):</strong> Nuvolaris is compatible with Rancher’s lightweight Kubernetes distribution, k3s, making it ideal for private cloud deployments that require efficient resource use without compromising on Kubernetes’ functionality.</li>
-<li><strong>Ubuntu (MicroK8s):</strong> Supporting MicroK8s, Nuvolaris enables users to run lightweight, production-grade Kubernetes on Ubuntu, tailored for both development and enterprise scenarios where flexibility and control are priorities.</li>
-<li><strong>Red Hat OpenShift:</strong> Nuvolaris integrates with OpenShift for users looking for a private cloud option that offers security, scalability, and extensive Kubernetes customization, allowing for advanced configuration and orchestration capabilities.</li>
+<li><strong>Search</strong> — filters by application name or repository, useful once the list
+outgrows a single screen.</li>
+<li><strong>Sort</strong> — orders the list; <strong>Name</strong> is the default.</li>
+<li><strong>Grid / List</strong> — switches between a card view and the dense table shown here.</li>
+<li><strong>All / Production / Development only</strong> — filters by state, so you can see
+just what is live or just what is in progress.</li>
 </ul>
-<h2 id="3-bare-metal-cloud">3. Bare-Metal Cloud</h2>
+<h3 id="the-application-row">The application row</h3>
+<p>Each row describes one application:</p>
 <ul>
-<li><strong>Hetzner and OVH:</strong> For organisations preferring on-premises or bare-metal environments, Nuvolaris can be deployed directly on hardware providers like <strong>Hetzner</strong> and <strong>OVH</strong>, allowing users to harness dedicated physical servers. This configuration offers high performance and privacy, ideal for workloads requiring low latency and enhanced data sovereignty.</li>
+<li><strong>Application</strong> — its name (<code>TRUREACT</code> in the screenshot) with its current
+state linked underneath.</li>
+<li><strong>Repository</strong> — the git repository backing it, for example
+<code>TRUSTABLE-AI/TRUREACT</code>. Click through to the repository itself.</li>
+<li><strong>Status</strong> — <code>DEVELOPMENT</code> or <code>PRODUCTION</code>.</li>
+<li><strong>Actions</strong> — everything you can do to this application.</li>
 </ul>
+<h3 id="actions">Actions</h3>
+<table><thead><tr><th>Action</th><th>What it does</th></tr></thead><tbody>
+<tr><td><strong>Edit</strong></td><td>Opens the application in the workbench with the AI assistant, so you can describe changes and have Trustable make them. This is the main way you work.</td></tr>
+<tr><td><strong>Env</strong></td><td>Edits the application’s environment variables, separately for development and production — API keys, connection strings, feature flags.</td></tr>
+<tr><td><strong>Git pull</strong></td><td>Fetches changes from the remote repository into your copy. Use it when someone else, or another machine, has pushed work.</td></tr>
+<tr><td><strong>Git push</strong></td><td>Sends your committed changes up to the remote repository. This is source control, not deployment — pushing does not make the application live.</td></tr>
+<tr><td><strong>Publish</strong></td><td>Deploys the application to your cluster and makes it reachable in production. This is what moves an application from Development to Production.</td></tr>
+<tr><td><strong>Undeploy</strong></td><td>Takes the application out of production. The code and repository are untouched; only the running deployment is removed.</td></tr>
+<tr><td><strong>Delete</strong></td><td>Removes the application from the workbench. Destructive — check that anything you want to keep has been pushed to its repository first.</td></tr>
+</tbody></table>
+<p>The distinction worth remembering: <strong>Git push</strong> protects your work, <strong>Publish</strong>
+exposes it to users. They are independent, and you will usually do both.</p>
+<h3 id="footer">Footer</h3>
+<p>The footer shows the build identifier and expiry of the running Trustable
+instance, for example <code>Build: local_26.222.1330 — Expires: 0001/01/01</code>. Quote
+these when reporting a problem.</p>
+<hr />
+<h2 id="add-application">Add application</h2>
+<p><strong>Add App</strong> opens the creation dialog.</p>
+<p><img src="https://trustable.ai/documentation/applications/image-34.png" alt="The Add Application dialog" /></p>
+<h3 id="add-an-application-starter">Add an application starter</h3>
+<p>A starter is a working application that Trustable copies as your starting point,
+so you begin from something that already runs rather than an empty directory.</p>
+<table><thead><tr><th>Starter</th><th>What you get</th></tr></thead><tbody>
+<tr><td><strong>truchat</strong></td><td>An AI chat UI with RAG — a conversational interface that answers from your own documents.</td></tr>
+<tr><td><strong>truingest</strong></td><td>Document ingestion for RAG — the pipeline that loads, splits and indexes your documents so something like <code>truchat</code> can search them.</td></tr>
+<tr><td><strong>trureact</strong></td><td>A generic React starter — a plain application skeleton for when you are building something that is not primarily a chat interface.</td></tr>
+<tr><td><strong>My Application Starter</strong></td><td>Your own starter, when you have a template of your own to begin from rather than one of the supplied ones.</td></tr>
+</tbody></table>
+<p><code>truingest</code> and <code>truchat</code> are designed to be used together: ingest your
+documents with the first, then ask questions about them with the second.</p>
+<h3 id="application-name">Application Name</h3>
+<p>The name of your application in the workbench, and the basis for its URL when
+published.</p>
+<ul>
+<li><strong>6–20 alphanumeric characters, starting with a letter.</strong></li>
+<li>Defaults to the name of the starter you selected, which you can overwrite.</li>
+<li>Choose something distinct — this is what you will be scanning the list for
+later.</li>
+</ul>
+<h3 id="github-repository">GitHub Repository</h3>
+<p>The repository that will back the application, in <code>org/repo</code> format, for example
+<code>trustable-ai/truchat</code>. Trustable uses it as the durable home for your code: it
+is what <strong>Git pull</strong> and <strong>Git push</strong> talk to, and what survives if you delete
+the local workbench copy.</p>
+<h3 id="create">Create</h3>
+<p><strong>Create</strong> sets up the repository, copies the starter into it and adds the
+application to the list, ready to open with <strong>Edit</strong>. <strong>Cancel</strong> discards
+everything and returns to the list.</p>
+<hr />
+<h2 id="a-typical-first-session">A typical first session</h2>
+<ol>
+<li>Configure a provider — see <a href="https://trustable.ai/documentation/provider/">Choose Provider</a>.</li>
+<li><strong>Add App</strong>, choose <code>truchat</code>, name it, and <strong>Create</strong>.</li>
+<li><strong>Edit</strong> it and describe the changes you want in plain language.</li>
+<li><strong>Git push</strong> to save your work to the repository.</li>
+<li><strong>Publish</strong> when it is ready for real users.</li>
+</ol>
+<p>Back to <a href="/">Home</a>.</p>
 
 
       </article>

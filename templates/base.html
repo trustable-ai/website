@@ -215,7 +215,7 @@
           <span>{{ config.title }}</span>
         </a>
         <nav class="sitenav" aria-label="Site">
-          {% for path in ["manual/_index.md", "architecture/_index.md", "tutorial/_index.md"] %}
+          {% for path in ["documentation/_index.md", "starter/_index.md", "architecture/_index.md"] %}
           {% set item = get_section(path=path, metadata_only=true) %}
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}
@@ -238,7 +238,7 @@
           removed section fails the build instead of leaving a dead link.
         #}
         <nav class="footer-nav" aria-label="Documentation">
-          {% for path in ["manual/_index.md", "architecture/_index.md", "tutorial/_index.md"] %}
+          {% for path in ["documentation/_index.md", "starter/_index.md", "architecture/_index.md"] %}
           {% set item = get_section(path=path, metadata_only=true) %}
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}

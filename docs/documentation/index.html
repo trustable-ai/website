@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Supported Clouds — Trustable</title>
+    <title>Trustable Documentation — Trustable</title>
     <meta
       name="description"
-      content="Nuvolaris is provider-agnostic: it runs on public cloud Kubernetes, private cloud distributions and bare-metal hardware."
+      content="Trustable is a Private AI workbench: a Lovable-like experience for building, running and publishing AI applications on your own infrastructure."
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -449,13 +449,13 @@
         
       
       <aside class="sidebar">
-        <h2>Architecture</h2>
-        <nav aria-label="Nuvolaris Architecture">
+        <h2>Documentation</h2>
+        <nav aria-label="Trustable Documentation">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/architecture/"
-                
+                href="https://trustable.ai/documentation/"
+                aria-current="page"
                 >Overview</a
               >
             </li>
@@ -463,45 +463,18 @@
             
             <li>
               <a
-                href="https://trustable.ai/architecture/introducing-nuvolaris/"
+                href="https://trustable.ai/documentation/provider/"
                 
-                >Introducing Nuvolaris</a
+                >Choose Provider</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/architecture/serverless-engine/"
+                href="https://trustable.ai/documentation/applications/"
                 
-                >The Serverless Engine</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/components/"
-                
-                >Nuvolaris Components</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/integrated-services/"
-                
-                >Integrated Services</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.ai/architecture/supported-clouds/"
-                aria-current="page"
-                >Supported Clouds</a
+                >Application List</a
               >
             </li>
             
@@ -513,26 +486,224 @@
 
       <article class="prose">
         
-        <h1>Supported Clouds</h1>
-        <p>Nuvolaris is designed as a flexible, provider-agnostic serverless platform, making it compatible with a wide range of cloud solutions.</p>
-<p>This versatility allows users to choose the infrastructure that best suits their needs, whether it’s public cloud, private cloud or bare-metal setups.</p>
-<p>Here’s a detailed overview of the supported options.</p>
-<h2 id="1-public-cloud">1. Public Cloud</h2>
+        <h1>Trustable Documentation</h1>
+        <p>Trustable is a <strong>Private AI workbench</strong>: a Lovable-like experience for building,
+running and publishing AI applications that never leave your own infrastructure.
+You describe what you want, Trustable writes it, and the result runs on your
+hardware — your models, your data, your cluster.</p>
+<p>This documentation covers the two things you do first: choosing the AI provider
+that powers the assistant, and creating and managing your applications.</p>
+<h2 id="how-trustable-works">How Trustable works</h2>
+<p>Trustable runs as a single local server that gives you three things at once:</p>
 <ul>
-<li><strong>AWS (Amazon Web Services):</strong> Nuvolaris integrates seamlessly with AWS, leveraging its Kubernetes services, such as EKS, for scalable deployment. AWS users can take advantage of the wide array of AWS-native services for additional functionality, paired with Nuvolaris’ serverless environment.</li>
-<li><strong>GCP (Google Cloud Platform):</strong> With GCP, Nuvolaris utilises Google Kubernetes Engine (GKE) to offer robust and managed Kubernetes environments, facilitating high-availability deployments and enabling quick scalability.</li>
-<li><strong>Microsoft Azure:</strong> Nuvolaris supports Azure Kubernetes Service (AKS), allowing Azure users to run serverless functions within Azure’s cloud-native ecosystem, combining the simplicity of Nuvolaris with Azure’s enterprise-grade cloud infrastructure.</li>
+<li><strong>A workbench</strong> — the web UI where you list applications, edit their
+configuration, and launch them.</li>
+<li><strong>An AI coding assistant</strong> — the agent that turns a written description into
+a working frontend, backend actions and data wiring.</li>
+<li><strong>A complete runtime</strong> — Kubernetes, S3, PostgreSQL, Redis, object storage and
+serverless functions, already integrated, so a generated application has
+somewhere real to run.</li>
 </ul>
-<h2 id="2-private-cloud">2. Private Cloud</h2>
+<p>Each application you create lives in its own repository. Trustable keeps a
+durable copy of it and checks it out into a working area whenever you launch it,
+so you can edit, run, revert and publish without ever losing the source of truth.</p>
+<h2 id="two-states-of-an-application">Two states of an application</h2>
+<p>Every application in Trustable is in one or both of these states:</p>
 <ul>
-<li><strong>Rancher (k3s):</strong> Nuvolaris is compatible with Rancher’s lightweight Kubernetes distribution, k3s, making it ideal for private cloud deployments that require efficient resource use without compromising on Kubernetes’ functionality.</li>
-<li><strong>Ubuntu (MicroK8s):</strong> Supporting MicroK8s, Nuvolaris enables users to run lightweight, production-grade Kubernetes on Ubuntu, tailored for both development and enterprise scenarios where flexibility and control are priorities.</li>
-<li><strong>Red Hat OpenShift:</strong> Nuvolaris integrates with OpenShift for users looking for a private cloud option that offers security, scalability, and extensive Kubernetes customization, allowing for advanced configuration and orchestration capabilities.</li>
+<li><strong>Development</strong> — checked out and running locally, so you can iterate on it
+with the AI assistant and see changes immediately.</li>
+<li><strong>Production</strong> — published to your cluster, reachable by its own URL, serving
+real users.</li>
 </ul>
-<h2 id="3-bare-metal-cloud">3. Bare-Metal Cloud</h2>
+<p>The workbench shows both at a glance, and you move an application from one to
+the other with a single action.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong>Hetzner and OVH:</strong> For organisations preferring on-premises or bare-metal environments, Nuvolaris can be deployed directly on hardware providers like <strong>Hetzner</strong> and <strong>OVH</strong>, allowing users to harness dedicated physical servers. This configuration offers high performance and privacy, ideal for workloads requiring low latency and enhanced data sovereignty.</li>
+<li><a href="https://trustable.ai/documentation/provider/">Choose Provider</a> — pick between Cloud AI, Sovereign AI and
+Private AI, connect your endpoint, and choose which models Trustable uses.</li>
+<li><a href="https://trustable.ai/documentation/applications/">Application List</a> — create applications from a starter,
+browse what you have, and use the per-application actions (edit, env, git
+pull/push, publish, undeploy, delete).</li>
 </ul>
+<p>Start with the provider: nothing else works until Trustable knows which AI to
+talk to.</p>
+<hr />
+<h1 id="download">Download</h1>
+<h2 id="install-docker-desktop">Install Docker Desktop</h2>
+<h1 id="windows-powershell">Windows (powershell)</h1>
+<h2 id="irm-n7s-co-get-trustable-irm"><code>irm n7s.co/get-trustable | irm</code></h2>
+<h1 id="mac-linux">Mac/Linux</h1>
+<h2 id="curl-sl-n7s-co-get-trustable-bash"><code>curl -sL n7s.co/get-trustable | bash</code></h2>
+<hr />
+<h2 id="installation-access">Installation &amp; Access</h2>
+<h3 id="installation-command">Installation command</h3>
+<h3 id="ops-trustable-setup"><code>ops trustable setup</code></h3>
+<h3 id="access-command">Access command</h3>
+<h3 id="ops-trustable-signin"><code> ops trustable signin</code></h3>
+<p><img src="https://trustable.ai/documentation/image-16.png" alt="bg right fit" /></p>
+<hr />
+<h1 id="signin">Signin</h1>
+<ul>
+<li>
+<p>Access the Ollama cloud</p>
+</li>
+<li>
+<p>Configure cloud models</p>
+</li>
+</ul>
+<p><img src="https://trustable.ai/documentation/image-0.png" alt="bg right:40%" /></p>
+<p><img src="https://trustable.ai/documentation/image-3.png" alt="alt text" /></p>
+<hr />
+<p><img src="https://trustable.ai/documentation/image-1.png" alt="bg right" /></p>
+<h1 id="app-index">App Index</h1>
+<ul>
+<li>
+<p>Main Menu show lis of appis</p>
+</li>
+<li>
+<p>You can Configure and Add Apps</p>
+</li>
+<li>
+<p>You can Edit, set the Env, Push to Git and Publish the apps</p>
+</li>
+</ul>
+<hr />
+<h2 id="global-configuration">Global Configuration</h2>
+<ul>
+<li>
+<p>List and add models</p>
+</li>
+<li>
+<p>Choose your default coding and “small” model</p>
+<ul>
+<li>small for titles, names</li>
+</ul>
+</li>
+<li>
+<p>Define your github identity</p>
+</li>
+</ul>
+<p><img src="https://trustable.ai/documentation/image-4.png" alt="bg fit right" /></p>
+<hr />
+<h1 id="add-app">Add App</h1>
+<ul>
+<li>
+<p>Use the Starter</p>
+</li>
+<li>
+<p>Application Name and Password</p>
+</li>
+<li>
+<p>GitHub repo (add the key)</p>
+</li>
+</ul>
+<img width=400 src="image-6.png">
+<p><img src="https://trustable.ai/documentation/image-5.png" alt="bg fit right" /></p>
+<hr />
+<h2 id="about-env-vars">About Env vars</h2>
+<ul>
+<li>
+<p>Each app has <strong>development</strong> and <strong>production</strong> values</p>
+</li>
+<li>
+<p><code>OPS_USER</code>, <code>OPS_PASSWORD</code> and <code>OPS_APIHOST</code> are fixed, you can define the values for publishing</p>
+</li>
+<li>
+<p><code>OPS_REPO</code> is the repo where you save</p>
+</li>
+<li>
+<p>Other variables define the AI access</p>
+</li>
+<li>
+<p>You can (and must) add your own variables</p>
+</li>
+</ul>
+<hr />
+<p><img src="https://trustable.ai/documentation/image-8.png" alt="bg 80%" /></p>
+<hr />
+<h2 id="first-prompt">First Prompt</h2>
+<blockquote>
+<p><strong>change the home page in a todo list</strong></p>
+</blockquote>
+<p>Once completed :</p>
+<p><img src="https://trustable.ai/documentation/image-9.png" alt="bg right:50%" /></p>
+<p><img src="https://trustable.ai/documentation/image-10.png" alt="alt text" /></p>
+<hr />
+<h2 id="routes">Routes</h2>
+<blockquote>
+<p><strong>Add on the route <code>/pomodoro</code> a Pomodoro Timer</strong></p>
+</blockquote>
+<p><img src="https://trustable.ai/documentation/image-18.png" alt="width:200" /></p>
+<p><img src="https://trustable.ai/documentation/image-20.png" alt="width:300" /></p>
+<p><img src="https://trustable.ai/documentation/image-19.png" alt="bg right fit" /></p>
+<hr />
+<h1 id="memory">Memory</h1>
+<p><img src="https://trustable.ai/documentation/image-2a.png" alt="alt text" /></p>
+<ul>
+<li>execute <code>/init</code></li>
+</ul>
+<p><img src="https://trustable.ai/documentation/image-15.png" alt="bg fit right" /></p>
+<hr />
+<h1 id="skills">Skills</h1>
+<p><img src="https://trustable.ai/documentation/image-2.png" alt="alt text" /></p>
+<ul>
+<li>
+<p>set of informations</p>
+</li>
+<li>
+<p>updatable</p>
+</li>
+<li>
+<p>customizable</p>
+</li>
+</ul>
+<p><img src="https://trustable.ai/documentation/image-14.png" alt="bg fit right" /></p>
+<hr />
+<p><img src="https://trustable.ai/documentation/image-7.png" alt="bg 70%" /></p>
+<hr />
+<h3 id="publish-and-git-push">Publish and Git Push</h3>
+<img width=300 src="image-12.png">
+<p><img src="https://trustable.ai/documentation/image-11.png" alt="bg fit right" /></p>
+<p><img src="https://trustable.ai/documentation/image-13.png" alt="alt text" /></p>
+<hr />
+<p><img src="https://trustable.ai/documentation/image-30.png" alt="bg fit" /></p>
+<hr />
+<h1 id="list-available-tools">“List available tools”</h1>
+<p><img src="https://trustable.ai/documentation/image-21.png" alt="" /></p>
+<hr />
+<h1 id="create-an-ip-address-api">Create an IP Address API</h1>
+<blockquote>
+<p><strong>add an api returning my ip address using ifconfig.me</strong></p>
+</blockquote>
+<p><img src="https://trustable.ai/documentation/image-22.png" alt="alt text" /></p>
+<ul>
+<li>Redeploy shows the actions</li>
+<li>Terminal allows invoke</li>
+</ul>
+<p><img src="https://trustable.ai/documentation/image-23.png" alt="" /></p>
+<p><img src="https://trustable.ai/documentation/image-24.png" alt="bg right fit" /></p>
+<hr />
+<h1 id="ui-showing-ip">UI showing IP</h1>
+<blockquote>
+<p><strong>replace the card in the home page showing my current ip address</strong></p>
+</blockquote>
+<p><img src="https://trustable.ai/documentation/image-25.png" alt="bg fit right" /></p>
+<hr />
+<h1 id="use-secrets">Use secrets</h1>
+<ul>
+<li>Configure some GitHub the secrets in the UI, then:</li>
+</ul>
+<blockquote>
+<p><strong>use the secret GH_TOKEN and the repo GH_REPO and create an api endpoint creating an issue in github with parameters title and body</strong></p>
+</blockquote>
+<p><img src="https://trustable.ai/documentation/image-27.png" alt="bg right fit" /></p>
+<hr />
+<h1 id="ui-for-the-issues">UI for the Issues</h1>
+<blockquote>
+<p><strong>replace the home page with an user interface asking title and body and creating a github issue</strong></p>
+</blockquote>
+<p><img src="https://trustable.ai/documentation/image-29.png" alt="alt text" /></p>
+<p><img src="https://trustable.ai/documentation/image-28.png" alt="bg right fit" /></p>
 
 
       </article>

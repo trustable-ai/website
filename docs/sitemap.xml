@@ -22,39 +22,15 @@
         <loc>https://trustable.ai/architecture/supported-clouds/</loc>
     </url>
     <url>
-        <loc>https://trustable.ai/manual/</loc>
+        <loc>https://trustable.ai/documentation/</loc>
     </url>
     <url>
-        <loc>https://trustable.ai/manual/applications/</loc>
+        <loc>https://trustable.ai/documentation/applications/</loc>
     </url>
     <url>
-        <loc>https://trustable.ai/manual/provider/</loc>
+        <loc>https://trustable.ai/documentation/provider/</loc>
     </url>
     <url>
-        <loc>https://trustable.ai/tutorial/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson0/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson1/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson2/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson3/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson4/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson5/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson6/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.ai/tutorial/lesson7/</loc>
+        <loc>https://trustable.ai/starter/</loc>
     </url>
 </urlset>
