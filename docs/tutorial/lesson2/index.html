@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 2 — Trustable</title>
+    <meta
+      name="description"
+      content="A Lovable-like experience for Private AI. Build, run and publish AI applications that never leave your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="" />
+          <span>Trustable</span>
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Tutorial</h2>
+        <nav aria-label="MastroGPT Tutorial">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson0/"
+                
+                >Lesson 0</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson1/"
+                
+                >Lesson 1</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson2/"
+                aria-current="page"
+                >Lesson 2</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson3/"
+                
+                >Lesson 3</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson4/"
+                
+                >Lesson 4</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson5/"
+                
+                >Lesson 5</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson6/"
+                
+                >Lesson 6</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson7/"
+                
+                >Lesson 7</a
+              >
+            </li>
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>Lesson 2</h1>
+        <blockquote>
+<p><em>Lesson 1</em> introduced the first services and a simple chat action. <em>Lesson 2</em> shows how to call an LLM directly and stream its answer through Open Serverless.</p>
+</blockquote>
+<h1 id="lesson-2-llm-access-secrets-streaming">Lesson 2 – LLM Access, Secrets &amp; Streaming</h1>
+<p>In this lesson you will build an LLM chat that streams its output while the model is generating it.</p>
+<p>You will learn:</p>
+<ul>
+<li>How to access the Ollama LLM endpoint</li>
+<li>How secrets are passed to tests and deployed actions</li>
+<li>How streaming works in Python and in Open Serverless</li>
+<li>How to test streaming locally with a mock</li>
+<li>How to complete a streamed LLM chat exercise</li>
+</ul>
+<hr />
+<h2 id="preparing-the-environment">Preparing the Environment</h2>
+<p>Start from the MastroGPT starter repository as in the previous lessons.</p>
+<ol>
+<li>Open the MastroGPT GitHub organization.</li>
+<li>Fork the starter repository into your own account.</li>
+<li>Create a Codespace from your fork.</li>
+<li>Log in from the Open Serverless extension using your course credentials.</li>
+<li>Select <strong>Lesson 2</strong> from the lessons panel.</li>
+</ol>
+<p>Each lesson is independent. You do not need the files from Lesson 1 to complete Lesson 2.</p>
+<blockquote>
+<p>You can also work locally, but Codespaces keeps the course environment preconfigured.</p>
+</blockquote>
+<hr />
+<h2 id="optional-editor-shortcut">Optional Editor Shortcut</h2>
+<p>During the lesson it is useful to send selected code from the editor directly to the terminal.</p>
+<p>In VS Code:</p>
+<ol>
+<li>Open <strong>Settings</strong>.</li>
+<li>Select <strong>Keyboard Shortcuts</strong>.</li>
+<li>Search for <strong>Run Selected Text in Active Terminal</strong>.</li>
+<li>Assign a shortcut, for example <code>Ctrl+Enter</code>.</li>
+</ol>
+<p>This makes it easier to copy small code snippets into the interactive CLI while experimenting.</p>
+<hr />
+<h2 id="accessing-the-llm">Accessing the LLM</h2>
+<p>The LLM endpoint is protected with the same credentials used by Open Serverless.</p>
+<p>The two values you need are:</p>
+<table><thead><tr><th>Variable</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>OLLAMA_HOST</code></td><td>Hostname of the Ollama server</td></tr>
+<tr><td><code>AUTH</code></td><td>Credentials used to access Ollama</td></tr>
+</tbody></table>
+<p>Open the interactive Python CLI:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ai cli
+</span></code></pre>
+<p>Read the values from the environment:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>os
+</span><span>
+</span><span>args = {}
+</span><span>host = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;))
+</span><span>auth = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;))
+</span><span>base = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{auth}</span><span style="color:#a3be8c;">@</span><span>{host}&quot;
+</span></code></pre>
+<p>The pattern is important:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>value = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">NAME</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">NAME</span><span>&quot;))
+</span></code></pre>
+<p>Always read secrets from <code>args</code> first, then fall back to the environment. This keeps the same code usable in tests, local CLI experiments, and deployed actions.</p>
+<p>You can verify that Ollama is reachable:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>!curl {base}
+</span></code></pre>
+<p>You should receive a response showing that Ollama is running.</p>
+<hr />
+<h2 id="calling-ollama-without-streaming">Calling Ollama Without Streaming</h2>
+<p>Start with a normal request that returns the full answer only when generation is complete.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>requests
+</span><span>
+</span><span>model = &quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;
+</span><span>inp = &quot;</span><span style="color:#a3be8c;">Who are you?</span><span>&quot;
+</span><span>
+</span><span>msg = {
+</span><span>    &quot;</span><span style="color:#a3be8c;">model</span><span>&quot;: model,
+</span><span>    &quot;</span><span style="color:#a3be8c;">prompt</span><span>&quot;: inp,
+</span><span>    &quot;</span><span style="color:#a3be8c;">stream</span><span>&quot;: </span><span style="color:#d08770;">False</span><span>,
+</span><span>}
+</span><span>
+</span><span>url = </span><span style="color:#b48ead;">f</span><span>&quot;{base}</span><span style="color:#a3be8c;">/api/generate</span><span>&quot;
+</span><span>res = requests.</span><span style="color:#bf616a;">post</span><span>(url, </span><span style="color:#bf616a;">json</span><span>=msg).</span><span style="color:#bf616a;">json</span><span>()
+</span><span style="color:#96b5b4;">print</span><span>(res[&quot;</span><span style="color:#a3be8c;">response</span><span>&quot;])
+</span></code></pre>
+<p>This is the basic Ollama API flow:</p>
+<ol>
+<li>Choose a model.</li>
+<li>Build a JSON request.</li>
+<li>POST it to <code>/api/generate</code>.</li>
+<li>Read the <code>response</code> field.</li>
+</ol>
+<p>There are Python libraries for Ollama, but using the HTTP API directly is useful because it shows exactly what the service expects.</p>
+<hr />
+<h2 id="creating-an-llm-action">Creating an LLM Action</h2>
+<p>The same logic can be placed inside an Open Serverless action.</p>
+<p>A typical action:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>os
+</span><span style="color:#b48ead;">import </span><span>requests
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">main</span><span>(</span><span style="color:#bf616a;">args</span><span>):
+</span><span>    inp = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">input</span><span>&quot;, &quot;&quot;)
+</span><span>    </span><span style="color:#b48ead;">if </span><span>inp == &quot;&quot;:
+</span><span>        </span><span style="color:#b48ead;">return </span><span>{&quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: {&quot;</span><span style="color:#a3be8c;">output</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Please provide an input</span><span>&quot;}}
+</span><span>
+</span><span>    host = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;))
+</span><span>    auth = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;))
+</span><span>    base = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{auth}</span><span style="color:#a3be8c;">@</span><span>{host}&quot;
+</span><span>
+</span><span>    msg = {
+</span><span>        &quot;</span><span style="color:#a3be8c;">model</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;,
+</span><span>        &quot;</span><span style="color:#a3be8c;">prompt</span><span>&quot;: inp,
+</span><span>        &quot;</span><span style="color:#a3be8c;">stream</span><span>&quot;: </span><span style="color:#d08770;">False</span><span>,
+</span><span>    }
+</span><span>
+</span><span>    res = requests.</span><span style="color:#bf616a;">post</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{base}</span><span style="color:#a3be8c;">/api/generate</span><span>&quot;, </span><span style="color:#bf616a;">json</span><span>=msg).</span><span style="color:#bf616a;">json</span><span>()
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{&quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: {&quot;</span><span style="color:#a3be8c;">output</span><span>&quot;: res[&quot;</span><span style="color:#a3be8c;">response</span><span>&quot;]}}
+</span></code></pre>
+<p>You can create or update actions directly from the CLI, but for normal development use:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy
+</span></code></pre>
+<p>or deploy a single action:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy &lt;action&gt;
+</span></code></pre>
+<hr />
+<h2 id="how-secrets-are-propagated">How Secrets Are Propagated</h2>
+<p>Secrets can come from several places:</p>
+<table><thead><tr><th>Source</th><th>Used for</th></tr></thead><tbody>
+<tr><td>Login config</td><td>Values loaded when you log in</td></tr>
+<tr><td><code>.env</code></td><td>Shared project variables</td></tr>
+<tr><td><code>packages/.env</code></td><td>Variables used for deployed packages/actions</td></tr>
+<tr><td>test env files</td><td>Variables used while running tests</td></tr>
+</tbody></table>
+<p>The shell does not necessarily see every secret. The <code>ops</code> CLI can read the Open Serverless configuration.</p>
+<p>To inspect the loaded configuration:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> config dump
+</span></code></pre>
+<p>To search for a specific value:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> config dump | </span><span style="color:#bf616a;">grep</span><span> OLLAMA
+</span></code></pre>
+<p>Action annotations are used to pass configuration values during deployment. They are written as comments at the top of the action file.</p>
+<p>Example:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#a7adba;">#--param OLLAMA_HOST $OLLAMA_HOST
+</span><span style="color:#a7adba;">#--param AUTH $AUTH
+</span></code></pre>
+<p>When you run:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy
+</span></code></pre>
+<p>the deploy command reads these annotations and passes the values to the action.</p>
+<h3 id="what-ops-ide-deploy-does">What <code>ops ide deploy</code> Does</h3>
+<p><code>ops ide deploy</code> builds on top of lower-level Open Serverless action and package commands.</p>
+<p>It can:</p>
+<ul>
+<li>Create packages and actions</li>
+<li>Zip multi-file actions</li>
+<li>Resolve dependencies from files such as <code>requirements.txt</code>, <code>package.json</code>, or <code>composer.json</code></li>
+<li>Extract annotations from action files</li>
+<li>Propagate secrets into deployed actions</li>
+<li>Work with development mode for incremental deploys</li>
+</ul>
+<p>For normal development, prefer <code>ops ide deploy</code> over manually creating actions.</p>
+<hr />
+<h2 id="streaming-from-ollama">Streaming From Ollama</h2>
+<p>Streaming lets the user see the response while the model is still generating it.</p>
+<p>To request streaming from Ollama, set <code>stream</code> to <code>True</code>:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>requests
+</span><span>
+</span><span>msg = {
+</span><span>    &quot;</span><span style="color:#a3be8c;">model</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">prompt</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Who are you?</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">stream</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>,
+</span><span>}
+</span><span>
+</span><span>res = requests.</span><span style="color:#bf616a;">post</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{base}</span><span style="color:#a3be8c;">/api/generate</span><span>&quot;, </span><span style="color:#bf616a;">json</span><span>=msg, </span><span style="color:#bf616a;">stream</span><span>=</span><span style="color:#d08770;">True</span><span>)
+</span></code></pre>
+<p>In Python, the response stream is an iterator:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>item </span><span style="color:#b48ead;">in </span><span>res.</span><span style="color:#bf616a;">iter_lines</span><span>():
+</span><span>    </span><span style="color:#96b5b4;">print</span><span>(item)
+</span></code></pre>
+<p>Ollama returns a sequence of JSON objects. Each object contains fields such as:</p>
+<table><thead><tr><th>Field</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>model</code></td><td>Model that generated the response</td></tr>
+<tr><td><code>response</code></td><td>Current generated text fragment</td></tr>
+<tr><td><code>done</code></td><td>Whether generation has finished</td></tr>
+</tbody></table>
+<p>Only the <code>response</code> field is normally sent to the user interface.</p>
+<hr />
+<h2 id="streaming-in-open-serverless">Streaming in Open Serverless</h2>
+<p>Open Serverless actions are asynchronous, so they do not keep a normal direct connection to the browser.</p>
+<p>For streaming, Open Serverless uses a <strong>streamer</strong> component:</p>
+<ol>
+<li>The UI asks for a streamed response.</li>
+<li>The streamer invokes the action.</li>
+<li>The action receives <code>stream_host</code> and <code>stream_port</code>.</li>
+<li>The action opens a socket to that host and port.</li>
+<li>The action sends partial output to the socket as it is produced.</li>
+</ol>
+<p>The action should also return:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>{&quot;</span><span style="color:#a3be8c;">streaming</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>}
+</span></code></pre>
+<p>This tells Pinocchio to call the streamed endpoint instead of waiting for a single final response.</p>
+<hr />
+<h2 id="countdown-streaming-example">Countdown Streaming Example</h2>
+<p>Before streaming an LLM, the lesson uses a simple countdown iterator.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>time
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">count_to_zero</span><span>(</span><span style="color:#bf616a;">n</span><span>):
+</span><span>    </span><span style="color:#b48ead;">for </span><span>i </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(n - </span><span style="color:#d08770;">1</span><span>, -</span><span style="color:#d08770;">1</span><span>, -</span><span style="color:#d08770;">1</span><span>):
+</span><span>        time.</span><span style="color:#bf616a;">sleep</span><span>(</span><span style="color:#d08770;">1</span><span>)
+</span><span>        </span><span style="color:#b48ead;">yield </span><span style="color:#bf616a;">str</span><span>(i)
+</span></code></pre>
+<p>This is useful because it behaves like a stream without requiring an LLM.</p>
+<p>A streaming helper receives an iterator and sends each item to the stream socket. It also collects the final result so the action can return the full output at the end.</p>
+<p>The same helper can be tested locally with a stream mock.</p>
+<hr />
+<h2 id="testing-streaming-with-a-mock">Testing Streaming With a Mock</h2>
+<p>Streaming is hard to test directly because it depends on a socket opened by the runtime.</p>
+<p>The lesson provides a <strong>stream mock</strong> that simulates the streamer locally.</p>
+<p>The test flow is:</p>
+<ol>
+<li>Create mock stream arguments.</li>
+<li>Start the stream mock.</li>
+<li>Run the streaming function with those arguments.</li>
+<li>Stop the mock.</li>
+<li>Assert that the expected streamed output was received.</li>
+</ol>
+<p>The mock waits only a few seconds before timing out, so start the function immediately after starting the mock.</p>
+<p>This lets you test streamed code before deploying it.</p>
+<hr />
+<h2 id="exercise-1-add-llm-secrets">Exercise 1: Add LLM Secrets</h2>
+<p>Find:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>TODO E2.1
+</span></code></pre>
+<p>Complete the action so it receives the Ollama values.</p>
+<p>Add the parameters:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#a7adba;">#--param OLLAMA_HOST $OLLAMA_HOST
+</span><span style="color:#a7adba;">#--param AUTH $AUTH
+</span></code></pre>
+<p>Then read them in the code:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>host = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;))
+</span><span>auth = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;, os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;))
+</span><span>base = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{auth}</span><span style="color:#a3be8c;">@</span><span>{host}&quot;
+</span></code></pre>
+<p>After this exercise, the URL test should pass. The streaming test will still fail until Exercise 2 is completed.</p>
+<hr />
+<h2 id="exercise-2-decode-ollama-streaming-output">Exercise 2: Decode Ollama Streaming Output</h2>
+<p>Find:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>TODO E2.2
+</span></code></pre>
+<p>The existing streaming function is written for the countdown example. Ollama returns JSON objects instead of plain text, so each streamed item must be decoded.</p>
+<p>Use <code>json.loads</code> to parse each item:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>json
+</span><span>
+</span><span>dec = json.</span><span style="color:#bf616a;">loads</span><span>(item.</span><span style="color:#bf616a;">decode</span><span>(&quot;</span><span style="color:#a3be8c;">utf-8</span><span>&quot;))
+</span><span>out = dec.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">response</span><span>&quot;, &quot;&quot;)
+</span></code></pre>
+<p>Then send only <code>out</code> to the stream and append it to the final result.</p>
+<p>After this change, the streaming test should pass.</p>
+<hr />
+<h2 id="exercise-3-add-a-model-switch">Exercise 3: Add a Model Switch</h2>
+<p>Find:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>TODO E2.3
+</span></code></pre>
+<p>Add a simple command that lets the user switch models from the chat input.</p>
+<p>Example behavior:</p>
+<table><thead><tr><th>Input</th><th>Model selected</th><th>Prompt sent to the model</th></tr></thead><tbody>
+<tr><td><code>llama</code></td><td><code>llama3.1:8b</code></td><td><code>Who are you?</code></td></tr>
+<tr><td><code>deepseek</code></td><td>DeepSeek model</td><td><code>Who are you?</code></td></tr>
+</tbody></table>
+<p>For example:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">if </span><span>inp == &quot;</span><span style="color:#a3be8c;">llama</span><span>&quot;:
+</span><span>    model = &quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;
+</span><span>    inp = &quot;</span><span style="color:#a3be8c;">Who are you?</span><span>&quot;
+</span><span style="color:#b48ead;">elif </span><span>inp == &quot;</span><span style="color:#a3be8c;">deepseek</span><span>&quot;:
+</span><span>    model = &quot;</span><span style="color:#a3be8c;">deepseek-r1:7b</span><span>&quot;
+</span><span>    inp = &quot;</span><span style="color:#a3be8c;">Who are you?</span><span>&quot;
+</span></code></pre>
+<p>DeepSeek may emit hidden thinking sections. If they appear as unreadable tags, convert them to a readable Markdown form, for example by replacing angle brackets with square brackets.</p>
+<hr />
+<h2 id="deploy-and-try-the-chat">Deploy and Try the Chat</h2>
+<p>Deploy the lesson actions:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy
+</span></code></pre>
+<p>Open Pinocchio and select the streamed LLM chat.</p>
+<p>Try prompts such as:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>Who are you?
+</span></code></pre>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>List the capitals of the United States
+</span></code></pre>
+<p>Then test the model switch:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>deepseek
+</span></code></pre>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>llama
+</span></code></pre>
+<p>The first answer from a newly selected model can take longer because the model may need to load.</p>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>You now:</p>
+<ul>
+<li>Accessed Ollama from the CLI</li>
+<li>Built a non-streaming LLM request</li>
+<li>Learned where secrets come from and how actions receive them</li>
+<li>Used action annotations to propagate secret parameters</li>
+<li>Learned how Python iterators represent streams</li>
+<li>Tested streaming locally with a stream mock</li>
+<li>Completed a streamed LLM chat with model switching</li>
+</ul>
+<hr />
+<h2 id="up-next">Up Next</h2>
+<p>Next lessons will build on this foundation by using LLMs in richer applications, including embeddings, vision models, and full-stack Open Serverless workflows.</p>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

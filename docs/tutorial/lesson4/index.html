@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 4 — Trustable</title>
+    <meta
+      name="description"
+      content="A Lovable-like experience for Private AI. Build, run and publish AI applications that never leave your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="" />
+          <span>Trustable</span>
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Tutorial</h2>
+        <nav aria-label="MastroGPT Tutorial">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson0/"
+                
+                >Lesson 0</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson1/"
+                
+                >Lesson 1</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson2/"
+                
+                >Lesson 2</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson3/"
+                
+                >Lesson 3</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson4/"
+                aria-current="page"
+                >Lesson 4</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson5/"
+                
+                >Lesson 5</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson6/"
+                
+                >Lesson 6</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson7/"
+                
+                >Lesson 7</a
+              >
+            </li>
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>Lesson 4</h1>
+        <blockquote>
+<p><em>Lesson 3</em> introduced authentication, forms, and custom displays. <em>Lesson 4</em> builds a stateful assistant that remembers the conversation.</p>
+</blockquote>
+<h1 id="lesson-4-stateful-assistants-with-redis">Lesson 4 – Stateful Assistants with Redis</h1>
+<p>In this lesson you will turn a stateless chat into an assistant.</p>
+<p>An assistant is a chat that remembers what happened earlier in the conversation. To do that, it must store conversation history somewhere and reload it on the next request.</p>
+<p>You will learn:</p>
+<ul>
+<li>How the OpenAI-compatible chat API works</li>
+<li>How message history is represented</li>
+<li>How to stream responses with the OpenAI API</li>
+<li>How to wrap LLM calls in a Python class</li>
+<li>How Redis stores temporary conversation history</li>
+<li>How to return state to Pinocchio</li>
+<li>How to build a stateful assistant</li>
+</ul>
+<hr />
+<h2 id="preparing-the-environment">Preparing the Environment</h2>
+<p>Start from your fork of the starter repository.</p>
+<ol>
+<li>Open your fork on GitHub.</li>
+<li>If GitHub shows that your fork is behind, click <strong>Sync fork</strong>.</li>
+<li>Start a Codespace from the updated fork.</li>
+<li>Log in from the Open Serverless extension.</li>
+<li>Select <strong>Lesson 4</strong> from the lessons panel.</li>
+</ol>
+<p>Lesson 4 is independent from the previous lessons. You can run it even if your workspace does not contain the code from Lessons 1, 2, or 3.</p>
+<hr />
+<h2 id="stateless-chats-vs-assistants">Stateless Chats vs Assistants</h2>
+<p>The chats from the previous lessons are stateless.</p>
+<p>That means each request is handled alone:</p>
+<ol>
+<li>The user sends one input.</li>
+<li>The action sends that input to the LLM.</li>
+<li>The action returns the answer.</li>
+<li>The next request starts again from zero.</li>
+</ol>
+<p>An assistant is stateful.</p>
+<p>It keeps the previous messages and sends the full conversation history to the LLM every time. This lets the LLM answer consistently because it can see what was already said.</p>
+<hr />
+<h2 id="openai-compatible-apis">OpenAI-Compatible APIs</h2>
+<p>The OpenAI chat API has become a common interface for LLM applications.</p>
+<p>Many providers implement an API that is fully or partly compatible with it, including Ollama. This means that an application written with the OpenAI client can often switch providers by changing:</p>
+<ul>
+<li>The base URL</li>
+<li>The API key</li>
+<li>The model name</li>
+</ul>
+<p>For this course, the OpenAI client is used to call the Ollama-compatible endpoint.</p>
+<hr />
+<h2 id="creating-an-openai-client">Creating an OpenAI Client</h2>
+<p>Open the interactive CLI:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ai cli
+</span></code></pre>
+<p>Create a client:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>os
+</span><span style="color:#b48ead;">from </span><span>openai </span><span style="color:#b48ead;">import </span><span>OpenAI
+</span><span>
+</span><span>host = os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">OLLAMA_HOST</span><span>&quot;)
+</span><span>auth = os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">AUTH</span><span>&quot;)
+</span><span>
+</span><span>base_url = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{auth}</span><span style="color:#a3be8c;">@</span><span>{host}</span><span style="color:#a3be8c;">/v1</span><span>&quot;
+</span><span>api_key = &quot;</span><span style="color:#a3be8c;">unused</span><span>&quot;
+</span><span>
+</span><span>client = </span><span style="color:#bf616a;">OpenAI</span><span>(
+</span><span>    </span><span style="color:#bf616a;">base_url</span><span>=base_url,
+</span><span>    </span><span style="color:#bf616a;">api_key</span><span>=api_key,
+</span><span>)
+</span></code></pre>
+<p>With Ollama in this environment, authentication is carried by the URL. The <code>api_key</code> value is still required by the OpenAI client, but it is not the value used for authentication here.</p>
+<p>With other providers, both <code>base_url</code> and <code>api_key</code> are usually meaningful.</p>
+<hr />
+<h2 id="chat-messages">Chat Messages</h2>
+<p>OpenAI-compatible chat requests use a list of messages.</p>
+<p>Each message has:</p>
+<table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>role</code></td><td>Who wrote the message</td></tr>
+<tr><td><code>content</code></td><td>Text content of the message</td></tr>
+</tbody></table>
+<p>Important roles are:</p>
+<table><thead><tr><th>Role</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>system</code></td><td>Instructions that configure the assistant</td></tr>
+<tr><td><code>user</code></td><td>User input</td></tr>
+<tr><td><code>assistant</code></td><td>Previous LLM answers</td></tr>
+</tbody></table>
+<p>The LLM receives the full list and produces the next assistant message.</p>
+<p>Example:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>messages = [
+</span><span>    {
+</span><span>        &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">user</span><span>&quot;,
+</span><span>        &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">What is the capital of Italy?</span><span>&quot;,
+</span><span>    }
+</span><span>]
+</span></code></pre>
+<hr />
+<h2 id="calling-the-chat-api">Calling the Chat API</h2>
+<p>Send the message list to the model:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>res = client.chat.completions.</span><span style="color:#bf616a;">create</span><span>(
+</span><span>    </span><span style="color:#bf616a;">model</span><span>=&quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;,
+</span><span>    </span><span style="color:#bf616a;">messages</span><span>=messages,
+</span><span>)
+</span><span>
+</span><span>answer = res.choices[</span><span style="color:#d08770;">0</span><span>].message.content
+</span><span style="color:#96b5b4;">print</span><span>(answer)
+</span></code></pre>
+<p>The response is structured. It can contain multiple choices, but most applications use the first one:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>res.choices[</span><span style="color:#d08770;">0</span><span>].message.content
+</span></code></pre>
+<p>This is the basic pattern for calling the OpenAI-compatible chat API.</p>
+<hr />
+<h2 id="streaming-with-the-chat-api">Streaming With the Chat API</h2>
+<p>To stream the answer, add <code>stream=True</code>:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>stream = client.chat.completions.</span><span style="color:#bf616a;">create</span><span>(
+</span><span>    </span><span style="color:#bf616a;">model</span><span>=&quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;,
+</span><span>    </span><span style="color:#bf616a;">messages</span><span>=messages,
+</span><span>    </span><span style="color:#bf616a;">stream</span><span>=</span><span style="color:#d08770;">True</span><span>,
+</span><span>)
+</span></code></pre>
+<p>The result is a Python iterator.</p>
+<p>Each item contains a small piece of the answer, called a delta:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>chunk </span><span style="color:#b48ead;">in </span><span>stream:
+</span><span>    delta = chunk.choices[</span><span style="color:#d08770;">0</span><span>].delta.content
+</span><span>    </span><span style="color:#b48ead;">if </span><span>delta:
+</span><span>        </span><span style="color:#96b5b4;">print</span><span>(delta, </span><span style="color:#bf616a;">end</span><span>=&quot;&quot;)
+</span></code></pre>
+<p>This is the OpenAI-compatible version of the streaming behavior introduced in Lesson 2.</p>
+<hr />
+<h2 id="python-classes-quick-reminder">Python Classes: Quick Reminder</h2>
+<p>Lesson 4 uses Python classes to wrap the chat logic.</p>
+<p>A class defines an object with data and methods.</p>
+<p>Example:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">class </span><span style="color:#d08770;">Counter</span><span style="color:#343d46;">:
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#96b5b4;">__init__</span><span>(</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">start</span><span>=</span><span style="color:#d08770;">0</span><span>):
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.value = start
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">count</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        current = </span><span style="color:#bf616a;">self</span><span>.value
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.value += </span><span style="color:#d08770;">1
+</span><span>        </span><span style="color:#b48ead;">return </span><span>current
+</span></code></pre>
+<p>Use it like this:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>c = </span><span style="color:#bf616a;">Counter</span><span>()
+</span><span style="color:#96b5b4;">print</span><span>(c.</span><span style="color:#bf616a;">count</span><span>())
+</span><span style="color:#96b5b4;">print</span><span>(c.</span><span style="color:#bf616a;">count</span><span>())
+</span></code></pre>
+<p>Important Python class rules:</p>
+<ul>
+<li><code>__init__</code> is the constructor.</li>
+<li>Each method receives <code>self</code> as its first argument.</li>
+<li>Object fields are usually created with <code>self.name = value</code>.</li>
+<li>Object fields are read with <code>self.name</code>.</li>
+</ul>
+<p>The rest of the lesson assumes you already know the basic idea of object-oriented programming.</p>
+<hr />
+<h2 id="chat-wrapper-class">Chat Wrapper Class</h2>
+<p>The lesson introduces a class that wraps the OpenAI client and keeps a local message list.</p>
+<p>The class responsibilities are:</p>
+<ol>
+<li>Create the OpenAI client.</li>
+<li>Store the message history.</li>
+<li>Add new messages.</li>
+<li>Send the history to the LLM.</li>
+<li>Add the assistant response back to the history.</li>
+</ol>
+<p>Conceptually:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">class </span><span style="color:#d08770;">Chat</span><span style="color:#343d46;">:
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#96b5b4;">__init__</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.client = </span><span style="color:#bf616a;">OpenAI</span><span>(</span><span style="color:#d08770;">...</span><span>)
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.messages = []
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">add</span><span>(</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">text</span><span>):
+</span><span>        role, content = text.</span><span style="color:#bf616a;">split</span><span>(&quot;</span><span style="color:#a3be8c;">:</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>)
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.messages.</span><span style="color:#bf616a;">append</span><span>({
+</span><span>            &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: role.</span><span style="color:#bf616a;">strip</span><span>(),
+</span><span>            &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: content.</span><span style="color:#bf616a;">strip</span><span>(),
+</span><span>        })
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">complete</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        res = </span><span style="color:#bf616a;">self</span><span>.client.chat.completions.</span><span style="color:#bf616a;">create</span><span>(
+</span><span>            </span><span style="color:#bf616a;">model</span><span>=&quot;</span><span style="color:#a3be8c;">llama3.1:8b</span><span>&quot;,
+</span><span>            </span><span style="color:#bf616a;">messages</span><span>=</span><span style="color:#bf616a;">self</span><span>.messages,
+</span><span>        )
+</span><span>        answer = res.choices[</span><span style="color:#d08770;">0</span><span>].message.content
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.messages.</span><span style="color:#bf616a;">append</span><span>({
+</span><span>            &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">assistant</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: answer,
+</span><span>        })
+</span><span>        </span><span style="color:#b48ead;">return </span><span>answer
+</span></code></pre>
+<p>The class lets you write a sequence like:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>chat = </span><span style="color:#bf616a;">Chat</span><span>()
+</span><span>chat.</span><span style="color:#bf616a;">add</span><span>(&quot;</span><span style="color:#a3be8c;">system: When I give you a country, answer with its capital.</span><span>&quot;)
+</span><span>chat.</span><span style="color:#bf616a;">complete</span><span>()
+</span><span>
+</span><span>chat.</span><span style="color:#bf616a;">add</span><span>(&quot;</span><span style="color:#a3be8c;">user: Italy</span><span>&quot;)
+</span><span style="color:#96b5b4;">print</span><span>(chat.</span><span style="color:#bf616a;">complete</span><span>())
+</span><span>
+</span><span>chat.</span><span style="color:#bf616a;">add</span><span>(&quot;</span><span style="color:#a3be8c;">user: France</span><span>&quot;)
+</span><span style="color:#96b5b4;">print</span><span>(chat.</span><span style="color:#bf616a;">complete</span><span>())
+</span></code></pre>
+<p>Because the class keeps the message history, the model remembers the system instruction.</p>
+<hr />
+<h2 id="exercise-1-add-streaming-to-the-chat-class">Exercise 1: Add Streaming to the Chat Class</h2>
+<p>Find:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>TODO E4.1
+</span></code></pre>
+<p>The first exercise is to make the chat class stream its answers.</p>
+<p>You need to:</p>
+<ol>
+<li>Add a streaming function.</li>
+<li>Save the action arguments when the class is initialized.</li>
+<li>Request <code>stream=True</code> when calling the chat API.</li>
+<li>Read each streamed delta from the OpenAI response.</li>
+<li>Send each delta to the Open Serverless stream socket.</li>
+<li>Collect the complete answer.</li>
+<li>Save the assistant answer in the message history.</li>
+<li>Return <code>streaming: True</code> from the action response.</li>
+</ol>
+<p>The important OpenAI streaming extraction is:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>chunk </span><span style="color:#b48ead;">in </span><span>stream:
+</span><span>    delta = chunk.choices[</span><span style="color:#d08770;">0</span><span>].delta.content
+</span><span>    </span><span style="color:#b48ead;">if </span><span>delta:
+</span><span>        </span><span style="color:#a7adba;"># send delta to the stream
+</span><span>        </span><span style="color:#a7adba;"># append delta to the final result
+</span></code></pre>
+<p>After this exercise, the chat should answer progressively instead of waiting for the whole response before displaying anything.</p>
+<p>To download the solution, use the course command shown in the lesson:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ai lesson 4 assistant</span><span style="color:#bf616a;"> --solution
+</span></code></pre>
+<hr />
+<h2 id="why-we-still-need-state">Why We Still Need State</h2>
+<p>The chat class keeps history only while the current action invocation is running.</p>
+<p>After the action finishes, that memory disappears.</p>
+<p>To build a real assistant, you need to store the history somewhere outside the action invocation. Lesson 4 uses Redis for that.</p>
+<hr />
+<h2 id="redis-overview">Redis Overview</h2>
+<p>Redis means Remote Dictionary Server.</p>
+<p>It is a fast data store used by server applications to keep shared state.</p>
+<p>Redis can store several data types:</p>
+<table><thead><tr><th>Type</th><th>Use case</th></tr></thead><tbody>
+<tr><td>String</td><td>Single value</td></tr>
+<tr><td>List</td><td>Ordered sequence of values</td></tr>
+<tr><td>Hash</td><td>Field/value table</td></tr>
+<tr><td>Set</td><td>Unordered unique values</td></tr>
+<tr><td>Sorted set</td><td>Ordered unique values with scores</td></tr>
+<tr><td>Stream</td><td>Event-like append-only data</td></tr>
+</tbody></table>
+<p>For this lesson, you will use Redis lists to store chat messages.</p>
+<hr />
+<h2 id="redis-prefixes">Redis Prefixes</h2>
+<p>In this course environment, Redis is shared.</p>
+<p>Users cannot read each other’s values, but keys may be visible. For that reason, each user must use the assigned key prefix.</p>
+<p>The Redis connection values are available in the environment.</p>
+<p>Example:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>os
+</span><span style="color:#b48ead;">import </span><span>redis
+</span><span>
+</span><span>prefix = os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">REDIS_PREFIX</span><span>&quot;)
+</span><span>url = os.</span><span style="color:#bf616a;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">REDIS_URL</span><span>&quot;)
+</span><span>
+</span><span>rd = redis.</span><span style="color:#bf616a;">from_url</span><span>(url)
+</span></code></pre>
+<p>Always include the prefix when creating keys.</p>
+<hr />
+<h2 id="redis-strings-and-lists">Redis Strings and Lists</h2>
+<p>Store and read a single value:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>rd.</span><span style="color:#bf616a;">set</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{prefix}</span><span style="color:#a3be8c;">:example</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">hello</span><span>&quot;)
+</span><span>value = rd.</span><span style="color:#bf616a;">get</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{prefix}</span><span style="color:#a3be8c;">:example</span><span>&quot;)
+</span><span style="color:#96b5b4;">print</span><span>(value.</span><span style="color:#bf616a;">decode</span><span>(&quot;</span><span style="color:#a3be8c;">utf-8</span><span>&quot;))
+</span></code></pre>
+<p>Redis values are bytes, so decode them when you need strings.</p>
+<p>Store values in a list:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>key = </span><span style="color:#b48ead;">f</span><span>&quot;{prefix}</span><span style="color:#a3be8c;">:messages</span><span>&quot;
+</span><span>
+</span><span>rd.</span><span style="color:#bf616a;">rpush</span><span>(key, &quot;</span><span style="color:#a3be8c;">first</span><span>&quot;)
+</span><span>rd.</span><span style="color:#bf616a;">rpush</span><span>(key, &quot;</span><span style="color:#a3be8c;">second</span><span>&quot;)
+</span><span>
+</span><span>items = rd.</span><span style="color:#bf616a;">lrange</span><span>(key, </span><span style="color:#d08770;">0</span><span>, -</span><span style="color:#d08770;">1</span><span>)
+</span><span style="color:#b48ead;">for </span><span>item </span><span style="color:#b48ead;">in </span><span>items:
+</span><span>    </span><span style="color:#96b5b4;">print</span><span>(item.</span><span style="color:#bf616a;">decode</span><span>(&quot;</span><span style="color:#a3be8c;">utf-8</span><span>&quot;))
+</span></code></pre>
+<p>Lists are a good fit for conversation history because messages have a natural order.</p>
+<hr />
+<h2 id="history-class">History Class</h2>
+<p>The lesson introduces a <code>History</code> class that stores message history in Redis.</p>
+<p>The class does three important things:</p>
+<ol>
+<li>Creates a unique conversation ID when a new chat starts.</li>
+<li>Saves messages under a Redis key based on that ID.</li>
+<li>Reloads messages when the conversation continues.</li>
+</ol>
+<p>A unique ID can be created with Python’s <code>uuid</code> library:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>uuid
+</span><span>
+</span><span>conversation_id = </span><span style="color:#bf616a;">str</span><span>(uuid.</span><span style="color:#bf616a;">uuid4</span><span>())
+</span></code></pre>
+<p>Redis keys are set to expire after one day so old conversations are cleaned automatically.</p>
+<p>Conceptually:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">class </span><span style="color:#d08770;">History</span><span style="color:#343d46;">:
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#96b5b4;">__init__</span><span>(</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">conversation_id</span><span>=</span><span style="color:#d08770;">None</span><span>):
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.conversation_id = conversation_id or </span><span style="color:#bf616a;">str</span><span>(uuid.</span><span style="color:#bf616a;">uuid4</span><span>())
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.key = </span><span style="color:#b48ead;">f</span><span>&quot;{prefix}</span><span style="color:#a3be8c;">:history:</span><span>{</span><span style="color:#bf616a;">self</span><span>.conversation_id}&quot;
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">id</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">self</span><span>.conversation_id
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">save</span><span>(</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">message</span><span>):
+</span><span>        rd.</span><span style="color:#bf616a;">rpush</span><span>(</span><span style="color:#bf616a;">self</span><span>.key, json.</span><span style="color:#bf616a;">dumps</span><span>(message))
+</span><span>        rd.</span><span style="color:#bf616a;">expire</span><span>(</span><span style="color:#bf616a;">self</span><span>.key, </span><span style="color:#d08770;">60 </span><span>* </span><span style="color:#d08770;">60 </span><span>* </span><span style="color:#d08770;">24</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">load</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        items = rd.</span><span style="color:#bf616a;">lrange</span><span>(</span><span style="color:#bf616a;">self</span><span>.key, </span><span style="color:#d08770;">0</span><span>, -</span><span style="color:#d08770;">1</span><span>)
+</span><span>        </span><span style="color:#b48ead;">return </span><span>[json.</span><span style="color:#bf616a;">loads</span><span>(item.</span><span style="color:#bf616a;">decode</span><span>(&quot;</span><span style="color:#a3be8c;">utf-8</span><span>&quot;)) </span><span style="color:#b48ead;">for </span><span>item </span><span style="color:#b48ead;">in </span><span>items]
+</span></code></pre>
+<p>This creates temporary state: the assistant remembers the conversation for a day, then Redis deletes it.</p>
+<hr />
+<h2 id="loading-history-into-a-chat">Loading History Into a Chat</h2>
+<p>The <code>History</code> class and the <code>Chat</code> class work together.</p>
+<p>Example flow:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>history = </span><span style="color:#bf616a;">History</span><span>()
+</span><span>
+</span><span>history.</span><span style="color:#bf616a;">save</span><span>({
+</span><span>    &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">system</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">When I give you a country, answer with its capital.</span><span>&quot;,
+</span><span>})
+</span><span>
+</span><span>conversation_id = history.</span><span style="color:#bf616a;">id</span><span>()
+</span></code></pre>
+<p>Later, reload the same history:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>history = </span><span style="color:#bf616a;">History</span><span>(conversation_id)
+</span><span>messages = history.</span><span style="color:#bf616a;">load</span><span>()
+</span><span>
+</span><span>chat = </span><span style="color:#bf616a;">Chat</span><span>()
+</span><span>chat.messages = messages
+</span></code></pre>
+<p>Now the chat can continue from the previous conversation.</p>
+<hr />
+<h2 id="building-the-stateful-assistant">Building the Stateful Assistant</h2>
+<p>The assistant action should:</p>
+<ol>
+<li>Read the current <code>state</code> from <code>args</code>.</li>
+<li>Create a <code>History</code> object using that state.</li>
+<li>Create a <code>Chat</code>.</li>
+<li>Load the history into the chat.</li>
+<li>Add the new user input.</li>
+<li>Save the user input to Redis.</li>
+<li>Complete the chat.</li>
+<li>Save the assistant response to Redis.</li>
+<li>Return the conversation ID as <code>state</code>.</li>
+</ol>
+<p>Conceptually:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">main</span><span>(</span><span style="color:#bf616a;">args</span><span>):
+</span><span>    inp = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">input</span><span>&quot;, &quot;&quot;)
+</span><span>    state = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">state</span><span>&quot;)
+</span><span>
+</span><span>    history = </span><span style="color:#bf616a;">History</span><span>(state)
+</span><span>    chat = </span><span style="color:#bf616a;">Chat</span><span>(args)
+</span><span>    chat.messages = history.</span><span style="color:#bf616a;">load</span><span>()
+</span><span>
+</span><span>    user_message = {
+</span><span>        &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">user</span><span>&quot;,
+</span><span>        &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: inp,
+</span><span>    }
+</span><span>
+</span><span>    chat.messages.</span><span style="color:#bf616a;">append</span><span>(user_message)
+</span><span>    history.</span><span style="color:#bf616a;">save</span><span>(user_message)
+</span><span>
+</span><span>    answer = chat.</span><span style="color:#bf616a;">complete</span><span>()
+</span><span>
+</span><span>    history.</span><span style="color:#bf616a;">save</span><span>({
+</span><span>        &quot;</span><span style="color:#a3be8c;">role</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">assistant</span><span>&quot;,
+</span><span>        &quot;</span><span style="color:#a3be8c;">content</span><span>&quot;: answer,
+</span><span>    })
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{
+</span><span>        &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: {
+</span><span>            &quot;</span><span style="color:#a3be8c;">output</span><span>&quot;: answer,
+</span><span>            &quot;</span><span style="color:#a3be8c;">state</span><span>&quot;: history.</span><span style="color:#bf616a;">id</span><span>(),
+</span><span>        }
+</span><span>    }
+</span></code></pre>
+<p>The key part is returning <code>state</code>. Pinocchio sends that state back on the next request, so the action can reload the same Redis history.</p>
+<hr />
+<h2 id="exercise-2-turn-the-chat-into-an-assistant">Exercise 2: Turn the Chat Into an Assistant</h2>
+<p>Find:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>TODO E4.2
+</span></code></pre>
+<p>Transform the stateless chat into a stateful assistant.</p>
+<p>You need to:</p>
+<ol>
+<li>Read the previous conversation ID from <code>state</code>.</li>
+<li>Load the history from Redis.</li>
+<li>Initialize the chat with the loaded messages.</li>
+<li>Save the user’s new message.</li>
+<li>Complete the chat.</li>
+<li>Save the assistant response.</li>
+<li>Return the conversation ID as <code>state</code>.</li>
+</ol>
+<p>When this works, the assistant should remember instructions from earlier messages.</p>
+<p>For example:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>When I give you a country, answer with its capital.
+</span></code></pre>
+<p>Then:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>Italy
+</span></code></pre>
+<p>The assistant should answer:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>Rome
+</span></code></pre>
+<p>Then:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>France
+</span></code></pre>
+<p>The assistant should remember the instruction and answer:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>Paris
+</span></code></pre>
+<hr />
+<h2 id="deploy-and-try-it">Deploy and Try It</h2>
+<p>Deploy the updated lesson actions:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy
+</span></code></pre>
+<p>Open Pinocchio and select the stateful assistant.</p>
+<p>Test the assistant with a sequence:</p>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>When I give you a country, answer with its capital.
+</span></code></pre>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>Italy
+</span></code></pre>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>France
+</span></code></pre>
+<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>United States
+</span></code></pre>
+<p>If the assistant remembers the instruction, the Redis-backed state is working.</p>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>You now:</p>
+<ul>
+<li>Used the OpenAI-compatible API with Ollama</li>
+<li>Built chat requests from role-based message lists</li>
+<li>Streamed responses from the OpenAI client</li>
+<li>Wrapped chat behavior in a Python class</li>
+<li>Used Redis strings and lists</li>
+<li>Stored conversation history with a unique ID</li>
+<li>Returned <code>state</code> so Pinocchio can continue a conversation</li>
+<li>Built a stateful assistant that remembers previous messages</li>
+</ul>
+<hr />
+<h2 id="up-next">Up Next</h2>
+<p>Next lessons will build on stateful assistants to create richer AI applications that combine memory, tools, and structured workflows.</p>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

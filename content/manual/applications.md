@@ -1,4 +1,8 @@
-# Application List
++++
+title = "Application List"
+description = "Create applications from a starter, browse what you have, and use the per-application actions."
+weight = 2
++++
 
 The application list is the home screen of the Trustable workbench. It shows
 everything you have built, what state each application is in, and gives you the
@@ -6,7 +10,7 @@ actions to edit, run, publish and remove them.
 
 ## List applications
 
-![The Trustable workbench inventory listing applications](images/image-3.png)
+![The Trustable workbench inventory listing applications](image-33.png)
 
 ### Header
 
@@ -14,7 +18,7 @@ The top bar carries the Trustable mark, the version and build identifier
 (`V0.4.0 · ISSUE-129` in the screenshot), and two actions:
 
 - **Configure** — provider and model settings. See
-  [Choose Provider](provider.md).
+  [Choose Provider](@/manual/provider.md).
 - **Add App** — create a new application. See [Add application](#add-application)
   below.
 
@@ -81,7 +85,7 @@ these when reporting a problem.
 
 **Add App** opens the creation dialog.
 
-![The Add Application dialog](images/image-4.png)
+![The Add Application dialog](image-34.png)
 
 ### Add an application starter
 
@@ -125,10 +129,10 @@ everything and returns to the list.
 
 ## A typical first session
 
-1. Configure a provider — see [Choose Provider](provider.md).
+1. Configure a provider — see [Choose Provider](@/manual/provider.md).
 2. **Add App**, choose `truchat`, name it, and **Create**.
 3. **Edit** it and describe the changes you want in plain language.
 4. **Git push** to save your work to the repository.
 5. **Publish** when it is ready for real users.
 
-Back to [Home](home.md).
+Back to [Home](/).

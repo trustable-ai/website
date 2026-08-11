@@ -1,4 +1,8 @@
-# Choose Provider
++++
+title = "Choose Provider"
+description = "Pick between Cloud AI, Sovereign AI and Private AI, connect your endpoint, and choose which models Trustable uses."
+weight = 1
++++
 
 The **provider** is the AI service that powers Trustable's coding assistant and
 the applications you build. It is the first thing you configure, and you can
@@ -7,7 +11,7 @@ change it at any time from the **Configure** button in the workbench.
 Trustable offers three providers. They differ in one dimension that matters
 more than the rest: **where your prompts and data go**.
 
-![Select your AI provider](images/image.png)
+![Select your AI provider](image-35.png)
 
 ## Cloud AI
 
@@ -56,13 +60,13 @@ appliance, on your own server, or anywhere you already have inference capacity.
 
 ---
 
-# Private AI
+## Configuring Private AI
 
 Choosing Private AI asks for the endpoint to use.
 
 ## Select endpoint
 
-![Private AI endpoint dialog](images/image-1.png)
+![Private AI endpoint dialog](image-31.png)
 
 Two fields:
 
@@ -86,7 +90,7 @@ actually talked to the server.
 Once the endpoint is connected, Trustable shows what it found there and lets you
 decide how each model is used.
 
-![Private AI models and Pi model configuration](images/image-2.png)
+![Private AI models and Pi model configuration](image-32.png)
 
 ### Private AI Endpoint
 
@@ -139,4 +143,4 @@ three-card chooser, and picking a provider again walks you through the same
 steps. Existing applications are not affected — the provider governs how new
 work is generated, not what has already been built.
 
-Next: [Application List](applications.md).
+Next: [Application List](@/manual/applications.md).

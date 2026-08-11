@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 1 — Trustable</title>
+    <meta
+      name="description"
+      content="A Lovable-like experience for Private AI. Build, run and publish AI applications that never leave your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="" />
+          <span>Trustable</span>
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Tutorial</h2>
+        <nav aria-label="MastroGPT Tutorial">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson0/"
+                
+                >Lesson 0</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson1/"
+                aria-current="page"
+                >Lesson 1</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson2/"
+                
+                >Lesson 2</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson3/"
+                
+                >Lesson 3</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson4/"
+                
+                >Lesson 4</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson5/"
+                
+                >Lesson 5</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson6/"
+                
+                >Lesson 6</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/tutorial/lesson7/"
+                
+                >Lesson 7</a
+              >
+            </li>
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>Lesson 1</h1>
+        <blockquote>
+<p><em>Lesson 0</em> was the environment setup. <em>Lesson 1</em> is the <strong>first real lesson</strong> of the course.</p>
+</blockquote>
+<h1 id="lesson-1-integrated-services-first-exercise">Lesson 1 – Integrated Services &amp; First Exercise</h1>
+<p>After launching and configuring your environment, ensure you’re <strong>logged in</strong> to begin.</p>
+<hr />
+<h2 id="downloading-the-lesson">Downloading the Lesson</h2>
+<ol>
+<li>In the extension, select <strong>Lesson 1</strong> from the sidebar.</li>
+<li>This will automatically download all lesson files.</li>
+<li>You can preview the new lesson by selecting the markdown file under <code>lessons/</code>.</li>
+</ol>
+<hr />
+<h2 id="included-hello-examples">Included “Hello” Examples</h2>
+<p>The <code>hello</code> package includes small examples demonstrating system services:</p>
+<table><thead><tr><th>Service</th><th>Description</th></tr></thead><tbody>
+<tr><td>Redis</td><td>Cache operations (info, keys, etc.)</td></tr>
+<tr><td>Milvus</td><td>Vector DB search using embedding</td></tr>
+<tr><td>Streamer</td><td>ASCII-based output streaming</td></tr>
+<tr><td>LLM (Alma)</td><td>Query small language model</td></tr>
+<tr><td>S3 Storage</td><td>Store, list, upload &amp; delete files</td></tr>
+<tr><td>Tests</td><td>2 failing tests to practice debugging</td></tr>
+</tbody></table>
+<blockquote>
+<p>These examples are useful for testing, debugging, and learning the system APIs.</p>
+</blockquote>
+<hr />
+<h2 id="running-and-fixing-tests">Running and Fixing Tests</h2>
+<ol>
+<li>Run the tests (Tests tab).</li>
+<li>Two tests <strong>intentionally fail</strong>.</li>
+<li>Locate the <code>TODO</code> in the broken test.</li>
+<li>Example fix: change <code>"Hi"</code> to <code>"Hello"</code> and save.</li>
+</ol>
+<h3 id="why-tests-still-fail-after-fix">Why Tests Still Fail After Fix?</h3>
+<ul>
+<li><strong>Unit test</strong> will pass immediately.</li>
+<li><strong>Integration test</strong> will still fail — it requires deployment!</li>
+</ul>
+<h3 id="fix-integration-tests">Fix Integration Tests</h3>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># Deploy the fixed code
+</span><span style="color:#bf616a;">ops</span><span> ide deploy
+</span><span>
+</span><span style="color:#a7adba;"># Or just redeploy the specific action
+</span><span style="color:#bf616a;">ops</span><span> ide deploy hello-llm
+</span></code></pre>
+<blockquote>
+<p>Enable <strong>Dev Mode</strong> for automatic deploy on save.</p>
+</blockquote>
+<hr />
+<h2 id="using-the-deployed-examples">Using the Deployed Examples</h2>
+<p>After deployment, you’ll get a <strong>custom URL</strong>. Login with your user credentials.</p>
+<h3 id="example-services-overview">Example Services Overview</h3>
+<h4 id="1-alma-llm">1. Alma (LLM)</h4>
+<ul>
+<li>Powered by a 3.18B parameter model</li>
+<li>Works in Italian and English</li>
+<li>Example:
+<ul>
+<li>Ask: <code>What is the capital of Italy?</code></li>
+<li>Response: <code>Rome</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="2-streamer">2. Streamer</h4>
+<ul>
+<li>Demonstrates streaming via slow ASCII output</li>
+<li>Example: <code>Hi, how are you?</code> → streamed char-by-char</li>
+</ul>
+<h4 id="3-redis">3. Redis</h4>
+<ul>
+<li>Supports CLI-like interaction</li>
+<li>Examples:<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">info
+</span><span style="color:#bf616a;">keys </span><span>*
+</span></code></pre>
+</li>
+</ul>
+<h4 id="4-object-storage-minio">4. Object Storage (MinIO)</h4>
+<ul>
+<li>S3-compatible local storage</li>
+<li>Commands: list, insert (<code>+ key = value</code>), search, delete</li>
+<li>Supports file upload via UI</li>
+</ul>
+<h4 id="5-vector-db-milvus">5. Vector DB (Milvus)</h4>
+<ul>
+<li>Supports semantic search</li>
+<li>Example:<pre data-lang="txt" style="background-color:#eff1f5;color:#4f5b66;" class="language-txt "><code class="language-txt" data-lang="txt"><span>This is a test
+</span><span>Another test
+</span></code></pre>
+Then search: <code>*test</code> → shows ranked results by similarity</li>
+</ul>
+<hr />
+<h2 id="command-line-tools-obs-cli">Command-Line Tools (OBS CLI)</h2>
+<p>Use <code>ops</code> for CLI actions. Common subcommands:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ai lesson            </span><span style="color:#a7adba;"># download lessons
+</span><span style="color:#bf616a;">ops</span><span> ai user              </span><span style="color:#a7adba;"># manage users
+</span><span style="color:#bf616a;">ops</span><span> ai chat &lt;svc&gt;        </span><span style="color:#a7adba;"># chat with an LLM from CLI
+</span><span style="color:#bf616a;">ops</span><span> ide deploy &lt;action&gt;  </span><span style="color:#a7adba;"># deploy a single action
+</span><span style="color:#bf616a;">ops</span><span> action delete &lt;svc&gt;  </span><span style="color:#a7adba;"># delete an action
+</span><span style="color:#bf616a;">ops</span><span> clean                </span><span style="color:#a7adba;"># cleanup temp files
+</span></code></pre>
+<blockquote>
+<p><code>ops ai chat</code> is a terminal version of the web chat.</p>
+</blockquote>
+<hr />
+<h2 id="creating-a-new-service-reverse-text">Creating a New Service: Reverse Text</h2>
+<h3 id="step-by-step-reverse-text-chat-app">Step-by-step: “Reverse Text” Chat App</h3>
+<ol>
+<li>Ask Alma: <em>“How do I reverse a string in Python?”</em></li>
+<li>Create the service:</li>
+</ol>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">obs</span><span> ai new reverse</span><span style="color:#bf616a;"> -p</span><span> messiah
+</span></code></pre>
+<p>This creates:</p>
+<pre style="background-color:#eff1f5;color:#4f5b66;"><code><span>packages/
+</span><span>  messiah/
+</span><span>    reverse/      # your new action
+</span><span>    __tests__/
+</span><span>      reverse.unit.test.py
+</span><span>      reverse.int.test.py
+</span></code></pre>
+<ol start="3">
+<li>Run the tests → Integration test should fail initially</li>
+<li>Deploy:</li>
+</ol>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> deploy
+</span></code></pre>
+<ol start="5">
+<li>Add to UI:
+<ul>
+<li>Edit <code>packages/mastrogpt/index/index.py</code></li>
+<li>Add:<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#bf616a;">reverse</span><span>(&quot;</span><span style="color:#a3be8c;">messiah/reverse</span><span>&quot;)
+</span></code></pre>
+</li>
+</ul>
+</li>
+<li>Redeploy the index:</li>
+</ol>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ops</span><span> ide deploy mastrogpt-index
+</span></code></pre>
+<ol start="7">
+<li>Try it in the web UI:<br />
+Log in → Select <code>Reverse</code> → Input: <code>hello</code> → Output: <code>olleh</code></li>
+</ol>
+<hr />
+<h2 id="edit-logic-in-code">Edit Logic in Code</h2>
+<p>File: <code>packages/messiah/reverse/main.py</code></p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">main</span><span>(</span><span style="color:#bf616a;">args</span><span>):
+</span><span>    inp = args.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">input</span><span>&quot;, &quot;&quot;)
+</span><span>    </span><span style="color:#b48ead;">if </span><span>inp == &quot;&quot;:
+</span><span>        </span><span style="color:#b48ead;">return </span><span>{&quot;</span><span style="color:#a3be8c;">output</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Please provide an input</span><span>&quot;}
+</span><span>    </span><span style="color:#b48ead;">else</span><span>:
+</span><span>        out = inp[::-</span><span style="color:#d08770;">1</span><span>]
+</span><span>        </span><span style="color:#b48ead;">return </span><span>{&quot;</span><span style="color:#a3be8c;">output</span><span>&quot;: </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">**</span><span>{out}</span><span style="color:#a3be8c;">**</span><span>&quot;}  </span><span style="color:#a7adba;"># bold markdown
+</span></code></pre>
+<p>Use <strong>Dev Mode</strong> to auto-deploy as you edit.</p>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>You now:</p>
+<ul>
+<li>Downloaded your first real lesson</li>
+<li>Ran &amp; fixed tests (unit + integration)</li>
+<li>Explored system services: Redis, Alma, MinIO, Milvus, Streamer</li>
+<li>Built and deployed a custom chat service</li>
+<li>Learned how to modify and extend the UI</li>
+</ul>
+<hr />
+<h2 id="up-next">Up Next</h2>
+<p>Next lessons will:</p>
+<ul>
+<li>Dive deeper into LLM usage</li>
+<li>Cover vision models and embeddings</li>
+<li>Show full-stack app development using Open Serverless</li>
+</ul>
+<p>Happy coding!</p>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Serverless Engine — Trustable</title>
+    <meta
+      name="description"
+      content="Apache OpenWhisk: an asynchronous, self-scaling, event-driven engine, and what happens internally when an action is invoked."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 1.05rem;
+      }
+
+      .brand img {
+        height: 1.6rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="" />
+          <span>Trustable</span>
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Architecture</h2>
+        <nav aria-label="Nuvolaris Architecture">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.ai/architecture/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/introducing-nuvolaris/"
+                
+                >Introducing Nuvolaris</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/serverless-engine/"
+                aria-current="page"
+                >The Serverless Engine</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/components/"
+                
+                >Nuvolaris Components</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/integrated-services/"
+                
+                >Integrated Services</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/architecture/supported-clouds/"
+                
+                >Supported Clouds</a
+              >
+            </li>
+            
+            
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>The Serverless Engine</h1>
+        <p>The serverless engine is Apache OpenWhisk. The architecture is shown in Figure 2.</p>
+<p>OpenWhisk is a self-scalable system, leveraging a load balancer that efficiently distributes incoming workload. It operates asynchronously, meaning that all requests are first routed through Kafka, which acts as a request collector. Kafka then distributes these requests to the invokers, allowing the system to handle high loads without dropping any requests.</p>
+<p>Furthermore, OpenWhisk is a serverless platform with built-in runtimes for various programming languages. This serverless design enables developers to skip the container-building process: simply writing functions is sufficient, as the runtimes execute them directly without the need to create custom images.</p>
+<p>It runs functions (called actions) in response to various events, such as those from timers, databases, message queues, or platforms like Slack and GitHub. Developers input source code via a command-line interface (CLI) to trigger functions, which then deliver services over the web to various consumers, including websites, mobile applications, or REST API-based services.</p>
+<p>In OpenWhisk, functions are stateless by design, meaning they don’t retain data between executions, which enables scalability by avoiding complex synchronization of state. Stateful applications, like e-commerce sites with shopping carts, require data storage and synchronization, limiting scalability. Serverless environments avoid these issues by using scalable storage, such as NoSQL databases, when state is needed outside individual functions.</p>
+<p>OpenWhisk waits for events and only invokes functions when events occur. This event-driven model allows developers to focus on code that responds to specific triggers, while the cloud infrastructure handles the rest, supporting applications built from simple, stateless actions triggered by events.</p>
+<p><img src="https://trustable.ai/architecture/serverless-engine/_page_6_Picture_2.jpeg" alt="The Apache OpenWhisk architecture" /></p>
+<p><strong>Figure 2</strong></p>
+<h2 id="how-an-action-is-executed">How an action is executed</h2>
+<p>OpenWhisk operates through a series of internal steps when executing an action, leveraging several open-source tools. Here’s how it works:</p>
+<ol>
+<li><strong>Invocation and Nginx</strong>: Actions can be triggered via the web, API, CLI, or triggers. Each invocation is translated to an HTTPS call, which reaches Nginx, acting as a reverse proxy for secure communication. Nginx forwards the request to OpenWhisk’s controller.</li>
+<li><strong>Controller</strong>: The controller verifies the request through authentication, authorization, and enriches it with additional parameters by consulting CouchDB (the system’s NoSQL database). It then directs the action to the load balancer.</li>
+<li><strong>Load Balancer</strong>: This component decides which invoker (executor) to assign to the action based on availability, creating new instances as needed. If resources aren’t immediately available, the request is queued in Kafka, OpenWhisk’s messaging system, until it’s ready to execute.</li>
+<li><strong>Invoker</strong>: The invoker runs the action inside a Docker container, using images suited to different languages (JavaScript, Python, etc.). It initialises the container with the action’s code and manages logs for debugging. Results are then stored in CouchDB, associated with an activation ID.</li>
+<li><strong>Client Interaction</strong>: For asynchronous execution, the client receives an activation ID, which they can later use to retrieve the result from CouchDB. In synchronous execution, the client waits for immediate results.</li>
+</ol>
+<p>This system enables OpenWhisk to handle requests in a scalable, asynchronous manner by decoupling action execution from state-keeping, ensuring efficiency and flexibility in serverless environments.</p>
+<p>Next: <a href="https://trustable.ai/architecture/components/">Nuvolaris Components</a>.</p>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.ai/manual/">Manual</a>
+          
+          
+          <a href="https://trustable.ai/architecture/">Architecture</a>
+          
+          
+          <a href="https://trustable.ai/tutorial/">Tutorial</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>
