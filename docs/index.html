@@ -291,13 +291,19 @@
 
       /*
        * "is" and ".it" are the small connective parts of "IT is trustable.it":
-       * half the size of the shouted IT, lowercase against the block's
-       * uppercase, and centred on the wordmark's own axis rather than sitting
-       * on the baseline of a word twice their height.
+       * two thirds the size of the shouted IT, lowercase against the block's
+       * uppercase, and set on the wordmark's own optical centre rather than on
+       * the baseline of a word half again their height.
+       *
+       * The nudge is needed because the logo file carries vertical padding, so
+       * flex-centring on the image box leaves the words visibly high against
+       * the letterforms actually drawn inside it.
        */
       .hero-small {
         align-self: center;
-        font-size: 0.5em;
+        font-size: 0.66em;
+        line-height: 1;
+        translate: 0 0.08em;
         text-transform: lowercase;
         letter-spacing: 0.02em;
         color: var(--muted);
@@ -309,7 +315,7 @@
        */
       .hero-tld {
         /* Cancels the flex gap so the TLD sits tight against the wordmark. */
-        margin-left: -0.45rem;
+        margin-left: -0.5rem;
         color: #1c1c1c;
       }
 
