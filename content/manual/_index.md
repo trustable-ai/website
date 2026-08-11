@@ -48,9 +48,9 @@ the other with a single action.
 
 ## Where to go next
 
-- [Choose Provider](@/manual/provider.md) — pick between Cloud AI, Sovereign AI and
+- [Choose Provider](@/manual/provider/index.md) — pick between Cloud AI, Sovereign AI and
   Private AI, connect your endpoint, and choose which models Trustable uses.
-- [Application List](@/manual/applications.md) — create applications from a starter,
+- [Application List](@/manual/applications/index.md) — create applications from a starter,
   browse what you have, and use the per-application actions (edit, env, git
   pull/push, publish, undeploy, delete).
 

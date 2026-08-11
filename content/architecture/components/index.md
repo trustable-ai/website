@@ -37,4 +37,4 @@ Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its 
 
 Together, the Kubernetes operator, CLI, the Console and MastroGPT offer a full-featured, integrated system for managing OpenWhisk. This combination provides flexibility for developers, operational control for administrators, and visibility into system performance, ensuring a smooth, efficient, and secure serverless environment.
 
-Next: [Integrated Services](@/architecture/integrated-services.md).
+Next: [Integrated Services](@/architecture/integrated-services/index.md).

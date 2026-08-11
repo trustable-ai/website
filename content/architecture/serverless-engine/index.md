@@ -32,4 +32,4 @@ OpenWhisk operates through a series of internal steps when executing an action, 
 
 This system enables OpenWhisk to handle requests in a scalable, asynchronous manner by decoupling action execution from state-keeping, ensuring efficiency and flexibility in serverless environments.
 
-Next: [Nuvolaris Components](@/architecture/components.md).
+Next: [Nuvolaris Components](@/architecture/components/index.md).

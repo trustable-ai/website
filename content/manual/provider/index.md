@@ -143,4 +143,4 @@ three-card chooser, and picking a provider again walks you through the same
 steps. Existing applications are not affected — the provider governs how new
 work is generated, not what has already been built.
 
-Next: [Application List](@/manual/applications.md).
+Next: [Application List](@/manual/applications/index.md).

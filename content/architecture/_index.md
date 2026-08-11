@@ -15,15 +15,15 @@ ecosystem, powerful CLI tooling, a low-code console and a fully functional
 coding environment to streamline the entire development pipeline from start to
 finish.
 
-This paper describes the architecture in four parts:
+This paper describes the architecture in five parts:
 
-- [Introducing Nuvolaris](@/architecture/introducing-nuvolaris.md) — the
+- [Introducing Nuvolaris](@/architecture/introducing-nuvolaris/index.md) — the
   platform's key features and capabilities.
-- [The Serverless Engine](@/architecture/serverless-engine.md) — Apache
+- [The Serverless Engine](@/architecture/serverless-engine/index.md) — Apache
   OpenWhisk, and what happens internally when an action runs.
-- [Nuvolaris Components](@/architecture/components.md) — the Kubernetes
+- [Nuvolaris Components](@/architecture/components/index.md) — the Kubernetes
   operator, the CLI, the Console and MastroGPT.
-- [Integrated Services](@/architecture/integrated-services.md) — Redis, object
+- [Integrated Services](@/architecture/integrated-services/index.md) — Redis, object
   storage, the databases, monitoring and backup.
-- [Supported Clouds](@/architecture/supported-clouds.md) — public cloud,
+- [Supported Clouds](@/architecture/supported-clouds/index.md) — public cloud,
   private cloud and bare-metal deployments.

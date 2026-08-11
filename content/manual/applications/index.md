@@ -18,7 +18,7 @@ The top bar carries the Trustable mark, the version and build identifier
 (`V0.4.0 · ISSUE-129` in the screenshot), and two actions:
 
 - **Configure** — provider and model settings. See
-  [Choose Provider](@/manual/provider.md).
+  [Choose Provider](@/manual/provider/index.md).
 - **Add App** — create a new application. See [Add application](#add-application)
   below.
 
@@ -129,7 +129,7 @@ everything and returns to the list.
 
 ## A typical first session
 
-1. Configure a provider — see [Choose Provider](@/manual/provider.md).
+1. Configure a provider — see [Choose Provider](@/manual/provider/index.md).
 2. **Add App**, choose `truchat`, name it, and **Create**.
 3. **Edit** it and describe the changes you want in plain language.
 4. **Git push** to save your work to the repository.

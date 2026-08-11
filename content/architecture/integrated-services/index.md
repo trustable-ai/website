@@ -50,4 +50,4 @@ Velero is an open-source tool for managing Kubernetes backups, disaster recovery
 
 For Nuvolaris, Velero is vital in ensuring business continuity, providing peace of mind with automated backups and quick recovery options, reducing data loss risk and maintaining application availability in the case of accidental deletion, corruption, or failure.
 
-Next: [Supported Clouds](@/architecture/supported-clouds.md).
+Next: [Supported Clouds](@/architecture/supported-clouds/index.md).

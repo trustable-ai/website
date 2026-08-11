@@ -31,14 +31,28 @@ top level and are reachable from both the header and the footer nav.
   e.g. `@/manual/provider.md`. A broken one **fails the build**, which is the
   point — never write a bare relative or absolute path between pages.
 - Images are **co-located** with the markdown that uses them and referenced by
-  bare filename (`image-4.png`, `_page_2_Figure_3.jpeg`). Zola copies page
-  assets next to the rendered page.
+  bare filename (`image-4.png`, `_page_2_Figure_3.jpeg`).
+- A page that carries images must be a **directory with an `index.md`**
+  (`manual/provider/index.md` + `image-31.png`), not a flat `provider.md`.
+  Zola only copies assets that sit beside an `index.md` into that page's output
+  directory; assets next to a flat `page.md` are treated as *section* assets and
+  land one level up, so every `<img>` on the page 404s while the build still
+  reports success. Link such a page as `@/manual/provider/index.md`.
+  The URL is identical either way — only the asset resolution differs.
 - Code fences must name a language syntect knows. `text` and `ops` are **not**
   valid and emit a build warning; use `txt` and `bash`.
 - Section order comes from `weight` (`sort_by = "weight"`): manual 10,
   architecture 20, tutorial 30.
 - A section whose title is too long for the nav strips sets
   `extra.nav_title` (e.g. "Trustable Documentation" → "Manual").
+
+## Verifying a build
+
+`zola build` validates internal `@/` links but **not** image paths — a page
+whose every image 404s still builds clean. After changing content layout,
+serve `docs/` and confirm the images actually load, or crawl the output and
+check each `src` resolves against the output root (remembering that Zola emits
+them as full `base_url` URLs, not `/`-relative ones).
 
 ## Templates
 
