@@ -571,13 +571,14 @@
 
       .anim-video {
         /*
-         * Sized on width alone. The file is 1200x520, so anything wider is
-         * upscaling; it only shrinks when the panel itself is narrower.
-         * Deliberately not capped against the viewport height: a short window
-         * would then collapse the video to a thumbnail, which is worse than
-         * letting the panel scroll.
+         * Sized on width alone, held 10% under the full band: the file is
+         * 1200x520, so 1080px is the largest size that never upscales, and it
+         * only shrinks when the panel itself is narrower. Deliberately not
+         * capped against the viewport height: a short window would then
+         * collapse the video to a thumbnail, which is worse than letting the
+         * panel scroll.
          */
-        width: min(1200px, 100%);
+        width: min(1080px, 90%);
         height: auto;
         /* Reserve the box while the file loads so the slot never shifts. */
         aspect-ratio: 1200 / 520;

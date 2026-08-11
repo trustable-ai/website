@@ -9,7 +9,8 @@ call-to-action fixes.
   `.anim-video` is sized with `width: min(80%, …)`, so it grows with the
   viewport and is stretched by the `1200 / 520` aspect ratio. Cap it at its
   natural width (1200px) and keep it shrinking only when the panel is narrower
-  than that, so it never renders wider than the source.
+  than that, so it never renders wider than the source. It is then held **10%
+  under** that band — `min(1080px, 90%)` — so it does not run edge to edge.
 - The size is set by **horizontal width only**. There must be no viewport-height
   term in the width calculation: a short window would otherwise collapse the
   video to a thumbnail, which is worse than letting the panel scroll.
