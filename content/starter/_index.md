@@ -1,5 +1,5 @@
 +++
-title = "Starter"
+title = "Starters"
 description = "Starter projects for Trustable."
 weight = 30
 sort_by = "weight"
