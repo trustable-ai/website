@@ -328,6 +328,7 @@
         max-height: 186px;
       }
 
+
       /* ---------- Deploy: appliance beside the stack, text below ---------- */
 
       /*
@@ -668,11 +669,11 @@
       <!-- ---------------- Start ---------------- -->
       <section class="panel" id="start" data-panel="start">
         <div class="wrap">
+          {#
+            No <h2>/lede here: the step nav above already names the step, and
+            the group tabs carry the heading for what is below them.
+          #}
           <div class="panel-head">
-            <h2>Starters &amp; Templates</h2>
-            <p class="lede">
-              Start immediately with ready-to-use Private AI applications.
-            </p>
             <img
               class="product-logo"
               src="/logo-nuvolaria.png"
@@ -682,39 +683,14 @@
             />
           </div>
 
-          <div class="trio">
-            <div class="trio-item">
-              <h3>Private AI for Documents</h3>
-              <div class="trio-figure">
-                <img
-                  src="/private-document.png"
-                  alt="Private AI for Documents: a secured document vault and wiki answering questions about a Q2 report."
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div class="trio-item">
-              <h3>Private AI for Email</h3>
-              <div class="trio-figure">
-                <img
-                  class="email-shot"
-                  src="/priave-email.png"
-                  alt="Private AI for Email: a searchable mailbox with assisted compose and send."
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div class="trio-item">
-              <h3>Private AI for Databases</h3>
-              <div class="trio-figure">
-                <img
-                  src="/private-database.png"
-                  alt="Private AI for Databases: a natural-language query returning a table of customer renewals."
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
+          {% set tabbed = true %}
+          {% include "starter-cards.html" %}
+
+          <p class="cta-row">
+            <a class="cta" href="{{ get_url(path='@/starter/_index.md') | safe }}"
+              >Browse every starter</a
+            >
+          </p>
         </div>
       </section>
 

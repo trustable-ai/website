@@ -6,5 +6,18 @@
 
 {% block doc_content %}
         <h1>{{ page.title }}</h1>
+        {#
+          Starter pages carry the screenshot generator.py copied out of the
+          templates repo (see spec/4-generate.md); open with it so the page
+          leads with the application rather than with bare prose. Every other
+          page has no extra.icon and is unchanged.
+        #}
+        {% if page.extra.icon %}
+        <img
+          class="page-hero"
+          src="{{ page.extra.icon | safe }}"
+          alt="{{ page.title }}"
+        />
+        {% endif %}
         {{ page.content | safe }}
 {% endblock doc_content %}
