@@ -323,6 +323,19 @@
         padding: 0.5rem;
       }
 
+      /*
+       * The starter screenshot at the top of an application page. It inherits
+       * the .prose img card, and only caps the height: these are portrait
+       * phone shots as often as landscape ones, and a tall render would
+       * otherwise push the whole page body below the fold.
+       */
+      .prose .page-hero {
+        margin-top: 0;
+        max-height: 420px;
+        width: auto;
+        object-fit: contain;
+      }
+
       .prose hr {
         margin: 3rem 0;
         border: 0;
@@ -508,6 +521,8 @@
       <article class="prose">
         
         <h1>Supported Clouds</h1>
+        
+        
         <p>Nuvolaris is designed as a flexible, provider-agnostic serverless platform, making it compatible with a wide range of cloud solutions.</p>
 <p>This versatility allows users to choose the infrastructure that best suits their needs, whether it’s public cloud, private cloud or bare-metal setups.</p>
 <p>Here’s a detailed overview of the supported options.</p>

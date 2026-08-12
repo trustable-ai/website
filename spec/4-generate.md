@@ -29,14 +29,20 @@ JSON is the order the gallery uses.
 Every application's prose and icon live in the `*-templates` repository the
 `icon` URL points at, not in the application repo — most application READMEs
 are the generic `# Trustable Workspace` stub. The generator clones (or pulls)
-each templates repo once into `content/starter/<repo>-templates/`, a working
-directory that stays gitignored, and copies out of it:
+each templates repo once into `.templates/<repo>/`, a gitignored working
+directory, and copies out of it. The clones deliberately sit **outside**
+`content/`: zola parses every file below it and a bare repo README carries no
+front matter, which fails the build. From each checkout it takes:
 
 - **page body** — `<templates>/<name>.md`, falling back to the application
   repo's `README.md` when that file is absent
-- **icon** — `<templates>/<name>.png`, copied to
-  `static/starter/<name>.png`; applications with no icon fall back to a
-  generated initial-letter tile
+- **icon** — `<templates>/<name>.png`, copied to `static/starter/<name>.png`.
+  It is the gallery tile *and* the illustration at the top of the detail page,
+  so it is downloaded from GitHub into the site rather than hotlinked; the
+  published pages never reach raw.githubusercontent.com. An application listed
+  under two groups points at only one templates repo (`truk8s` is in `Demo` and
+  `Utilities` but the PNG lives only in `trutil-templates`), so both the icon
+  and the copy are looked up across every checkout before giving up.
 
 ## Output
 
@@ -68,24 +74,61 @@ group = "Apps"
 +++
 ```
 
-The page body is the copied markdown with its leading `# Title` heading
-stripped — `page.html` already renders `page.title` as the `<h1>`. Relative
-image links in the copied markdown are rewritten to `/starter/<file>` and the
-referenced files copied alongside the icon.
+The page body is the copied markdown with a leading heading stripped when it
+only restates the title — `page.html` already renders `page.title` as the
+`<h1>`. The match is deliberately loose in one direction: a heading *contained*
+in the title counts (`# Database Manager` under "AI Database Manager"), a longer
+one does not, because most copy opens with a real step heading
+(`# 1 - Application Foundation`) that must survive.
+
+A body that is only the `# Trustable Workspace` stub, or empty, falls back to
+the catalog description.
 
 An application listed under two groups (`truk8s` is in both `Demo` and
 `Utilities`) gets a page in each group; the icon is shared.
+
+## Detail page
+
+`page.html` renders the icon above the prose for any page carrying
+`extra.icon`, so each application page opens with its own screenshot rather
+than with bare text. The image is the copy under `static/starter/`, never a
+GitHub URL. Pages without an icon are unchanged.
 
 ## Gallery on the home page
 
 The "Starters & Templates" panel of [landing.html](../templates/landing.html)
 drops its three hardcoded columns and includes `starter-cards.html`, which
-walks `content/starter/`'s subsections **horizontally by group, stacked
-vertically**: one row per group, the group title on the left rule, the
-application cards laid out in a horizontal scroller within the row. Each card
-is a link to that application's generated page, showing the icon, the title and
-the description. This is pure Zola templating over the generated sections —
+walks `content/starter/`'s subsections: one block per group, the group title
+above its tiles. This is pure Zola templating over the generated sections —
 no data duplicated into the template.
+
+The tiles are a responsive grid rather than a horizontal scroller, sized so a
+row is never fuller than the breakpoint allows:
+
+| Viewport | Tiles per row | Tile width |
+|---|---|---|
+| Desktop (≥ 1000px) | 3 | ≥ 30% |
+| Tablet (600–999px) | 2 | 50% |
+| Mobile (< 600px) | 1 | 100% |
+
+The grid keeps a **5% inset on both sides at every width**, so the tiles never
+run to the panel edge. The gallery breaks out of the `.wrap` container to do
+it: `.wrap` caps at 1200px and adds its own margin, which would stack on the
+5% and leave the real inset drifting between 3% and 8% across breakpoints.
+
+Tile width is a share of that inset **band** (the 90% between the gutters),
+not of the whole viewport — a third of the band is the 30% the desktop row is
+specified at. Measured: 31.8% / 47.8% / 100% of the band at 1440 / 800 / 420px.
+Columns are sized in percent rather than `1fr`, and the gutter between tiles
+comes out of the tile's own inner-edge padding; `1fr` divides what is left
+*after* the gap, which puts every tile a few points under its share.
+
+Each tile is a link to the application's generated page. The **title sits above
+the box**, not inside it, and the box holds the icon alone. The description is
+**not** printed under the tile — it appears as a hover popup over the icon
+(and on keyboard focus, so it is reachable without a pointer). The description
+also stays in the tile's `title`/`aria-label` so it is announced rather than
+being purely visual.
 
 The section index (`content/starter/_index.md`) keeps its own listing through
 the existing `section.html` sidebar, so every generated page is reachable from

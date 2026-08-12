@@ -524,19 +524,25 @@
       /* ---------- Start: the generated starter gallery ---------- */
 
       /*
-       * One row per group stacked down the panel, each row scrolling
-       * horizontally on its own. The rows are deliberately not wrapped into a
-       * grid: the panel is one slide of the cycling slot, so the gallery has
-       * to stay a fixed number of rows tall however many applications a group
-       * gains — growth goes sideways, into the scroller.
+       * One block per group stacked down the panel. The 5% side inset is on
+       * the gallery rather than on each row, so the tiles of every group line
+       * up on the same two edges at every width.
+       *
+       * The gallery breaks out of its .wrap parent: the wrap caps at 1200px
+       * and adds its own 1.5rem margin, which would stack on top of the 5% and
+       * leave the real inset drifting between 3% and 8% across breakpoints.
+       * Measuring the inset against the viewport is what makes it a flat 5%.
        */
       .gallery {
         display: grid;
-        gap: 1.75rem;
+        gap: 2rem;
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        padding-inline: 5vw;
       }
 
       .gallery-title {
-        margin: 0 0 0.75rem;
+        margin: 0 0 0.9rem;
         font-family: "JetBrains Mono", ui-monospace, monospace;
         font-size: 0.72rem;
         font-weight: 500;
@@ -554,52 +560,65 @@
         color: var(--blue);
       }
 
-      .gallery-row {
-        display: flex;
-        gap: 1rem;
+      /*
+       * Mobile first: one tile per row filling the whole inset band — `1fr`
+       * with no column gap to eat into it, so the tile is a true 100%.
+       */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
         margin: 0;
-        padding: 0 0 0.5rem;
+        padding: 0;
         list-style: none;
-        overflow-x: auto;
-        /* Cards snap so a partially scrolled row never looks like a misalignment. */
-        scroll-snap-type: x proximity;
-      }
-
-      .gallery-card {
-        flex: 0 0 200px;
-        scroll-snap-align: start;
       }
 
       .gallery-card a {
         display: grid;
-        /* Icon row fixed so cards with one-line and two-line notes still align. */
-        grid-template-rows: 84px auto auto;
         gap: 0.5rem;
-        height: 100%;
+        text-decoration: none;
+        color: var(--navy);
+      }
+
+      .gallery-card a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+
+      /* The title sits above the box, so it is page text rather than card
+         furniture and stays readable against the panel background. */
+      .gallery-name {
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      /*
+       * The box holds the icon alone. It is the positioning context for the
+       * description popup and the thing that lifts on hover.
+       */
+      .gallery-box {
+        position: relative;
+        display: block;
+        overflow: hidden;
         padding: 0.9rem;
         background: var(--card);
         border: 1px solid var(--hairline);
         border-radius: 12px;
-        text-decoration: none;
-        color: var(--navy);
         transition:
           border-color var(--fade) ease,
           transform var(--fade) ease;
       }
 
-      .gallery-card a:hover {
+      .gallery-card a:hover .gallery-box {
         border-color: var(--blue);
         transform: translateY(-2px);
       }
 
-      .gallery-card a:focus-visible {
-        outline: 2px solid var(--blue);
-        outline-offset: 2px;
-      }
-
+      /* Fixed height so tiles stay on a grid line whatever the icon's aspect. */
       .gallery-icon {
         width: 100%;
-        height: 84px;
+        height: 150px;
         object-fit: contain;
         border-radius: 8px;
       }
@@ -611,19 +630,81 @@
         background: #e6ecf8;
         color: var(--blue);
         font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: 700;
       }
 
-      .gallery-name {
-        font-weight: 700;
-        line-height: 1.25;
-      }
-
+      /*
+       * The description is a popup over the icon rather than a line under the
+       * tile. It is aria-hidden and duplicated into the link's aria-label, so
+       * hiding it visually costs a screen reader nothing.
+       */
       .gallery-note {
+        position: absolute;
+        inset: auto 0 0;
+        padding: 0.7rem 0.9rem;
+        background: rgba(11, 27, 58, 0.92);
+        color: #fff;
         font-size: 0.9rem;
-        line-height: 1.4;
-        color: var(--muted);
+        line-height: 1.35;
+        opacity: 0;
+        translate: 0 100%;
+        transition:
+          opacity var(--fade) ease,
+          translate var(--fade) ease;
+      }
+
+      .gallery-card a:hover .gallery-note,
+      .gallery-card a:focus-visible .gallery-note {
+        opacity: 1;
+        translate: 0 0;
+      }
+
+      /*
+       * Tablet two up, desktop three up, each column a true 50% / 33.3% of the
+       * band. The columns are sized in percent rather than 1fr, and the gutter
+       * between them comes out of the tile's own padding: `1fr` would divide
+       * what is left *after* the gap, leaving every tile a few points under
+       * the 50% and 30% this layout is specified in.
+       */
+      @media (min-width: 600px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, 50%);
+          column-gap: 0;
+        }
+
+        /*
+         * Only the inner edges are padded. Padding both sides of every tile
+         * would inset the outer ones from the 5% band as well, narrowing the
+         * boxes below the specified share of the width. The gutter is kept
+         * small deliberately: it is subtracted from the box, and the box is
+         * what has to clear 30% of the viewport on desktop.
+         */
+        .gallery-card {
+          padding-right: 1rem;
+        }
+
+        .gallery-card:nth-child(2n) {
+          padding-right: 0;
+          padding-left: 1.25rem;
+        }
+      }
+
+      @media (min-width: 1000px) {
+        .gallery-grid {
+          grid-template-columns: repeat(3, 33.3333%);
+        }
+
+        /* Re-run the same rule on a 3-cycle: only the last column is flush. */
+        .gallery-card,
+        .gallery-card:nth-child(2n) {
+          padding-right: 1.25rem;
+          padding-left: 0;
+        }
+
+        .gallery-card:nth-child(3n) {
+          padding-right: 0;
+        }
       }
 
       /* ---------- Deploy: appliance beside the stack, text below ---------- */
@@ -987,80 +1068,120 @@
     <h3 class="gallery-title" id="group-apps">
       <a href="https://trustable.ai/starter/apps/">Apps</a>
     </h3>
-    <ul class="gallery-row">
+    <ul class="gallery-grid">
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/apps/apistatusmonitor/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/apistatusmonitor.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/apps/apistatusmonitor/"
+          aria-label="API Status Monitor — API Status Mpnitor"
+        >
           <span class="gallery-name">API Status Monitor</span>
-          <span class="gallery-note">API Status Mpnitor</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/apistatusmonitor.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">API Status Mpnitor</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/apps/appsuite/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/appsuite.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/apps/appsuite/"
+          aria-label="App Suite — Simple Productivity App suite"
+        >
           <span class="gallery-name">App Suite</span>
-          <span class="gallery-note">Simple Productivity App suite</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/appsuite.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Simple Productivity App suite</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/apps/minicrm/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/minicrm.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/apps/minicrm/"
+          aria-label="Mini CRM — Mini Customer Relation Manager"
+        >
           <span class="gallery-name">Mini CRM</span>
-          <span class="gallery-note">Mini Customer Relation Manager</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/minicrm.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Mini Customer Relation Manager</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/apps/projectdashboard/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/projectdashboard.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/apps/projectdashboard/"
+          aria-label="Project Dashboard — Project Dashboard"
+        >
           <span class="gallery-name">Project Dashboard</span>
-          <span class="gallery-note">Project Dashboard</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/projectdashboard.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Project Dashboard</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/apps/securitycheck/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/securitycheck.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/apps/securitycheck/"
+          aria-label="Security Check — Security Check"
+        >
           <span class="gallery-name">Security Check</span>
-          <span class="gallery-note">Security Check</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/securitycheck.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Security Check</span>
+            
+          </span>
         </a>
       </li>
       
@@ -1072,50 +1193,74 @@
     <h3 class="gallery-title" id="group-chat">
       <a href="https://trustable.ai/starter/chat/">Chat</a>
     </h3>
-    <ul class="gallery-row">
+    <ul class="gallery-grid">
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/chat/dbmanagerai/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/dbmanagerai.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/chat/dbmanagerai/"
+          aria-label="AI Database Manager — Manage Databases with AI"
+        >
           <span class="gallery-name">AI Database Manager</span>
-          <span class="gallery-note">Manage Databases with AI</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/dbmanagerai.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Manage Databases with AI</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/chat/documentchatai/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/documentchatai.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/chat/documentchatai/"
+          aria-label="AI Document Manager — Manage Documents with AI"
+        >
           <span class="gallery-name">AI Document Manager</span>
-          <span class="gallery-note">Manage Documents with AI</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/documentchatai.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Manage Documents with AI</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/chat/emailmanagerai/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/emailmanagerai.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/chat/emailmanagerai/"
+          aria-label="AI Email Manager — Manager Email with AI"
+        >
           <span class="gallery-name">AI Email Manager</span>
-          <span class="gallery-note">Manager Email with AI</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/emailmanagerai.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Manager Email with AI</span>
+            
+          </span>
         </a>
       </li>
       
@@ -1127,65 +1272,97 @@
     <h3 class="gallery-title" id="group-demo">
       <a href="https://trustable.ai/starter/demo/">Demo</a>
     </h3>
-    <ul class="gallery-row">
+    <ul class="gallery-grid">
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/demo/truaicrm/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/truaicrm.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/demo/truaicrm/"
+          aria-label="AI CRM — AI CRM"
+        >
           <span class="gallery-name">AI CRM</span>
-          <span class="gallery-note">AI CRM</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/truaicrm.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">AI CRM</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/demo/truk8s/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/truk8s.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/demo/truk8s/"
+          aria-label="Kubernetes Manager — Kubernetes Manager"
+        >
           <span class="gallery-name">Kubernetes Manager</span>
-          <span class="gallery-note">Kubernetes Manager</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/truk8s.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Kubernetes Manager</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/demo/solarsystem/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/solarsystem.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/demo/solarsystem/"
+          aria-label="Solar System — Solar System Simulation"
+        >
           <span class="gallery-name">Solar System</span>
-          <span class="gallery-note">Solar System Simulation</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/solarsystem.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Solar System Simulation</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/demo/tetris/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/tetris.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/demo/tetris/"
+          aria-label="Tetris — Tetris Game"
+        >
           <span class="gallery-name">Tetris</span>
-          <span class="gallery-note">Tetris Game</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/tetris.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Tetris Game</span>
+            
+          </span>
         </a>
       </li>
       
@@ -1197,65 +1374,97 @@
     <h3 class="gallery-title" id="group-utilities">
       <a href="https://trustable.ai/starter/utilities/">Utilities</a>
     </h3>
-    <ul class="gallery-row">
+    <ul class="gallery-grid">
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/utilities/truingest/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/truingest.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/utilities/truingest/"
+          aria-label="Document Ingest — Document Ingestion"
+        >
           <span class="gallery-name">Document Ingest</span>
-          <span class="gallery-note">Document Ingestion</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/truingest.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Document Ingestion</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/utilities/jsonformatter/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/jsonformatter.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/utilities/jsonformatter/"
+          aria-label="JSON Formatter — JSON Formatter"
+        >
           <span class="gallery-name">JSON Formatter</span>
-          <span class="gallery-note">JSON Formatter</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/jsonformatter.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">JSON Formatter</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/utilities/truk8s/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/truk8s.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/utilities/truk8s/"
+          aria-label="Kubernetes Manager — Kubernetes Manager"
+        >
           <span class="gallery-name">Kubernetes Manager</span>
-          <span class="gallery-note">Kubernetes Manager</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/truk8s.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Kubernetes Manager</span>
+            
+          </span>
         </a>
       </li>
       
       <li class="gallery-card">
-        <a href="https://trustable.ai/starter/utilities/urlmetadata/">
-          
-          <img
-            class="gallery-icon"
-            src="/starter/urlmetadata.png"
-            alt=""
-            loading="lazy"
-          />
-          
+        
+        <a
+          href="https://trustable.ai/starter/utilities/urlmetadata/"
+          aria-label="URL Metadata — URL MetaData"
+        >
           <span class="gallery-name">URL Metadata</span>
-          <span class="gallery-note">URL MetaData</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/starter/urlmetadata.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">URL MetaData</span>
+            
+          </span>
         </a>
       </li>
       

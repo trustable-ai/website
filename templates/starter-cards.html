@@ -1,9 +1,10 @@
 {#
-  The starter gallery: one row per group, laid out horizontally, stacked
-  vertically down the panel. Everything here is read from the sections
-  generator.py writes under content/starter/<group>/ — see spec/4-generate.md.
-  Nothing about the catalog is duplicated into this template, so a regenerated
-  content tree is the only thing needed to change the gallery.
+  The starter gallery: one block per group, its applications laid out in a
+  responsive grid (3 up on desktop, 2 on tablet, 1 on mobile). Everything here
+  is read from the sections generator.py writes under content/starter/<group>/
+  — see spec/4-generate.md. Nothing about the catalog is duplicated into this
+  template, so a regenerated content tree is the only thing needed to change
+  the gallery.
 #}
 {% set starters = get_section(path="starter/_index.md") %}
 <div class="gallery">
@@ -13,25 +14,37 @@
     <h3 class="gallery-title" id="group-{{ group.components | last }}">
       <a href="{{ group.permalink | safe }}">{{ group.title }}</a>
     </h3>
-    <ul class="gallery-row">
+    <ul class="gallery-grid">
       {% for app in group.pages %}
       <li class="gallery-card">
-        <a href="{{ app.permalink | safe }}">
-          {% if app.extra.icon %}
-          <img
-            class="gallery-icon"
-            src="{{ app.extra.icon | safe }}"
-            alt=""
-            loading="lazy"
-          />
-          {% else %}
-          {# No icon in the templates repo: an initial tile keeps the row even. #}
-          <span class="gallery-icon gallery-initial" aria-hidden="true"
-            >{{ app.title | truncate(length=1, end="") }}</span
-          >
-          {% endif %}
+        {#
+          The description is not printed under the tile; it rides along as the
+          accessible name and is shown over the icon on hover/focus, so the
+          pointer-only popup is never the sole carrier of the text.
+        #}
+        <a
+          href="{{ app.permalink | safe }}"
+          aria-label="{{ app.title }}{% if app.description %} — {{ app.description }}{% endif %}"
+        >
           <span class="gallery-name">{{ app.title }}</span>
-          <span class="gallery-note">{{ app.description }}</span>
+          <span class="gallery-box">
+            {% if app.extra.icon %}
+            <img
+              class="gallery-icon"
+              src="{{ app.extra.icon | safe }}"
+              alt=""
+              loading="lazy"
+            />
+            {% else %}
+            {# No icon in the templates repo: an initial tile keeps the row even. #}
+            <span class="gallery-icon gallery-initial" aria-hidden="true"
+              >{{ app.title | truncate(length=1, end="") }}</span
+            >
+            {% endif %}
+            {% if app.description %}
+            <span class="gallery-note" aria-hidden="true">{{ app.description }}</span>
+            {% endif %}
+          </span>
         </a>
       </li>
       {% endfor %}

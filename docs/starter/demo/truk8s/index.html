@@ -323,6 +323,19 @@
         padding: 0.5rem;
       }
 
+      /*
+       * The starter screenshot at the top of an application page. It inherits
+       * the .prose img card, and only caps the height: these are portrait
+       * phone shots as often as landscape ones, and a tall render would
+       * otherwise push the whole page body below the fold.
+       */
+      .prose .page-hero {
+        margin-top: 0;
+        max-height: 420px;
+        width: auto;
+        object-fit: contain;
+      }
+
       .prose hr {
         margin: 3rem 0;
         border: 0;
@@ -499,6 +512,14 @@
       <article class="prose">
         
         <h1>Kubernetes Manager</h1>
+        
+        
+        <img
+          class="page-hero"
+          src="/starter/truk8s.png"
+          alt="Kubernetes Manager"
+        />
+        
         <p>todo</p>
 
 
