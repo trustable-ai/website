@@ -69,6 +69,15 @@
         min-width: 0;
       }
 
+      /*
+       * 74ch is a measure for reading prose; the starter indexes are a tile
+       * grid, and at that width three columns are too narrow to show a
+       * screenshot. They take the full docs column instead.
+       */
+      .prose:has(.gallery) {
+        max-width: none;
+      }
+
       .prose h1 {
         margin: 0 0 1.5rem;
         font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
@@ -243,6 +252,13 @@
       #}
       {% if page %}
         {% set index = get_section(path=page.ancestors | last) %}
+      {% elif section.pages | length > 0 %}
+        {#
+          A section with pages of its own is the index for them — a starter
+          group listing its applications. Climbing to the parent here would
+          make it list its sibling groups instead.
+        #}
+        {% set index = section %}
       {% elif section.ancestors | length > 1 %}
         {% set index = get_section(path=section.ancestors | last) %}
       {% else %}

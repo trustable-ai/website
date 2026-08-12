@@ -328,177 +328,6 @@
         max-height: 186px;
       }
 
-      /* ---------- Start: the generated starter gallery ---------- */
-
-      /*
-       * One block per group stacked down the panel. The 5% side inset is on
-       * the gallery rather than on each row, so the tiles of every group line
-       * up on the same two edges at every width.
-       *
-       * The gallery breaks out of its .wrap parent: the wrap caps at 1200px
-       * and adds its own 1.5rem margin, which would stack on top of the 5% and
-       * leave the real inset drifting between 3% and 8% across breakpoints.
-       * Measuring the inset against the viewport is what makes it a flat 5%.
-       */
-      .gallery {
-        display: grid;
-        gap: 2rem;
-        width: 100vw;
-        margin-inline: calc(50% - 50vw);
-        padding-inline: 5vw;
-      }
-
-      .gallery-title {
-        margin: 0 0 0.9rem;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
-        font-size: 0.72rem;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      .gallery-title a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .gallery-title a:hover {
-        color: var(--blue);
-      }
-
-      /*
-       * Mobile first: one tile per row filling the whole inset band — `1fr`
-       * with no column gap to eat into it, so the tile is a true 100%.
-       */
-      .gallery-grid {
-        --tile-gap: 1.25rem;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem var(--tile-gap);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .gallery-card a {
-        display: grid;
-        gap: 0.5rem;
-        text-decoration: none;
-        color: var(--navy);
-      }
-
-      .gallery-card a:focus-visible {
-        outline: 2px solid var(--blue);
-        outline-offset: 4px;
-        border-radius: 12px;
-      }
-
-      /* The title sits above the box, so it is page text rather than card
-         furniture and stays readable against the panel background. */
-      .gallery-name {
-        font-weight: 700;
-        line-height: 1.25;
-      }
-
-      /*
-       * The box holds the icon alone. It is the positioning context for the
-       * description popup and the thing that lifts on hover.
-       */
-      .gallery-box {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        padding: 0.9rem;
-        background: var(--card);
-        border: 1px solid var(--hairline);
-        border-radius: 12px;
-        transition:
-          border-color var(--fade) ease,
-          transform var(--fade) ease;
-      }
-
-      .gallery-card a:hover .gallery-box {
-        border-color: var(--blue);
-        transform: translateY(-2px);
-      }
-
-      /*
-       * The preview slot is 3:4 portrait, so its height follows the column
-       * width and every tile in a row matches whatever its icon's own aspect
-       * is. The source screenshots are all portrait (0.55:1 to 0.97:1), so
-       * they seat here with little waste. `contain` letterboxes rather than
-       * cropping — a shot is never cut off to fill the slot.
-       */
-      .gallery-icon {
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        height: auto;
-        object-fit: contain;
-        border-radius: 8px;
-      }
-
-      /* Fallback tile for an application whose templates repo ships no icon. */
-      .gallery-initial {
-        display: grid;
-        place-items: center;
-        background: #e6ecf8;
-        color: var(--blue);
-        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
-        font-size: 2.5rem;
-        font-weight: 700;
-      }
-
-      /*
-       * The description is a popup over the icon rather than a line under the
-       * tile. It is aria-hidden and duplicated into the link's aria-label, so
-       * hiding it visually costs a screen reader nothing.
-       */
-      .gallery-note {
-        position: absolute;
-        inset: auto 0 0;
-        padding: 0.7rem 0.9rem;
-        background: rgba(11, 27, 58, 0.92);
-        color: #fff;
-        font-size: 0.9rem;
-        line-height: 1.35;
-        opacity: 0;
-        translate: 0 100%;
-        transition:
-          opacity var(--fade) ease,
-          translate var(--fade) ease;
-      }
-
-      .gallery-card a:hover .gallery-note,
-      .gallery-card a:focus-visible .gallery-note {
-        opacity: 1;
-        translate: 0 0;
-      }
-
-      /*
-       * Tablet two up, desktop three up. Equal `1fr` columns with the gutter
-       * as a real column-gap: every tile is then exactly the same width, which
-       * is what keeps the 3:4 preview slots on one line. An earlier version
-       * sized the columns in percent and took the gutter out of each tile's
-       * padding — that left the last column in each row a gutter wider than
-       * its siblings, and a 3:4 slot turns any width difference into a
-       * visible height difference.
-       *
-       * The band widens as the columns divide, so the tiles still clear their
-       * specified share: see spec/4-generate.md for the measured widths.
-       */
-      @media (min-width: 600px) {
-        .gallery-grid {
-          grid-template-columns: repeat(2, 1fr);
-          column-gap: var(--tile-gap);
-        }
-      }
-
-      @media (min-width: 1000px) {
-        .gallery-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
 
       /* ---------- Deploy: appliance beside the stack, text below ---------- */
 
@@ -840,11 +669,11 @@
       <!-- ---------------- Start ---------------- -->
       <section class="panel" id="start" data-panel="start">
         <div class="wrap">
+          {#
+            No <h2>/lede here: the step nav above already names the step, and
+            the group tabs carry the heading for what is below them.
+          #}
           <div class="panel-head">
-            <h2>Starters &amp; Templates</h2>
-            <p class="lede">
-              Start immediately with ready-to-use Private AI applications.
-            </p>
             <img
               class="product-logo"
               src="/logo-nuvolaria.png"
@@ -854,6 +683,7 @@
             />
           </div>
 
+          {% set tabbed = true %}
           {% include "starter-cards.html" %}
 
           <p class="cta-row">

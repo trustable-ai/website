@@ -7,4 +7,24 @@
 {% block doc_content %}
         <h1>{{ section.title }}</h1>
         {{ section.content | safe }}
+        {#
+          The starters index and each group index list what is below them,
+          through the same partial the home page uses: no `only` on
+          /starter/ lists the whole catalog, `only` set to a group lists that
+          group alone. Keyed on the path so it stays confined to this branch
+          of the tree — the documentation and architecture sections keep
+          their plain prose index. See spec/4-generate.md.
+        #}
+        {% if section.path == "/starter/" %}
+        {% include "starter-cards.html" %}
+        {% elif section.path is starting_with("/starter/") %}
+        {#
+          `bare` drops the group heading: on a group index the <h1> above
+          already names the group, so the partial's own title would print it
+          twice.
+        #}
+        {% set only = section.relative_path %}
+        {% set bare = true %}
+        {% include "starter-cards.html" %}
+        {% endif %}
 {% endblock doc_content %}

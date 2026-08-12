@@ -87,6 +87,25 @@ the catalog description.
 An application listed under two groups (`truk8s` is in both `Demo` and
 `Utilities`) gets a page in each group; the icon is shared.
 
+## Index pages
+
+Both index levels list what is below them, rather than being a bare title:
+
+- **`/starter/`** — the complete catalog: every application in every group,
+  under its group heading, with the heading linking to the group page.
+- **`/starter/<group>/`** — the applications of that group alone.
+
+Both render through the same `starter-cards.html` partial the home page uses,
+parameterised by an `only` variable: unset lists every group, set to a group's
+path lists just that one. The three surfaces therefore cannot drift apart, and
+the listing comes from the content tree at build time — the `_index.md` bodies
+stay empty and no application is ever named in markdown.
+
+A group index also needs an **in-section sidebar**. `docs.html` derives the
+sidebar from the containing section, and for a section it climbed to the
+*parent*, so a group page listed its sibling groups rather than its own
+applications. A section that has pages of its own now lists those.
+
 ## Detail page
 
 `page.html` renders the icon above the prose for any page carrying
@@ -98,9 +117,19 @@ GitHub URL. Pages without an icon are unchanged.
 
 The "Starters & Templates" panel of [landing.html](../templates/landing.html)
 drops its three hardcoded columns and includes `starter-cards.html`, which
-walks `content/starter/`'s subsections: one block per group, the group title
-above its tiles. This is pure Zola templating over the generated sections —
-no data duplicated into the template.
+walks `content/starter/`'s subsections. This is pure Zola templating over the
+generated sections — no data duplicated into the template.
+
+On the home page the groups are **tabbed**: a row of tab buttons, one per
+group, showing that group's tiles alone. The panel is one slide of a cycling
+slot, so stacking every group vertically would run several screens deep;
+tabs keep the whole catalog reachable at a fixed height. The tabs are the
+group names, and they carry the section heading themselves — the panel's own
+`<h2>` and lede are dropped, since the step nav above already names the step.
+
+Tabs are progressive: with no JS every group renders stacked, which is also
+what the two index pages want. The first tab is selected on load, and the tab
+list is a real `role="tablist"` with arrow-key navigation.
 
 The tiles are a responsive grid rather than a horizontal scroller, sized so a
 row is never fuller than the breakpoint allows:

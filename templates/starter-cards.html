@@ -5,15 +5,63 @@
   — see spec/4-generate.md. Nothing about the catalog is duplicated into this
   template, so a regenerated content tree is the only thing needed to change
   the gallery.
+
+  Shared by all three surfaces that list applications: the home page panel, the
+  starters index and each group index. Set `only` to a group's _index.md path
+  to list that group alone; leave it unset for the whole catalog. Rendering
+  them from one partial is what stops the three from drifting apart.
+
+  `tabbed` (home page) puts the groups behind a tab strip instead of stacking
+  them, so the panel stays one screen tall. It is progressive: the markup below
+  is the stacked no-JS layout, and the script at the bottom turns it into tabs.
+  `bare` drops the per-group heading, for a group index whose <h1> already
+  names it.
 #}
 {% set starters = get_section(path="starter/_index.md") %}
-<div class="gallery">
-  {% for path in starters.subsections %}
+{% if only %}
+  {% set groups = [only] %}
+{% else %}
+  {% set groups = starters.subsections %}
+{% endif %}
+<div class="gallery{% if tabbed %} is-tabbed{% endif %}">
+  {% if tabbed %}
+  <div class="gallery-tabs" role="tablist" aria-label="Starter groups">
+    {% for path in groups %}
+    {% set group = get_section(path=path) %}
+    {% set slug = group.components | last %}
+    <button
+      class="gallery-tab"
+      type="button"
+      role="tab"
+      id="tab-{{ slug }}"
+      aria-controls="panel-{{ slug }}"
+      aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+    >
+      {{ group.title }}
+    </button>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% for path in groups %}
   {% set group = get_section(path=path) %}
-  <section class="gallery-group" aria-labelledby="group-{{ group.components | last }}">
-    <h3 class="gallery-title" id="group-{{ group.components | last }}">
+  {% set slug = group.components | last %}
+  <section
+    class="gallery-group"
+    {% if tabbed %}
+    id="panel-{{ slug }}"
+    role="tabpanel"
+    aria-labelledby="tab-{{ slug }}"
+    {% elif bare %}
+    aria-label="{{ group.title }}"
+    {% else %}
+    aria-labelledby="group-{{ slug }}"
+    {% endif %}
+  >
+    {% if not bare and not tabbed %}
+    <h3 class="gallery-title" id="group-{{ slug }}">
       <a href="{{ group.permalink | safe }}">{{ group.title }}</a>
     </h3>
+    {% endif %}
     <ul class="gallery-grid">
       {% for app in group.pages %}
       <li class="gallery-card">
@@ -52,3 +100,51 @@
   </section>
   {% endfor %}
 </div>
+{% if tabbed %}
+<script>
+  // Progressive tabs: the markup above is the stacked no-JS layout, and only
+  // once this runs does a group become a hidden tabpanel. Scoped to its own
+  // gallery so the two index pages are untouched.
+  (function () {
+    var gallery = document.currentScript.previousElementSibling;
+    var tabs = [].slice.call(gallery.querySelectorAll(".gallery-tab"));
+    var panels = [].slice.call(gallery.querySelectorAll(".gallery-group"));
+    if (!tabs.length) return;
+
+    gallery.classList.add("js-tabs");
+
+    function select(index, focus) {
+      tabs.forEach(function (tab, i) {
+        var on = i === index;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        // Only the selected tab is in the tab order; the arrows move between.
+        tab.tabIndex = on ? 0 : -1;
+        panels[i].hidden = !on;
+      });
+      if (focus) tabs[index].focus();
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener("click", function () {
+        select(i, false);
+      });
+      tab.addEventListener("keydown", function (event) {
+        var step = { ArrowRight: 1, ArrowLeft: -1, Home: -Infinity, End: Infinity }[
+          event.key
+        ];
+        if (step === undefined) return;
+        event.preventDefault();
+        var next =
+          step === -Infinity
+            ? 0
+            : step === Infinity
+              ? tabs.length - 1
+              : (i + step + tabs.length) % tabs.length;
+        select(next, true);
+      });
+    });
+
+    select(0, false);
+  })();
+</script>
+{% endif %}
