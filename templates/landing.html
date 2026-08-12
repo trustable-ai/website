@@ -91,10 +91,10 @@
       }
 
       /*
-       * "is" and ".it" are the small connective parts of "IT is trustable.it":
-       * two thirds the size of the shouted IT, lowercase against the block's
-       * uppercase, and set on the wordmark's own optical centre rather than on
-       * the baseline of a word half again their height.
+       * "is" is the small connective part of "IT is trustable": two thirds the
+       * size of the shouted IT, lowercase against the block's uppercase, and
+       * set on the wordmark's own optical centre rather than on the baseline
+       * of a word half again its height.
        *
        * The nudge is needed because the logo file carries vertical padding, so
        * flex-centring on the image box leaves the words visibly high against
@@ -108,16 +108,6 @@
         text-transform: lowercase;
         letter-spacing: 0.02em;
         color: var(--muted);
-      }
-
-      /*
-       * The TLD is punctuation on the wordmark, not a separate word: pull it
-       * back against the mark and set it in the mark's own near-black.
-       */
-      .hero-tld {
-        /* Cancels the flex gap so the TLD sits tight against the wordmark. */
-        margin-left: -0.5rem;
-        color: #1c1c1c;
       }
 
       .motto {
@@ -408,6 +398,20 @@
         border-radius: 12px;
       }
 
+      /*
+       * The machine band sits between the animation and the CTA. Like the
+       * video it is sized on width alone and never upscaled — the file is
+       * 1799x274, but it is held to the video's 1080px so the two stack as one
+       * column rather than the strip running visibly wider than the frame
+       * above it.
+       */
+      .machines {
+        width: min(1080px, 90%);
+        height: auto;
+        aspect-ratio: 1799 / 274;
+        margin: 2rem auto 0;
+      }
+
       .anim-caption {
         margin: 1.5rem auto 0;
         max-width: 68ch;
@@ -576,7 +580,6 @@
             alt="Trustable"
             width="420"
           />
-          <span class="hero-word hero-small hero-tld">.it</span>
         </h1>
         <p class="motto">Lovable-like experience for Private AI</p>
       </div>
@@ -644,6 +647,15 @@
               stack, on your own hardware.
             </figcaption>
           </figure>
+
+          <img
+            class="machines"
+            src="/trustable-machines.png"
+            alt="The range of machines Trustable runs on, from a laptop to a sovereign cloud."
+            width="1799"
+            height="274"
+            loading="lazy"
+          />
 
           <p class="cta-row">
             <a class="cta" href="{{ get_url(path='@/documentation/_index.md') | safe }}"

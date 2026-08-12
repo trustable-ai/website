@@ -5,13 +5,14 @@ and call-to-action fixes on two of its panels.
 
 ## Masthead
 
-The lockup reads **`IT` is `<trustable wordmark>`.it`** — the domain pun, not
-"It is Trustable!". `IT` stays at the full hero size; `is` and `.it` are the
-small connective parts at half that size, lowercase against the block's
-uppercase, and **vertically centred** on the wordmark's axis rather than sitting
-on the baseline of a word twice their height. The `.it` is punctuation on the
-mark, so it is pulled back against it (cancelling the flex gap) and set in the
-mark's near-black. The old `!` is gone.
+The lockup reads **`IT` is `<trustable wordmark>`** — `IT` stays at the full hero
+size; `is` is the small connective part at half that size, lowercase against the
+block's uppercase, and **vertically centred** on the wordmark's axis rather than
+sitting on the baseline of a word twice its height. The old `!` is gone.
+
+The lockup previously carried a trailing `.it` as a domain pun. It has been
+removed: the wordmark now ends the line, so the `.hero-tld` rule that pulled the
+TLD tight against the mark is gone with it.
 
 ## Build with AI
 
@@ -24,6 +25,14 @@ mark's near-black. The old `!` is gone.
 - The size is set by **horizontal width only**. There must be no viewport-height
   term in the width calculation: a short window would otherwise collapse the
   video to a thumbnail, which is worse than letting the panel scroll.
+- Below the animation, and **above** the "Read the documentation" button, sits
+  `static/trustable-machines.png` — the band of machines Trustable runs on. The
+  source is 1799x274, far wider than the video, so it is held to the video's
+  `min(1080px, 90%)` band rather than its own natural width: the two then stack
+  as one column instead of the strip running visibly wider than the frame above
+  it. Intrinsic `width`/`height` and an `aspect-ratio` reserve the box so the
+  CTA below never shifts as the file loads, and it is `loading="lazy"` since it
+  sits below the fold.
 - Add a **"Read the documentation"** button under the caption, linking to the
   documentation section (`@/documentation/_index.md`).
 
