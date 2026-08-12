@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>AI Email Manager — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="Manager Email with AI"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,45 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Chat</h2>
+        <nav aria-label="Chat">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/chat/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
+                href="https://trustable.ai/starter/chat/dbmanagerai/"
                 
-                >Apps</a
+                >AI Database Manager</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/chat/documentchatai/"
                 
-                >Chat</a
+                >AI Document Manager</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
-                
-                >Demo</a
+                href="https://trustable.ai/starter/chat/emailmanagerai/"
+                aria-current="page"
+                >AI Email Manager</a
               >
             </li>
             
             
-            <li>
-              <a
-                href="https://trustable.ai/starter/utilities/"
-                
-                >Utilities</a
-              >
-            </li>
             
           </ul>
         </nav>
@@ -498,8 +489,441 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>AI Email Manager</h1>
+        <h1 id="1-transform-the-chat-into-a-modern-ai-email-manager-foundation">1 - Transform the Chat into a Modern AI Email Manager Foundation</h1>
+<p>Transform the existing chat application into a modern AI-powered email management workspace.</p>
+<p>IMPORTANT:</p>
+<ul>
+<li>Keep the application fully responsive using Tailwind CSS.</li>
+<li>Do not build only a chatbot.</li>
+<li>The AI chat is one interaction method inside a complete email productivity interface.</li>
+</ul>
+<p>Use:</p>
+<ul>
+<li>React</li>
+<li>TypeScript</li>
+<li>Tailwind CSS</li>
+<li>shadcn/ui</li>
+<li>Lucide React icons</li>
+<li>Framer Motion animations</li>
+</ul>
+<p>Create a professional productivity interface inspired by:</p>
+<ul>
+<li>Linear</li>
+<li>Notion</li>
+<li>Gmail</li>
+<li>Superhuman</li>
+<li>Vercel</li>
+</ul>
+<h2 id="application-layout">Application Layout</h2>
+<p>Create:</p>
+<h2 id="left-sidebar">Left Sidebar</h2>
+<p>Include:</p>
+<ul>
+<li>Inbox</li>
+<li>Starred</li>
+<li>Sent</li>
+<li>Drafts</li>
+<li>Spam</li>
+<li>Trash</li>
+<li>Labels</li>
+</ul>
+<h2 id="main-area">Main Area</h2>
+<p>Create:</p>
+<ul>
+<li>Email list</li>
+<li>Search bar</li>
+<li>Filters</li>
+<li>Empty states</li>
+<li>Loading skeletons</li>
+</ul>
+<h2 id="right-panel">Right Panel</h2>
+<p>Create:</p>
+<ul>
+<li>AI Assistant panel</li>
+<li>Context information</li>
+<li>Suggested actions</li>
+<li>Prompt input</li>
+</ul>
+<h2 id="top-navigation">Top Navigation</h2>
+<p>Include:</p>
+<ul>
+<li>Account area</li>
+<li>Notifications</li>
+<li>Search</li>
+<li>Command palette button (Ctrl+K)</li>
+</ul>
+<h2 id="floating-actions">Floating Actions</h2>
+<p>Add:</p>
+<ul>
+<li>Compose button</li>
+<li>Quick actions</li>
+</ul>
+<p>The interface must include:</p>
+<ul>
+<li>rounded cards</li>
+<li>premium spacing</li>
+<li>smooth animations</li>
+<li>responsive layouts</li>
+<li>hover states</li>
+<li>empty states</li>
+</ul>
+<h3 id="test-checklist">Test checklist</h3>
+<p>Verify:</p>
+<ul>
+<li>Sidebar works</li>
+<li>Email list renders</li>
+<li>AI panel opens/closes</li>
+<li>Layout adapts to mobile</li>
+<li>Compose button works</li>
+<li>Command palette opens</li>
+</ul>
+<hr />
+<h1 id="2-email-data-layer-and-mock-mailbox">2 - Email Data Layer and Mock Mailbox</h1>
+<p>Create the email management data structure.</p>
+<p>Implement email objects containing:</p>
+<ul>
+<li>id</li>
+<li>sender</li>
+<li>recipients</li>
+<li>subject</li>
+<li>preview</li>
+<li>body</li>
+<li>timestamp</li>
+<li>attachments</li>
+<li>labels</li>
+<li>read status</li>
+<li>starred status</li>
+<li>priority</li>
+<li>thread id</li>
+</ul>
+<p>Create realistic mock mailbox data.</p>
+<p>Include:</p>
+<ul>
+<li>Inbox</li>
+<li>Sent</li>
+<li>Drafts</li>
+<li>Trash</li>
+<li>Spam</li>
+<li>Labels</li>
+</ul>
+<p>Build the email list UI.</p>
+<p>Each email card should display:</p>
+<ul>
+<li>sender avatar</li>
+<li>sender name</li>
+<li>subject</li>
+<li>preview</li>
+<li>timestamp</li>
+<li>labels</li>
+<li>attachment indicator</li>
+<li>unread state</li>
+</ul>
+<p>Add interactions:</p>
+<ul>
+<li>Open email</li>
+<li>Mark read/unread</li>
+<li>Star</li>
+<li>Select multiple emails</li>
+<li>Archive</li>
+<li>Delete</li>
+</ul>
+<p>Create bulk actions toolbar:</p>
+<ul>
+<li>Archive selected</li>
+<li>Delete selected</li>
+<li>Mark read</li>
+<li>Add label</li>
+</ul>
+<h3 id="test-checklist-1">Test checklist</h3>
+<p>Verify:</p>
+<ul>
+<li>Emails appear correctly</li>
+<li>Selecting emails works</li>
+<li>Bulk actions update state</li>
+<li>Opening an email displays details</li>
+<li>Labels and unread states update</li>
+</ul>
+<hr />
+<h1 id="3-temporary-google-oauth-and-gmail-integration">3 - Temporary Google OAuth and Gmail Integration</h1>
+<p>Integrate temporary Google OAuth authentication as the only login method.</p>
+<p>Use:</p>
+<ul>
+<li>Google OAuth 2.0</li>
+<li>Gmail API</li>
+</ul>
+<p>Requirements:</p>
+<ul>
+<li>No username/password authentication</li>
+<li>Authentication isolated in services</li>
+<li>Easy replacement with another provider later</li>
+</ul>
+<p>Create dedicated services:</p>
+<ul>
+<li>Auth Service</li>
+<li>Gmail Service</li>
+<li>Token Service</li>
+<li>Session Service</li>
+</ul>
+<p>After authentication retrieve:</p>
+<ul>
+<li>User profile</li>
+<li>Avatar</li>
+<li>Email address</li>
+</ul>
+<p>Request Gmail permissions for:</p>
+<ul>
+<li>Inbox</li>
+<li>Sent</li>
+<li>Drafts</li>
+<li>Trash</li>
+<li>Labels</li>
+<li>Attachments</li>
+<li>Threads</li>
+</ul>
+<p>Create account management UI:</p>
+<p>Display:</p>
+<ul>
+<li>Connected account</li>
+<li>Profile image</li>
+<li>Email</li>
+<li>Last synchronization</li>
+<li>Connection status</li>
+</ul>
+<p>Actions:</p>
+<ul>
+<li>Refresh mailbox</li>
+<li>Disconnect account</li>
+<li>Reconnect account</li>
+</ul>
+<p>Create synchronization interface:</p>
+<ul>
+<li>Progress indicator</li>
+<li>Loading animation</li>
+<li>Error states</li>
+<li>Retry button</li>
+</ul>
+<p>If Gmail API is unavailable:</p>
+<p>Show:</p>
+<ul>
+<li>Friendly fallback screen</li>
+<li>Retry action</li>
+<li>Connection status</li>
+</ul>
+<p>Security requirements:</p>
+<ul>
+<li>Never expose OAuth secrets</li>
+<li>Keep API logic modular</li>
+<li>Prepare future backend migration</li>
+</ul>
+<h3 id="test-checklist-2">Test checklist</h3>
+<p>Verify:</p>
+<ul>
+<li>Login screen works</li>
+<li>Authentication state changes correctly</li>
+<li>Account information is displayed</li>
+<li>Sync states are visible</li>
+<li>Errors have recovery actions</li>
+</ul>
+<hr />
+<h1 id="4-ai-email-assistant-and-visual-actions">4 - AI Email Assistant and Visual Actions</h1>
+<p>Transform the AI assistant into an email management engine.</p>
+<p>The AI must understand commands like:</p>
+<ul>
+<li>summarize today’s emails</li>
+<li>show unread emails</li>
+<li>archive this</li>
+<li>reply politely</li>
+<li>write a professional answer</li>
+<li>delete spam</li>
+<li>search invoices</li>
+<li>find emails from a contact</li>
+<li>show attachments</li>
+<li>draft a follow-up</li>
+</ul>
+<p>Do not return only text responses.</p>
+<p>Every AI action should generate visual results.</p>
+<p>Examples:</p>
+<h2 id="summarize-emails">Summarize emails</h2>
+<p>Display:</p>
+<ul>
+<li>Summary cards</li>
+<li>Important messages</li>
+<li>Priority indicators</li>
+<li>Action items</li>
+</ul>
+<h2 id="search-invoices">Search invoices</h2>
+<p>Display:</p>
+<ul>
+<li>Matching email cards</li>
+<li>Sender</li>
+<li>Date</li>
+<li>Attachment preview</li>
+</ul>
+<h2 id="extract-tasks">Extract tasks</h2>
+<p>Display:</p>
+<ul>
+<li>Checklist</li>
+<li>Deadlines</li>
+<li>Responsible person</li>
+</ul>
+<h2 id="draft-reply">Draft reply</h2>
+<p>Display:</p>
+<ul>
+<li>Rich text editor</li>
+<li>Tone selector</li>
+<li>Generate button</li>
+<li>Send button</li>
+</ul>
+<p>Add visible graphical controls for every AI action:</p>
+<ul>
+<li>Buttons</li>
+<li>Menus</li>
+<li>Context actions</li>
+<li>Toolbars</li>
+</ul>
+<h3 id="test-checklist-3">Test checklist</h3>
+<p>Verify:</p>
+<ul>
+<li>AI commands trigger different UI components</li>
+<li>Results are visual</li>
+<li>Actions update email state</li>
+<li>AI understands selected email context</li>
+</ul>
+<hr />
+<h1 id="5-complete-email-workspace-experience">5 - Complete Email Workspace Experience</h1>
+<p>Create the full email productivity workspace.</p>
+<p>Implement:</p>
+<h2 id="email-preview-panel">Email Preview Panel</h2>
+<p>Include:</p>
+<ul>
+<li>Sender information</li>
+<li>Conversation thread</li>
+<li>Rich email content</li>
+<li>Attachments</li>
+<li>Metadata</li>
+</ul>
+<p>Actions:</p>
+<ul>
+<li>Reply</li>
+<li>Reply All</li>
+<li>Forward</li>
+<li>Archive</li>
+<li>Delete</li>
+<li>Mark Read</li>
+<li>Mark Unread</li>
+<li>Star</li>
+<li>Move</li>
+<li>Label</li>
+<li>Pin conversation</li>
+</ul>
+<h2 id="compose-experience">Compose Experience</h2>
+<p>Create a modern compose window:</p>
+<p>Features:</p>
+<ul>
+<li>Rich text editor</li>
+<li>Recipients</li>
+<li>Attachments</li>
+<li>Draft saving</li>
+<li>AI writing assistance</li>
+</ul>
+<p>AI writing features:</p>
+<ul>
+<li>Improve text</li>
+<li>Change tone</li>
+<li>Translate</li>
+<li>Shorten</li>
+<li>Make professional</li>
+<li>Generate follow-up</li>
+</ul>
+<h2 id="advanced-ux">Advanced UX</h2>
+<p>Add:</p>
+<ul>
+<li>Drag and drop attachments</li>
+<li>Undo actions</li>
+<li>Toast notifications</li>
+<li>Confirmation dialogs</li>
+<li>Optimistic updates</li>
+<li>Loading overlays</li>
+<li>Skeleton loaders</li>
+</ul>
+<h3 id="test-checklist-4">Test checklist</h3>
+<p>Verify:</p>
+<ul>
+<li>Opening emails works</li>
+<li>Threads display correctly</li>
+<li>Compose works</li>
+<li>Attachments preview correctly</li>
+<li>AI writing tools modify content</li>
+<li>Undo actions work</li>
+</ul>
+<hr />
+<h1 id="6-final-ai-email-manager-saas-interface">6 - Final AI Email Manager SaaS Interface</h1>
+<p>Polish the entire application into a premium email management platform.</p>
+<p>Add:</p>
+<h2 id="responsive-experience">Responsive Experience</h2>
+<p>Desktop:</p>
+<ul>
+<li>Collapsible sidebar</li>
+<li>Resizable AI panel</li>
+<li>Multi-column workspace</li>
+</ul>
+<p>Tablet:</p>
+<ul>
+<li>Adaptive layout</li>
+<li>Touch-friendly controls</li>
+</ul>
+<p>Mobile:</p>
+<ul>
+<li>Bottom navigation</li>
+<li>Drawers</li>
+<li>Mobile compose</li>
+<li>Touch interactions</li>
+</ul>
+<h2 id="design-system">Design System</h2>
+<p>Apply:</p>
+<ul>
+<li>Dark mode</li>
+<li>Light mode</li>
+<li>Rounded components</li>
+<li>Glassmorphism</li>
+<li>Smooth transitions</li>
+<li>Premium shadows</li>
+<li>Elegant spacing</li>
+<li>Animated states</li>
+</ul>
+<h2 id="productivity-features">Productivity Features</h2>
+<p>Include:</p>
+<ul>
+<li>Keyboard shortcuts</li>
+<li>Command palette</li>
+<li>Smart filters</li>
+<li>Search experience</li>
+<li>Notifications</li>
+<li>Quick actions</li>
+</ul>
+<p>Final requirements:</p>
+<ul>
+<li>AI chat is not the main interface</li>
+<li>Email management happens visually</li>
+<li>Every action is available through UI controls</li>
+<li>Gmail integration is modular</li>
+<li>Fully responsive</li>
+<li>Production-quality SaaS design</li>
+</ul>
+<h3 id="final-acceptance-checklist">Final acceptance checklist</h3>
+<ul>
+<li>Email dashboard works</li>
+<li>Authentication works</li>
+<li>Gmail service structure exists</li>
+<li>Mailbox synchronization works</li>
+<li>AI assistant works</li>
+<li>Compose works</li>
+<li>Search works</li>
+<li>Filters work</li>
+<li>Mobile experience works</li>
+<li>Interface feels like a commercial productivity application</li>
+</ul>
 
 
       </article>

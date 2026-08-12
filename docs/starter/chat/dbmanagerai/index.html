@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>AI Database Manager — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="Manage Databases with AI"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,45 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Chat</h2>
+        <nav aria-label="Chat">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/chat/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
-                
-                >Apps</a
+                href="https://trustable.ai/starter/chat/dbmanagerai/"
+                aria-current="page"
+                >AI Database Manager</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/chat/documentchatai/"
                 
-                >Chat</a
+                >AI Document Manager</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
+                href="https://trustable.ai/starter/chat/emailmanagerai/"
                 
-                >Demo</a
+                >AI Email Manager</a
               >
             </li>
             
             
-            <li>
-              <a
-                href="https://trustable.ai/starter/utilities/"
-                
-                >Utilities</a
-              >
-            </li>
             
           </ul>
         </nav>
@@ -498,8 +489,310 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>AI Database Manager</h1>
+        <h1 id="1-transform-the-ai-chat-into-a-visual-postgresql-workspace-foundation">1 - Transform the AI Chat into a Visual PostgreSQL Workspace (Foundation)</h1>
+<p>Transform the existing AI-powered chat into a premium PostgreSQL workspace where AI is the engine behind the interface—not the interface itself.</p>
+<p>Use:</p>
+<ul>
+<li>React</li>
+<li>TypeScript</li>
+<li>Tailwind CSS</li>
+<li>shadcn/ui</li>
+<li>Framer Motion</li>
+<li>Lucide React</li>
+</ul>
+<p>Requirements:</p>
+<ul>
+<li>Fully responsive (mobile-first)</li>
+<li>Modern SaaS design</li>
+<li>No classic chatbot UI</li>
+<li>No chat bubbles</li>
+<li>Only one persistent AI prompt bar fixed at the bottom</li>
+<li>Everything above the prompt must be graphical</li>
+</ul>
+<p>Build the application shell including:</p>
+<ul>
+<li>Responsive App Layout</li>
+<li>Left Sidebar</li>
+<li>Top Navigation</li>
+<li>Main Workspace</li>
+<li>Right Inspector Panel (desktop)</li>
+<li>Mobile Drawer</li>
+<li>Bottom AI Prompt Bar</li>
+</ul>
+<p>Design inspiration:</p>
+<ul>
+<li>Supabase Studio</li>
+<li>Prisma Studio</li>
+<li>Vercel</li>
+<li>Linear</li>
+<li>Arc Browser</li>
+<li>Raycast</li>
+<li>Notion</li>
+</ul>
+<p>Use:</p>
+<ul>
+<li>glassmorphism</li>
+<li>rounded corners</li>
+<li>elegant shadows</li>
+<li>subtle gradients</li>
+<li>premium spacing</li>
+<li>Framer Motion transitions</li>
+<li>reusable components</li>
+</ul>
+<p>The interface should include placeholder cards and beautiful empty states.</p>
+<h3 id="test-checklist">Test checklist</h3>
+<ul>
+<li>Responsive on desktop/tablet/mobile</li>
+<li>Sidebar collapses correctly</li>
+<li>Mobile drawer works</li>
+<li>Bottom AI prompt stays fixed</li>
+<li>No traditional chat interface remains</li>
+</ul>
+<hr />
+<h1 id="2-ai-workspace-renderer">2 - AI Workspace Renderer</h1>
+<p>Replace conversational responses with graphical workspaces.</p>
+<p>The AI must never create long conversations.</p>
+<p>Instead, each command dynamically renders reusable React components.</p>
+<p>Implement a renderer capable of switching workspace depending on AI intent.</p>
+<p>Support example intents:</p>
+<ul>
+<li>Show Tables</li>
+<li>Database Overview</li>
+<li>Schema Explorer</li>
+<li>Show Indexes</li>
+<li>Slow Queries</li>
+<li>Query History</li>
+<li>Storage</li>
+<li>Performance</li>
+<li>Activity</li>
+<li>Empty State</li>
+</ul>
+<p>Each workspace should animate with Framer Motion.</p>
+<p>Include:</p>
+<ul>
+<li>Statistic Cards</li>
+<li>Dashboard Widgets</li>
+<li>Animated Cards</li>
+<li>Responsive Grids</li>
+<li>Skeleton Loading</li>
+<li>Empty States</li>
+</ul>
+<p>Keep textual explanations minimal.</p>
+<h3 id="test-checklist-1">Test checklist</h3>
+<p>Typing example commands should switch between graphical workspaces without creating chat messages.</p>
+<hr />
+<h1 id="3-postgresql-sandbox-connection-manager">3 - PostgreSQL Sandbox &amp; Connection Manager</h1>
+<p>Create a built-in PostgreSQL Sandbox.</p>
+<p>The sandbox should simulate a realistic production database of approximately 200 MB containing multiple schemas and thousands of records.</p>
+<p>Example entities:</p>
+<ul>
+<li>Users</li>
+<li>Roles</li>
+<li>Permissions</li>
+<li>Orders</li>
+<li>Products</li>
+<li>Categories</li>
+<li>Inventory</li>
+<li>Payments</li>
+<li>Invoices</li>
+<li>Shipments</li>
+<li>Sessions</li>
+<li>Audit Logs</li>
+<li>Notifications</li>
+<li>Analytics</li>
+</ul>
+<p>Sandbox actions:</p>
+<ul>
+<li>Reset</li>
+<li>Delete</li>
+<li>Recreate</li>
+<li>Duplicate</li>
+<li>Restore Demo Data</li>
+</ul>
+<p>Deleting the sandbox must never affect external databases.</p>
+<p>Create a graphical Connection Manager.</p>
+<p>Each database appears as a card displaying:</p>
+<ul>
+<li>Name</li>
+<li>Host</li>
+<li>PostgreSQL Version</li>
+<li>Size</li>
+<li>Schemas</li>
+<li>Tables</li>
+<li>Active Connections</li>
+<li>Last Sync</li>
+<li>Status</li>
+<li>Environment Badge</li>
+<li>Favorite</li>
+<li>Tags</li>
+</ul>
+<p>Support:</p>
+<ul>
+<li>Add Database</li>
+<li>Edit</li>
+<li>Duplicate</li>
+<li>Delete</li>
+<li>Test Connection</li>
+<li>SSL</li>
+<li>Connection String</li>
+</ul>
+<h3 id="test-checklist-2">Test checklist</h3>
+<ul>
+<li>Sandbox loads by default</li>
+<li>Sandbox actions update UI</li>
+<li>New fake connections can be added</li>
+<li>Connection cards are fully responsive</li>
+</ul>
+<hr />
+<h1 id="4-database-explorer">4 - Database Explorer</h1>
+<p>Build a graphical PostgreSQL Explorer.</p>
+<p>Include:</p>
+<ul>
+<li>Schema Tree</li>
+<li>Table Explorer</li>
+<li>Column Inspector</li>
+<li>Constraints</li>
+<li>Relationships</li>
+<li>Indexes</li>
+<li>Views</li>
+<li>Functions</li>
+</ul>
+<p>Desktop:</p>
+<ul>
+<li>collapsible sidebar</li>
+<li>floating inspector</li>
+</ul>
+<p>Mobile:</p>
+<ul>
+<li>bottom sheets</li>
+<li>drawers</li>
+</ul>
+<p>Opening a table should display:</p>
+<ul>
+<li>Columns</li>
+<li>Constraints</li>
+<li>Indexes</li>
+<li>Relationships</li>
+<li>Sample Rows</li>
+</ul>
+<p>No raw SQL except inside dedicated SQL Cards.</p>
+<h3 id="test-checklist-3">Test checklist</h3>
+<p>Opening tables updates the explorer and inspector without page reloads.</p>
+<hr />
+<h1 id="5-sql-workspace">5 - SQL Workspace</h1>
+<p>Create a premium SQL experience.</p>
+<p>SQL must only appear inside SQL Cards.</p>
+<p>Each SQL Card includes:</p>
+<ul>
+<li>Syntax Highlighting</li>
+<li>Copy</li>
+<li>Edit</li>
+<li>Explain</li>
+<li>Execute</li>
+<li>Save</li>
+</ul>
+<p>Query results appear inside responsive tables supporting:</p>
+<ul>
+<li>Sorting</li>
+<li>Filtering</li>
+<li>Pagination</li>
+<li>Column Resize</li>
+<li>Row Selection</li>
+<li>CSV Export</li>
+<li>JSON Export</li>
+</ul>
+<p>Use animated transitions.</p>
+<h3 id="test-checklist-4">Test checklist</h3>
+<p>Executing demo SQL updates the result table and shows loading animations.</p>
+<hr />
+<h1 id="6-ai-insights-dashboard">6 - AI Insights Dashboard</h1>
+<p>Generate AI-powered insight cards instead of chat messages.</p>
+<p>Examples:</p>
+<ul>
+<li>Missing Index</li>
+<li>Unused Index</li>
+<li>Duplicate Records</li>
+<li>Slow Query</li>
+<li>Missing Foreign Key</li>
+<li>Missing Primary Key</li>
+<li>Storage Optimization</li>
+<li>Vacuum Recommendation</li>
+<li>Deadlock</li>
+<li>Security Issue</li>
+<li>Backup Reminder</li>
+<li>Replication Warning</li>
+<li>Growth Trend</li>
+</ul>
+<p>Each card contains:</p>
+<ul>
+<li>Icon</li>
+<li>Severity</li>
+<li>Title</li>
+<li>Description</li>
+<li>Confidence</li>
+<li>Affected Objects</li>
+<li>Storage Impact</li>
+<li>Performance Impact</li>
+<li>Timestamp</li>
+</ul>
+<p>Clicking a card opens a slide-over panel displaying:</p>
+<ul>
+<li>Explanation</li>
+<li>Affected Objects</li>
+<li>Generated SQL</li>
+<li>Execution Preview</li>
+<li>Estimated Improvement</li>
+<li>Before / After</li>
+<li>Related Docs</li>
+<li>Execute</li>
+<li>Save</li>
+<li>Dismiss</li>
+</ul>
+<p>Insights refresh automatically after every executed query.</p>
+<h3 id="test-checklist-5">Test checklist</h3>
+<p>Opening an insight displays the slide-over and action buttons; dismissing or executing updates the dashboard.</p>
+<hr />
+<h1 id="7-final-polish">7 - Final Polish</h1>
+<p>Polish the application until it feels like a commercial PostgreSQL IDE.</p>
+<p>Improve:</p>
+<ul>
+<li>animations</li>
+<li>spacing</li>
+<li>typography</li>
+<li>hover effects</li>
+<li>loading states</li>
+<li>transitions</li>
+<li>responsiveness</li>
+<li>accessibility</li>
+<li>dark mode</li>
+<li>reusable components</li>
+<li>performance</li>
+</ul>
+<p>Remove all placeholder UI that is no longer needed.</p>
+<p>The final result should resemble a blend of:</p>
+<ul>
+<li>Supabase Studio</li>
+<li>Prisma Studio</li>
+<li>Vercel Dashboard</li>
+<li>Linear</li>
+<li>Arc Browser</li>
+</ul>
+<p>The AI should always render graphical workspaces instead of conversations.</p>
+<h3 id="final-acceptance-checklist">Final acceptance checklist</h3>
+<ul>
+<li>No traditional chat interface</li>
+<li>AI prompt bar is the only persistent text input</li>
+<li>All responses are graphical</li>
+<li>Responsive across all screen sizes</li>
+<li>Sandbox operational</li>
+<li>Connection Manager operational</li>
+<li>Database Explorer operational</li>
+<li>SQL Workspace operational</li>
+<li>AI Insights operational</li>
+<li>Smooth Framer Motion animations throughout</li>
+<li>Premium SaaS-quality visual design</li>
+</ul>
 
 
       </article>

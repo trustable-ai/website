@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>API Status Monitor — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="API Status Mpnitor"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,63 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Apps</h2>
+        <nav aria-label="Apps">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/apps/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
-                
-                >Apps</a
+                href="https://trustable.ai/starter/apps/apistatusmonitor/"
+                aria-current="page"
+                >API Status Monitor</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/apps/appsuite/"
                 
-                >Chat</a
+                >App Suite</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
+                href="https://trustable.ai/starter/apps/minicrm/"
                 
-                >Demo</a
+                >Mini CRM</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/utilities/"
+                href="https://trustable.ai/starter/apps/projectdashboard/"
                 
-                >Utilities</a
+                >Project Dashboard</a
               >
             </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/starter/apps/securitycheck/"
+                
+                >Security Check</a
+              >
+            </li>
+            
+            
             
           </ul>
         </nav>
@@ -498,8 +507,198 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>API Status Monitor</h1>
+        <h1 id="1-application-foundation">1 - Application Foundation</h1>
+<p>Create a monitoring dashboard application.</p>
+<p>Use:</p>
+<ul>
+<li>React</li>
+<li>Tailwind CSS</li>
+</ul>
+<p>Create the initial UI with:</p>
+<ul>
+<li>Left sidebar navigation</li>
+<li>Dashboard page</li>
+<li>Monitors page</li>
+<li>Settings page</li>
+</ul>
+<p>The sidebar must be fully functional.</p>
+<p>Implement:</p>
+<ul>
+<li>Clickable navigation</li>
+<li>Active page indicator</li>
+<li>Working page switching</li>
+<li>Responsive layout</li>
+</ul>
+<p>Dashboard page should show:</p>
+<ul>
+<li>Total monitors: 0</li>
+<li>Online: 0</li>
+<li>Offline: 0</li>
+</ul>
+<p>Monitors page should show:</p>
+<p>“No monitors created yet”</p>
+<p>Settings page should show basic application settings.</p>
+<p>Do not add backend yet.</p>
+<p>IMPORTANT:</p>
+<ul>
+<li>Keep components separated.</li>
+<li>Do not create fake features.</li>
+<li>The application must run and every menu item must work before finishing.</li>
+</ul>
+<hr />
+<h1 id="2-monitor-management">2 - Monitor Management</h1>
+<p>Extend the existing application.</p>
+<p>Keep the current layout and navigation working.</p>
+<p>Add monitor management.</p>
+<p>Use local React state only.</p>
+<p>In the Monitors page implement:</p>
+<p>Create monitor form:</p>
+<ul>
+<li>Name</li>
+<li>URL</li>
+</ul>
+<p>After creation display monitor cards.</p>
+<p>Each card shows:</p>
+<ul>
+<li>Name</li>
+<li>URL</li>
+<li>Status: Unknown</li>
+<li>Last check: Never</li>
+</ul>
+<p>Add:</p>
+<ul>
+<li>Delete monitor</li>
+<li>Empty state</li>
+<li>Form validation</li>
+</ul>
+<p>Update Dashboard counters using the created monitors.</p>
+<p>IMPORTANT:</p>
+<ul>
+<li>Do not modify the sidebar behavior.</li>
+<li>Do not rewrite routing.</li>
+<li>Dashboard, Monitors and Settings pages must still open correctly.</li>
+<li>The application must remain fully runnable.</li>
+</ul>
+<hr />
+<h1 id="3-serverless-monitoring-api">3 - Serverless Monitoring API</h1>
+<p>Add a backend.</p>
+<p>Use:</p>
+<ul>
+<li>Nuvolaris OpenServerless</li>
+<li>Python</li>
+</ul>
+<p>Create a serverless API endpoint:</p>
+<p>POST /check</p>
+<p>Input:</p>
+<ul>
+<li>monitor URL</li>
+</ul>
+<p>Return:</p>
+<ul>
+<li>status</li>
+<li>response time</li>
+<li>timestamp</li>
+</ul>
+<p>Connect React to the API.</p>
+<p>Add a “Check Now” button on every monitor card.</p>
+<p>When clicked:</p>
+<ul>
+<li>Call the Python API</li>
+<li>Update only that monitor</li>
+<li>Show the result in the UI</li>
+</ul>
+<p>For now the backend can return simulated monitoring data.</p>
+<p>IMPORTANT:</p>
+<ul>
+<li>Keep all existing pages working.</li>
+<li>Do not change navigation.</li>
+<li>Do not introduce databases yet.</li>
+<li>The user must be able to test the complete flow:
+create monitor → click check → see result.</li>
+</ul>
+<hr />
+<h1 id="4-real-monitoring-and-data-storage">4 - Real Monitoring and Data Storage</h1>
+<p>Extend the existing application.</p>
+<p>Add:</p>
+<ul>
+<li>WebFetch for real HTTP checks</li>
+<li>PostgreSQL for monitor storage</li>
+<li>Redis for latest status cache</li>
+</ul>
+<p>Implement:</p>
+<p>Backend:</p>
+<ul>
+<li>Save monitors in PostgreSQL</li>
+<li>Use WebFetch to check URLs</li>
+<li>Measure response time</li>
+<li>Detect online/offline</li>
+<li>Store latest status in Redis</li>
+</ul>
+<p>Frontend:</p>
+<p>Load monitors from the backend.</p>
+<p>Display:</p>
+<ul>
+<li>Current status</li>
+<li>Response time</li>
+<li>Last check time</li>
+</ul>
+<p>Keep the existing dashboard and navigation unchanged.</p>
+<p>IMPORTANT:</p>
+<p>Before changing code:</p>
+<ul>
+<li>Inspect existing components.</li>
+<li>Modify only required files.</li>
+<li>Do not replace working pages.</li>
+</ul>
+<p>The application must still be runnable and testable:
+create monitor → save → check → see live status.</p>
+<hr />
+<h1 id="5-monitoring-history-and-events">5 - Monitoring History and Events</h1>
+<p>Complete the monitoring platform.</p>
+<p>Add:</p>
+<ul>
+<li>MongoDB for historical data</li>
+</ul>
+<p>Every check should create a history record containing:</p>
+<ul>
+<li>Monitor ID</li>
+<li>Timestamp</li>
+<li>Status</li>
+<li>Response time</li>
+<li>Error message if available</li>
+</ul>
+<p>Create a monitor details page.</p>
+<p>Show:</p>
+<ul>
+<li>Check history table</li>
+<li>Response time chart</li>
+<li>Uptime percentage</li>
+</ul>
+<p>Improve Dashboard:</p>
+<ul>
+<li>Total monitors</li>
+<li>Online monitors</li>
+<li>Offline monitors</li>
+<li>Recent failures</li>
+</ul>
+<p>Keep:</p>
+<ul>
+<li>React</li>
+<li>Tailwind</li>
+<li>Nuvolaris Python API</li>
+<li>PostgreSQL</li>
+<li>Redis</li>
+<li>MongoDB</li>
+<li>WebFetch</li>
+</ul>
+<p>IMPORTANT:</p>
+<ul>
+<li>Do not break existing navigation.</li>
+<li>Dashboard, Monitors and Settings must remain functional.</li>
+<li>Every feature must work after implementation.</li>
+<li>Keep frontend and backend modular.</li>
+</ul>
 
 
       </article>

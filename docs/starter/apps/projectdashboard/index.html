@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>Project Dashboard — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="Project Dashboard"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,63 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Apps</h2>
+        <nav aria-label="Apps">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/apps/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
+                href="https://trustable.ai/starter/apps/apistatusmonitor/"
                 
-                >Apps</a
+                >API Status Monitor</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/apps/appsuite/"
                 
-                >Chat</a
+                >App Suite</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
+                href="https://trustable.ai/starter/apps/minicrm/"
                 
-                >Demo</a
+                >Mini CRM</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/utilities/"
-                
-                >Utilities</a
+                href="https://trustable.ai/starter/apps/projectdashboard/"
+                aria-current="page"
+                >Project Dashboard</a
               >
             </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/starter/apps/securitycheck/"
+                
+                >Security Check</a
+              >
+            </li>
+            
+            
             
           </ul>
         </nav>
@@ -498,8 +507,204 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>Project Dashboard</h1>
+        <h1 id="1-project-setup-and-mobile-first-foundation">1 - Project setup and mobile-first foundation</h1>
+<p>Create a new application called Project Dashboard Task using React and Tailwind CSS.</p>
+<p>Design the application using a mobile-first approach from the very beginning. Every page and component must be fully responsive instead of adapting a desktop layout later.</p>
+<p>Set up a clean architecture with:</p>
+<ul>
+<li>Dashboard page</li>
+<li>Tasks page</li>
+<li>Reusable UI components</li>
+<li>Services folder for future integrations</li>
+</ul>
+<p>Prepare the project structure for MongoDB, Redis, TodoWrite and Nuvolaris OpenServerless integrations without implementing them yet.</p>
+<p>Responsive requirements:</p>
+<ul>
+<li>Use Tailwind CSS mobile-first utilities.</li>
+<li>Use responsive breakpoints (sm, md, lg, xl).</li>
+<li>Support screen widths from 320px to 1920px.</li>
+<li>Never allow horizontal scrolling.</li>
+<li>Avoid fixed widths whenever possible.</li>
+<li>Use responsive Flexbox and CSS Grid layouts.</li>
+<li>Buttons must have a minimum touch target of 44×44 px.</li>
+<li>Components must never overflow their containers.</li>
+<li>Use responsive spacing and typography.</li>
+</ul>
+<p>Navigation:</p>
+<ul>
+<li>Desktop: left sidebar.</li>
+<li>Tablet: collapsible sidebar.</li>
+<li>Mobile: hamburger menu with slide-out drawer.</li>
+</ul>
+<p>Dashboard:</p>
+<ul>
+<li>Desktop: multi-column layout.</li>
+<li>Tablet: two-column layout.</li>
+<li>Mobile: single-column layout with stacked cards.</li>
+</ul>
+<p>Tasks page:</p>
+<ul>
+<li>Desktop: grid or table layout.</li>
+<li>Mobile: stacked task cards.</li>
+</ul>
+<p>Forms:</p>
+<ul>
+<li>Desktop: multi-column when appropriate.</li>
+<li>Mobile: full-width inputs and vertically stacked buttons.</li>
+</ul>
+<p>Build a fully working first version containing:</p>
+<ul>
+<li>Dashboard page</li>
+<li>Tasks page</li>
+<li>Basic task cards</li>
+<li>Working navigation between pages</li>
+</ul>
+<p>Validate the interface at:</p>
+<ul>
+<li>320px</li>
+<li>375px</li>
+<li>768px</li>
+<li>1024px</li>
+<li>1440px</li>
+</ul>
+<p>Fix every overflow, clipping or spacing issue before continuing.</p>
+<p>Ensure the application is fully runnable, usable and responsive before moving to the next step.</p>
+<hr />
+<h1 id="2-task-management-with-mongodb-and-todowrite">2 - Task management with MongoDB and TodoWrite</h1>
+<p>Maintain the existing mobile-first responsive design while adding new features.</p>
+<p>Replace the initial task storage with MongoDB.</p>
+<p>Each task must contain:</p>
+<ul>
+<li>Title</li>
+<li>Description</li>
+<li>Category</li>
+<li>Priority (low, medium, high)</li>
+<li>Due date</li>
+<li>Status (todo, in progress, completed)</li>
+<li>Creation date</li>
+</ul>
+<p>Create backend APIs or Nuvolaris OpenServerless actions to:</p>
+<ul>
+<li>Create tasks</li>
+<li>Read tasks</li>
+<li>Update tasks</li>
+<li>Delete tasks</li>
+</ul>
+<p>Integrate TodoWrite to manage task operations.</p>
+<p>Implement:</p>
+<ul>
+<li>Create task form</li>
+<li>Edit task form</li>
+<li>Delete task action</li>
+<li>Complete task action</li>
+<li>Task list page</li>
+<li>Filters by status</li>
+<li>Filters by priority</li>
+</ul>
+<p>Ensure every new page, form and component remains fully responsive on all supported screen sizes.</p>
+<p>Verify the complete CRUD workflow before continuing.</p>
+<hr />
+<h1 id="3-fast-search-and-redis-caching">3 - Fast search and Redis caching</h1>
+<p>Maintain the existing mobile-first responsive design while adding new features.</p>
+<p>Add a complete search and filtering system.</p>
+<p>Implement:</p>
+<ul>
+<li>Global search bar</li>
+<li>Search by title</li>
+<li>Search by description</li>
+<li>Filter by category</li>
+<li>Filter by priority</li>
+<li>Filter by status</li>
+<li>Real-time search updates</li>
+</ul>
+<p>Use Redis to:</p>
+<ul>
+<li>Cache frequently requested task lists</li>
+<li>Cache common searches</li>
+<li>Improve dashboard loading performance</li>
+</ul>
+<p>Ensure search, filters and cached data work correctly on desktop, tablet and mobile.</p>
+<p>Verify the application remains fully functional before continuing.</p>
+<hr />
+<h1 id="4-statistics-dashboard-and-interactive-navigation">4 - Statistics dashboard and interactive navigation</h1>
+<p>Maintain the existing mobile-first responsive design while adding new features.</p>
+<p>Build the statistics dashboard.</p>
+<p>Display:</p>
+<ul>
+<li>Total tasks</li>
+<li>Completed tasks</li>
+<li>Pending tasks</li>
+<li>Overdue tasks</li>
+<li>Tasks grouped by priority</li>
+<li>Tasks grouped by category</li>
+<li>Completion percentage</li>
+</ul>
+<p>Create responsive dashboard cards and visual components.</p>
+<p>Every statistics card must:</p>
+<ul>
+<li>Be fully clickable.</li>
+<li>Navigate to the Tasks page.</li>
+<li>Automatically apply the appropriate filter.</li>
+<li>Preserve the selected filter after navigation.</li>
+</ul>
+<p>Improve the interface with:</p>
+<ul>
+<li>Status badges</li>
+<li>Priority badges</li>
+<li>Loading states</li>
+<li>Empty states</li>
+<li>Error states</li>
+</ul>
+<p>Charts and dashboard sections must resize correctly without overflow on every supported device.</p>
+<p>Statistics must update automatically whenever tasks change.</p>
+<hr />
+<h1 id="5-final-polish-responsiveness-validation-and-deployment-preparation">5 - Final polish, responsiveness validation and deployment preparation</h1>
+<p>Review the entire Project Dashboard Task application.</p>
+<p>Verify:</p>
+<ul>
+<li>Navigation works correctly.</li>
+<li>CRUD operations work correctly.</li>
+<li>TodoWrite integration works.</li>
+<li>MongoDB integration works.</li>
+<li>Redis caching works.</li>
+<li>Search works correctly.</li>
+<li>Dashboard statistics update correctly.</li>
+<li>Statistics cards navigate with the correct filters applied.</li>
+<li>Responsive design works correctly.</li>
+<li>Nuvolaris OpenServerless functions are properly configured.</li>
+</ul>
+<p>Validate the interface at:</p>
+<ul>
+<li>320px</li>
+<li>375px</li>
+<li>390px</li>
+<li>430px</li>
+<li>768px</li>
+<li>1024px</li>
+<li>1440px</li>
+<li>1920px</li>
+</ul>
+<p>Fix:</p>
+<ul>
+<li>Horizontal scrolling</li>
+<li>Overflow</li>
+<li>Clipping</li>
+<li>Misaligned layouts</li>
+<li>Broken grids</li>
+<li>Incorrect spacing</li>
+<li>Components exceeding viewport width</li>
+<li>Responsive regressions</li>
+</ul>
+<p>Improve:</p>
+<ul>
+<li>Error handling</li>
+<li>Performance</li>
+<li>Accessibility</li>
+<li>User experience</li>
+<li>Code quality</li>
+</ul>
+<p>Prepare the application for deployment while keeping every feature fully functional and maintaining a production-quality responsive experience across all supported devices.</p>
 
 
       </article>

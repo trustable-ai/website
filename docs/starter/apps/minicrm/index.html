@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>Mini CRM — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="Mini Customer Relation Manager"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,63 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Apps</h2>
+        <nav aria-label="Apps">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/apps/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
+                href="https://trustable.ai/starter/apps/apistatusmonitor/"
                 
-                >Apps</a
+                >API Status Monitor</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/apps/appsuite/"
                 
-                >Chat</a
+                >App Suite</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
-                
-                >Demo</a
+                href="https://trustable.ai/starter/apps/minicrm/"
+                aria-current="page"
+                >Mini CRM</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/utilities/"
+                href="https://trustable.ai/starter/apps/projectdashboard/"
                 
-                >Utilities</a
+                >Project Dashboard</a
               >
             </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/starter/apps/securitycheck/"
+                
+                >Security Check</a
+              >
+            </li>
+            
+            
             
           </ul>
         </nav>
@@ -498,8 +507,143 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>Mini CRM</h1>
+        <h1 id="step-1-create-the-mini-crm-foundation">Step 1 — Create the Mini CRM Foundation</h1>
+<p>Build a clean and modern Mini CRM application.</p>
+<p>The application manages customers and their scheduled activities.</p>
+<p>Requirements:</p>
+<ul>
+<li>Create a responsive layout.</li>
+<li>Add a Home page.</li>
+<li>Add a Customers page.</li>
+<li>Define a customer model containing:
+<ul>
+<li>id</li>
+<li>name</li>
+<li>company (optional)</li>
+<li>email (optional)</li>
+<li>phone (optional)</li>
+<li>notes (optional)</li>
+</ul>
+</li>
+<li>Define an activity model containing:
+<ul>
+<li>id</li>
+<li>customerId</li>
+<li>title</li>
+<li>description (optional)</li>
+<li>dueDate</li>
+<li>completed</li>
+</ul>
+</li>
+<li>Use mock data stored in memory.</li>
+<li>Keep the code modular and easy to extend.</li>
+</ul>
+<hr />
+<h1 id="step-2-implement-customer-management">Step 2 — Implement Customer Management</h1>
+<p>Implement the Customers page.</p>
+<p>Features:</p>
+<ul>
+<li>Display all customers in a searchable list.</li>
+<li>Add a new customer.</li>
+<li>Edit an existing customer.</li>
+<li>Delete a customer.</li>
+<li>Clicking a customer opens its details.</li>
+<li>Use reusable forms and components.</li>
+<li>Keep the UI simple and modern.</li>
+</ul>
+<hr />
+<h1 id="step-3-build-the-activity-dashboard">Step 3 — Build the Activity Dashboard</h1>
+<p>Implement the Home page as a task dashboard.</p>
+<p>Features:</p>
+<ul>
+<li>Show all upcoming activities sorted by due date (ascending).</li>
+<li>Display the associated customer for every activity.</li>
+<li>Each activity must provide the following actions:
+<ul>
+<li>Mark as completed</li>
+<li>Postpone (choose another date)</li>
+<li>Delete</li>
+</ul>
+</li>
+<li>Completed activities should be visually distinguished.</li>
+<li>Keep the list automatically ordered after every modification.</li>
+</ul>
+<hr />
+<h1 id="step-4-add-quick-activity-creation">Step 4 — Add Quick Activity Creation</h1>
+<p>Implement a quick activity creation panel directly on the Home page.</p>
+<p>Requirements:</p>
+<ul>
+<li>Add a customer search field with instant filtering.</li>
+<li>Allow selecting a customer quickly.</li>
+<li>Enter:
+<ul>
+<li>activity title</li>
+<li>optional description</li>
+<li>due date</li>
+</ul>
+</li>
+<li>Save the activity.</li>
+<li>After creation:
+<ul>
+<li>immediately update the dashboard</li>
+<li>insert the activity in the correct chronological position</li>
+<li>clear the form automatically.</li>
+</ul>
+</li>
+<li>Keep the workflow optimized for speed so users can create activities in just a few clicks.</li>
+<li>Make all legible in terms of color used for selected or not</li>
+</ul>
+<hr />
+<h1 id="step-5-make-the-dashboard-cards-interactive">Step 5 — Make the Dashboard Cards Interactive</h1>
+<p>Improve the dashboard by making all four statistic cards clickable.</p>
+<p>Requirements:</p>
+<ul>
+<li>Each dashboard card must behave like an interactive button with hover and click animations.</li>
+<li>Clicking a card should open a detailed view related to that metric.</li>
+</ul>
+<p>Card behavior:</p>
+<h3 id="customers">Customers</h3>
+<ul>
+<li>Display the complete customer list.</li>
+<li>Allow selecting a customer to open its details.</li>
+</ul>
+<h3 id="total-activities">Total Activities</h3>
+<ul>
+<li>Display every activity, regardless of status.</li>
+<li>Keep activities ordered by due date.</li>
+<li>Allow filtering and searching.</li>
+</ul>
+<h3 id="pending-activities">Pending Activities</h3>
+<ul>
+<li>Display only activities that are not completed.</li>
+<li>Allow:
+<ul>
+<li>Mark as completed</li>
+<li>Postpone</li>
+<li>Delete</li>
+</ul>
+</li>
+</ul>
+<h3 id="completed-activities">Completed Activities</h3>
+<ul>
+<li>Display only completed activities.</li>
+<li>Allow:
+<ul>
+<li>Reopen the activity (mark as pending)</li>
+<li>Delete</li>
+</ul>
+</li>
+</ul>
+<p>General requirements:</p>
+<ul>
+<li>The transition between the dashboard and the detailed view should be smooth.</li>
+<li>Add a breadcrumb or back button to return to the dashboard.</li>
+<li>The dashboard statistics must automatically refresh after every action.</li>
+<li>Keep the UI consistent with the rest of the application.</li>
+<li>Avoid page reloads by updating the interface reactively.</li>
+</ul>
+<hr />
 
 
       </article>

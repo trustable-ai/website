@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Starters — Trustable</title>
+    <title>Security Check — Trustable</title>
     <meta
       name="description"
-      content="Starter projects for Trustable."
+      content="Security Check"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -443,54 +443,63 @@
         
       
       <aside class="sidebar">
-        <h2>Starters</h2>
-        <nav aria-label="Starters">
+        <h2>Apps</h2>
+        <nav aria-label="Apps">
           <ul>
             <li>
               <a
-                href="https://trustable.ai/starter/"
-                aria-current="page"
+                href="https://trustable.ai/starter/apps/"
+                
                 >Overview</a
               >
             </li>
             
             
-            
-            
             <li>
               <a
-                href="https://trustable.ai/starter/apps/"
+                href="https://trustable.ai/starter/apps/apistatusmonitor/"
                 
-                >Apps</a
+                >API Status Monitor</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/chat/"
+                href="https://trustable.ai/starter/apps/appsuite/"
                 
-                >Chat</a
+                >App Suite</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/demo/"
+                href="https://trustable.ai/starter/apps/minicrm/"
                 
-                >Demo</a
+                >Mini CRM</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.ai/starter/utilities/"
+                href="https://trustable.ai/starter/apps/projectdashboard/"
                 
-                >Utilities</a
+                >Project Dashboard</a
               >
             </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.ai/starter/apps/securitycheck/"
+                aria-current="page"
+                >Security Check</a
+              >
+            </li>
+            
+            
             
           </ul>
         </nav>
@@ -498,8 +507,50 @@
 
       <article class="prose">
         
-        <h1>Starters</h1>
-        <p>Starter projects for Trustable.</p>
+        <h1>Security Check</h1>
+        <h1 id="role-context">Role &amp; Context</h1>
+<p>Sei un Senior Full-Stack Developer con esperienza avanzata in React, architetture serverless basate su API Nuvolaris (Apache OpenWhisk) e integrazione di modelli AI locali tramite Ollama.</p>
+<h1 id="objective">Objective</h1>
+<p>Realizza una web application in React con backend su API Nuvolaris per l’analisi automatica della sicurezza del codice sorgente tramite diversi modelli AI.</p>
+<h1 id="1-ui-input-requirements">1. UI &amp; Input Requirements</h1>
+<p>L’applicazione deve presentare una schermata iniziale in cui l’utente può scegliere tra due modalità di input:</p>
+<ul>
+<li>Inserire l’URL di un file di codice sorgente (es. file Raw di GitHub o GitHub Gist).</li>
+<li>Incollare direttamente il codice sorgente in un’area di testo.</li>
+</ul>
+<p>L’interfaccia dei risultati deve essere divisa in tre sezioni, una per ogni modello AI. Ogni sezione deve contenere un pulsante con la scritta: <code>"Analizza con [Nome Modello]"</code>.</p>
+<h1 id="2-backend-logic-nuvolaris">2. Backend Logic (Nuvolaris)</h1>
+<ul>
+<li>Se l’utente fornisce un URL, il backend deve scaricare automaticamente il contenuto del file e verificarne la validità.</li>
+<li>Se l’utente fornisce il codice direttamente, il backend deve utilizzare quel contenuto.</li>
+</ul>
+<h1 id="3-ai-processing-models-ollama">3. AI Processing &amp; Models (Ollama)</h1>
+<p>L’obiettivo dell’analisi è individuare vulnerabilità, problemi di sicurezza, configurazioni errate, credenziali esposte e altre criticità.
+I modelli da utilizzare sono:</p>
+<ol>
+<li><strong>GLM 5.2</strong> (https://ollama.com/library/glm-5.2)</li>
+<li><strong>Kimi K2.7 Code</strong> (https://ollama.com/library/kimi-k2.7-code)</li>
+<li><strong>DeepSeek V4 Pro</strong> (https://ollama.com/library/deepseek-v4-pro)
+Le chiavi che devi predere dall’env sono OLLAMA_URL e OLLAMA_API_KEY</li>
+</ol>
+<h2 id="regole-di-chiamata-ed-esecuzione">Regole di chiamata ed Esecuzione</h2>
+<ul>
+<li><strong>Chiamate separate:</strong> I modelli devono essere chiamati in modo indipendente alla pressione del rispettivo pulsante, lasciandoli lavorare per tutto il tempo necessario (per evitare l’errore “response not yet ready”).</li>
+<li><strong>Nessun timeout di analisi:</strong> Rimuovi qualsiasi limite di timeout sull’esecuzione dell’analisi dell’IA; devono poter rispondere quando l’elaborazione è completata.</li>
+<li><strong>Logica di connessione e Retry:</strong> Dai 3 minuti di tempo per stabilire la <em>connessione</em> al modello. Se fallisce, il sistema deve riprovare 4 volte (per un totale di 5 tentativi), con 3 secondi di pausa tra ogni prova.</li>
+<li><strong>Fallback:</strong> Se al 5° tentativo la connessione fallisce (modello non disponibile), il pulsante deve aggiornarsi mostrando: <code>"[Nome Modello] - riprova"</code>.</li>
+</ul>
+<h1 id="4-output-rendering">4. Output &amp; Rendering</h1>
+<ul>
+<li><strong>Streaming &amp; Formattazione:</strong> I risultati restituiti dai modelli devono essere visualizzati in streaming sull’interfaccia (rilasciati man mano che si generano). L’intero output deve essere formattato e renderizzato correttamente in Markdown (non fare aree di testo raw in stile terminale).</li>
+<li><strong>Summary &amp; Confronto Finale:</strong> L’applicazione deve raccogliere le risposte dei tre modelli, mostrarle separatamente all’utente e generare un confronto finale che evidenzi:
+<ul>
+<li>Le vulnerabilità comuni a tutti i modelli.</li>
+<li>Le vulnerabilità individuate solo da alcuni modelli specifici.</li>
+<li>Un riepilogo conclusivo del livello di rischio complessivo.</li>
+</ul>
+</li>
+</ul>
 
 
       </article>

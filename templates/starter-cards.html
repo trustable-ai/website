@@ -1,0 +1,41 @@
+{#
+  The starter gallery: one row per group, laid out horizontally, stacked
+  vertically down the panel. Everything here is read from the sections
+  generator.py writes under content/starter/<group>/ — see spec/4-generate.md.
+  Nothing about the catalog is duplicated into this template, so a regenerated
+  content tree is the only thing needed to change the gallery.
+#}
+{% set starters = get_section(path="starter/_index.md") %}
+<div class="gallery">
+  {% for path in starters.subsections %}
+  {% set group = get_section(path=path) %}
+  <section class="gallery-group" aria-labelledby="group-{{ group.components | last }}">
+    <h3 class="gallery-title" id="group-{{ group.components | last }}">
+      <a href="{{ group.permalink | safe }}">{{ group.title }}</a>
+    </h3>
+    <ul class="gallery-row">
+      {% for app in group.pages %}
+      <li class="gallery-card">
+        <a href="{{ app.permalink | safe }}">
+          {% if app.extra.icon %}
+          <img
+            class="gallery-icon"
+            src="{{ app.extra.icon | safe }}"
+            alt=""
+            loading="lazy"
+          />
+          {% else %}
+          {# No icon in the templates repo: an initial tile keeps the row even. #}
+          <span class="gallery-icon gallery-initial" aria-hidden="true"
+            >{{ app.title | truncate(length=1, end="") }}</span
+          >
+          {% endif %}
+          <span class="gallery-name">{{ app.title }}</span>
+          <span class="gallery-note">{{ app.description }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</div>
