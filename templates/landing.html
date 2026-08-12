@@ -372,9 +372,10 @@
        * with no column gap to eat into it, so the tile is a true 100%.
        */
       .gallery-grid {
+        --tile-gap: 1.25rem;
         display: grid;
         grid-template-columns: 1fr;
-        gap: 1.25rem;
+        gap: 1.5rem var(--tile-gap);
         margin: 0;
         padding: 0;
         list-style: none;
@@ -422,10 +423,17 @@
         transform: translateY(-2px);
       }
 
-      /* Fixed height so tiles stay on a grid line whatever the icon's aspect. */
+      /*
+       * The preview slot is 3:4 portrait, so its height follows the column
+       * width and every tile in a row matches whatever its icon's own aspect
+       * is. The source screenshots are all portrait (0.55:1 to 0.97:1), so
+       * they seat here with little waste. `contain` letterboxes rather than
+       * cropping — a shot is never cut off to fill the slot.
+       */
       .gallery-icon {
         width: 100%;
-        height: 150px;
+        aspect-ratio: 3 / 4;
+        height: auto;
         object-fit: contain;
         border-radius: 8px;
       }
@@ -468,49 +476,27 @@
       }
 
       /*
-       * Tablet two up, desktop three up, each column a true 50% / 33.3% of the
-       * band. The columns are sized in percent rather than 1fr, and the gutter
-       * between them comes out of the tile's own padding: `1fr` would divide
-       * what is left *after* the gap, leaving every tile a few points under
-       * the 50% and 30% this layout is specified in.
+       * Tablet two up, desktop three up. Equal `1fr` columns with the gutter
+       * as a real column-gap: every tile is then exactly the same width, which
+       * is what keeps the 3:4 preview slots on one line. An earlier version
+       * sized the columns in percent and took the gutter out of each tile's
+       * padding — that left the last column in each row a gutter wider than
+       * its siblings, and a 3:4 slot turns any width difference into a
+       * visible height difference.
+       *
+       * The band widens as the columns divide, so the tiles still clear their
+       * specified share: see spec/4-generate.md for the measured widths.
        */
       @media (min-width: 600px) {
         .gallery-grid {
-          grid-template-columns: repeat(2, 50%);
-          column-gap: 0;
-        }
-
-        /*
-         * Only the inner edges are padded. Padding both sides of every tile
-         * would inset the outer ones from the 5% band as well, narrowing the
-         * boxes below the specified share of the width. The gutter is kept
-         * small deliberately: it is subtracted from the box, and the box is
-         * what has to clear 30% of the viewport on desktop.
-         */
-        .gallery-card {
-          padding-right: 1rem;
-        }
-
-        .gallery-card:nth-child(2n) {
-          padding-right: 0;
-          padding-left: 1.25rem;
+          grid-template-columns: repeat(2, 1fr);
+          column-gap: var(--tile-gap);
         }
       }
 
       @media (min-width: 1000px) {
         .gallery-grid {
-          grid-template-columns: repeat(3, 33.3333%);
-        }
-
-        /* Re-run the same rule on a 3-cycle: only the last column is flush. */
-        .gallery-card,
-        .gallery-card:nth-child(2n) {
-          padding-right: 1.25rem;
-          padding-left: 0;
-        }
-
-        .gallery-card:nth-child(3n) {
-          padding-right: 0;
+          grid-template-columns: repeat(3, 1fr);
         }
       }
 

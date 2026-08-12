@@ -118,13 +118,22 @@ it: `.wrap` caps at 1200px and adds its own margin, which would stack on the
 
 Tile width is a share of that inset **band** (the 90% between the gutters),
 not of the whole viewport — a third of the band is the 30% the desktop row is
-specified at. Measured: 31.8% / 47.8% / 100% of the band at 1440 / 800 / 420px.
-Columns are sized in percent rather than `1fr`, and the gutter between tiles
-comes out of the tile's own inner-edge padding; `1fr` divides what is left
-*after* the gap, which puts every tile a few points under its share.
+specified at. Measured: 32.3% / 48.6% / 100% of the band at 1440 / 800 / 420px.
+
+The columns are equal `1fr` with the gutter as a real `column-gap`, so every
+tile in a row is exactly the same width. That uniformity is load-bearing: with
+a 3:4 preview slot any width difference becomes a visible height difference,
+and tiles in a row stop lining up.
 
 Each tile is a link to the application's generated page. The **title sits above
-the box**, not inside it, and the box holds the icon alone. The description is
+the box**, not inside it, and the box holds the icon alone.
+
+The preview box is a fixed **3:4 slot** (portrait) at every breakpoint, so its
+height follows the column width and every tile in a row is the same size
+whatever its icon's own aspect. The source screenshots are all portrait —
+between 0.55:1 and 0.97:1 — so they seat in that slot with little waste. The
+icon is `object-fit: contain` inside it: a shot is never cropped or stretched,
+only letterboxed against the card. The description is
 **not** printed under the tile — it appears as a hover popup over the icon
 (and on keyboard focus, so it is reachable without a pointer). The description
 also stays in the tile's `title`/`aria-label` so it is announced rather than
