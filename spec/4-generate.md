@@ -2,13 +2,39 @@
 
 `generator.py` is a [uv](https://docs.astral.sh/uv/) script with embedded
 dependencies (PEP 723 header, `requests`) that turns the catalog published by
-the `trustable-ai/.github` repo into Zola content. Run it by hand whenever the
-catalog changes; its output is committed, so `build.sh` needs no network.
+the `trustable-ai/.github` repo into Zola content.
 
 ```bash
 ./generator.py            # fetch + regenerate content/starter/
 ./generator.py --offline  # reuse the cached index.json and clones
 ```
+
+## build.sh runs it
+
+`build.sh` fetches the catalog and regenerates before every build, so the
+published site always matches what the catalog says today:
+
+1. `generator.py` — fetch `index.json`, pull the templates repos, rewrite
+   `content/starter/` and `static/starter/`
+2. `zola build --output-dir docs`
+3. **commit** the result, if anything changed
+
+The commit is confined to the four paths the build owns — `content/starter/`,
+`static/starter/`, `index.json` and `docs/` — so unrelated edits in the working
+tree are never swept into it. Nothing is committed when those paths come back
+unchanged, and the commit is never pushed; publishing stays a separate,
+deliberate step.
+
+Two escape hatches, because a build that always commits is wrong in some
+contexts:
+
+- `./build.sh serve` — preview only, no generate, no commit.
+- `NO_COMMIT=1 ./build.sh` — generate and build, leave the result in the
+  working tree. This is also what a detached HEAD gets automatically, since
+  committing there would strand the commit.
+
+The generator needs the network on every build. If the fetch fails the build
+stops rather than silently publishing a stale catalog.
 
 ## Input
 

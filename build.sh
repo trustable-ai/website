@@ -1,6 +1,10 @@
 #!/bin/bash
 # Build the Trustable site with Zola into docs/ (served by GitHub Pages).
 # Installs zola into ~/.local/bin when it is not already on PATH.
+#
+# Regenerates the starter gallery from the trustable-ai catalog first, then
+# commits the result if it changed — see spec/4-generate.md. NO_COMMIT=1 builds
+# without committing.
 set -e
 
 ZOLA_VERSION="v0.19.2"
@@ -66,8 +70,50 @@ if [ "${1:-}" = "serve" ]; then
   exec "$ZOLA" serve --port 1111
 fi
 
+# The gallery is regenerated from the live catalog on every build, so the
+# published site cannot drift from what trustable-ai/.github says today. A
+# failed fetch stops the build rather than quietly publishing a stale catalog.
+echo ">> generating the starter gallery"
+./generator.py
+
 # Zola wipes its output dir, so CNAME and .nojekyll are re-published from
 # static/ on every build rather than being kept in docs/ by hand.
 "$ZOLA" build --output-dir docs --force
 
 echo ">> built $(find docs -name '*.html' | wc -l | tr -d ' ') pages into docs/"
+
+# Commit what the build owns. Confined to these paths so an unrelated edit
+# sitting in the working tree is never swept into the build's commit, and
+# skipped entirely when they come back unchanged. Never pushes: publishing
+# stays a separate, deliberate step.
+if [ -n "${NO_COMMIT:-}" ]; then
+  echo ">> NO_COMMIT set, leaving changes in the working tree"
+  exit 0
+fi
+
+# A commit on a detached HEAD is unreachable from any branch, so don't make one.
+if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
+  echo ">> detached HEAD, leaving changes in the working tree"
+  exit 0
+fi
+
+BUILD_PATHS=(content/starter static/starter index.json docs)
+
+# --porcelain over these paths alone reports both tracked edits and untracked
+# new files (a newly added application page or icon) without touching the
+# index, so a caller who had something else staged still has it staged if
+# there turns out to be nothing to do.
+if [ -z "$(git status --porcelain -- "${BUILD_PATHS[@]}")" ]; then
+  echo ">> no changes to commit"
+  exit 0
+fi
+
+# `commit --only <paths>` commits exactly these paths and leaves anything else
+# staged untouched, but it will not pick up untracked files, so add first.
+# The -m flags must precede `--`; everything after it is taken as a pathspec.
+git add -- "${BUILD_PATHS[@]}"
+git commit --quiet --only \
+  -m "Rebuild the site" \
+  -m "Regenerated the starter gallery from the trustable-ai catalog and rebuilt docs/ with zola. Committed by build.sh." \
+  -- "${BUILD_PATHS[@]}"
+echo ">> committed $(git rev-parse --short HEAD)"
