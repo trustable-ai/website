@@ -84,18 +84,12 @@
       .brand {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
         text-decoration: none;
-        color: var(--navy);
-        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-size: 1.05rem;
       }
 
+      /* The wordmark is the whole brand now, so it carries the header. */
       .brand img {
-        height: 1.6rem;
+        height: 2.4rem;
         width: auto;
       }
 
@@ -266,7 +260,7 @@
 
       /*
        * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
-       * Bold uppercase is the closest web font, so "It is …!" reads as part of
+       * Bold uppercase is the closest web font, so "IT is …" reads as part of
        * the mark rather than as page copy set next to it.
        */
       .hero-title {
@@ -290,12 +284,23 @@
       }
 
       /*
-       * Pulled back against the wordmark and set in the mark's own near-black
-       * so the "!" reads as punctuation on TRUSTABLE, not as a separate word.
+       * "is" is the small connective part of "IT is trustable": two thirds the
+       * size of the shouted IT, lowercase against the block's uppercase, and
+       * set on the wordmark's own optical centre rather than on the baseline
+       * of a word half again its height.
+       *
+       * The nudge is needed because the logo file carries vertical padding, so
+       * flex-centring on the image box leaves the words visibly high against
+       * the letterforms actually drawn inside it.
        */
-      .hero-bang {
-        margin-left: -0.35rem;
-        color: #1c1c1c;
+      .hero-small {
+        align-self: center;
+        font-size: 0.66em;
+        line-height: 1;
+        translate: 0 0.08em;
+        text-transform: lowercase;
+        letter-spacing: 0.02em;
+        color: var(--muted);
       }
 
       .motto {
@@ -440,6 +445,37 @@
         text-align: center;
       }
 
+      /* ---------- call to action ---------- */
+
+      .cta-row {
+        margin-top: 1.75rem;
+        text-align: center;
+      }
+
+      .cta {
+        display: inline-block;
+        background: var(--blue);
+        color: #fff;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 0.7rem 1.6rem;
+        border-radius: 999px;
+        transition: background var(--fade) ease;
+      }
+
+      .cta:hover {
+        background: var(--navy);
+      }
+
+      .cta:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
       /* ---------- Start: three columns with vertical rules ---------- */
 
       .trio {
@@ -485,24 +521,19 @@
         max-height: 186px;
       }
 
-      /* ---------- Build / Deploy: two columns ---------- */
+      /* ---------- Deploy: appliance beside the stack, text below ---------- */
 
+      /*
+       * Both columns sized to their render's real width rather than a flat
+       * 50%: a narrow product shot centered in half the band leaves a wide
+       * dead gap between the two.
+       */
       .duo {
         display: grid;
-        /*
-         * Size the image column to the render's real width instead of a flat
-         * 50%: a narrow product shot centered in half the band leaves a wide
-         * dead gap between the two columns.
-         */
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto auto;
         gap: 2.5rem;
         align-items: center;
         justify-content: center;
-      }
-
-      .duo p {
-        color: var(--muted);
-        max-width: 44ch;
       }
 
       /* Keep tall product renders inside the fixed slot height. */
@@ -513,19 +544,25 @@
       }
 
       .duo-figure img {
-        max-height: 420px;
+        max-height: 340px;
         width: auto;
       }
 
       /* Card keeps the diagram reading as one distinct object. */
       .stack-diagram {
-        margin-top: 1.75rem;
         background: var(--card);
         border: 1px solid var(--hairline);
         border-radius: 12px;
         padding: 0.85rem;
-        max-height: 300px;
+        max-height: 340px;
         width: auto;
+      }
+
+      .duo-text {
+        margin: 2rem auto 0;
+        max-width: 68ch;
+        text-align: center;
+        color: var(--muted);
       }
 
       /* ---------- Build: centered animation ---------- */
@@ -539,19 +576,33 @@
 
       .anim-video {
         /*
-         * 80% of the content width, but never so tall that the caption below
-         * drops off screen. --anim-room is the viewport height minus the
-         * fixed chrome above and below the video (masthead, nav, panel
-         * padding, heading, lede, caption); the cap must be expressed on
-         * width because max-height loses to width + aspect-ratio.
+         * Sized on width alone, held 10% under the full band: the file is
+         * 1200x520, so 1080px is the largest size that never upscales, and it
+         * only shrinks when the panel itself is narrower. Deliberately not
+         * capped against the viewport height: a short window would then
+         * collapse the video to a thumbnail, which is worse than letting the
+         * panel scroll.
          */
-        --anim-room: calc(100vh - 560px);
-        width: min(80%, var(--anim-room) * (1200 / 520));
+        width: min(1080px, 90%);
         height: auto;
         /* Reserve the box while the file loads so the slot never shifts. */
         aspect-ratio: 1200 / 520;
         margin-inline: auto;
         border-radius: 12px;
+      }
+
+      /*
+       * The machine band sits between the animation and the CTA. Like the
+       * video it is sized on width alone and never upscaled — the file is
+       * 1799x274, but it is held to the video's 1080px so the two stack as one
+       * column rather than the strip running visibly wider than the frame
+       * above it.
+       */
+      .machines {
+        width: min(1080px, 90%);
+        height: auto;
+        aspect-ratio: 1799 / 274;
+        margin: 2rem auto 0;
       }
 
       .anim-caption {
@@ -712,14 +763,14 @@
     <header class="masthead">
       <div class="wrap">
         <h1 class="hero-title">
-          <span class="hero-word">It is</span>
+          <span class="hero-word">IT</span>
+          <span class="hero-word hero-small">is</span>
           <img
             class="hero-logo"
             src="/logo-trustable.png"
             alt="Trustable"
             width="420"
           />
-          <span class="hero-word hero-bang">!</span>
         </h1>
         <p class="motto">Lovable-like experience for Private AI</p>
       </div>
@@ -736,7 +787,7 @@
           <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
           <li class="step">
             <a class="step-link" href="#start" data-step="start"
-              >Start with Templates</a
+              >Starters &amp; Templates</a
             >
           </li>
           <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
@@ -787,6 +838,21 @@
               stack, on your own hardware.
             </figcaption>
           </figure>
+
+          <img
+            class="machines"
+            src="/trustable-machines.png"
+            alt="The range of machines Trustable runs on, from a laptop to a sovereign cloud."
+            width="1799"
+            height="274"
+            loading="lazy"
+          />
+
+          <p class="cta-row">
+            <a class="cta" href="https://trustable.ai/documentation/"
+              >Read the documentation</a
+            >
+          </p>
         </div>
       </section>
 
@@ -794,7 +860,7 @@
       <section class="panel" id="start" data-panel="start">
         <div class="wrap">
           <div class="panel-head">
-            <h2>Start with Templates</h2>
+            <h2>Starters &amp; Templates</h2>
             <p class="lede">
               Start immediately with ready-to-use Private AI applications.
             </p>
@@ -861,14 +927,7 @@
                 loading="lazy"
               />
             </div>
-            <div>
-              <p>
-                Frontend, APIs, database and storage, hosting, compute, FAAS,
-                security, rate limiting, caching, load balancing, logging and
-                recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and
-                Velero, ready to use, integrated and running on your
-                infrastructure.
-              </p>
+            <div class="duo-figure">
               <img
                 class="stack-diagram"
                 src="/nuvolaris-stack.png"
@@ -877,6 +936,19 @@
               />
             </div>
           </div>
+
+          <p class="duo-text">
+            Frontend, APIs, database and storage, hosting, compute, FAAS,
+            security, rate limiting, caching, load balancing, logging and
+            recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and Velero,
+            ready to use, integrated and running on your infrastructure.
+          </p>
+
+          <p class="cta-row">
+            <a class="cta" href="https://trustable.ai/architecture/"
+              >Read the architecture</a
+            >
+          </p>
         </div>
       </section>
 
@@ -1040,7 +1112,7 @@
           <a href="https://trustable.ai/documentation/">Documentation</a>
           
           
-          <a href="https://trustable.ai/starter/">Starter</a>
+          <a href="https://trustable.ai/starter/">Starters</a>
           
           
           <a href="https://trustable.ai/architecture/">Architecture</a>
