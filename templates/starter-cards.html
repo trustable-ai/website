@@ -6,16 +6,18 @@
   template, so a regenerated content tree is the only thing needed to change
   the gallery.
 
-  Shared by all three surfaces that list applications: the home page panel, the
-  starters index and each group index. Set `only` to a group's _index.md path
-  to list that group alone; leave it unset for the whole catalog. Rendering
-  them from one partial is what stops the three from drifting apart.
+  Shared by every surface that lists starters: the home page panel, the
+  starters index and each group index. Rendering them from one partial is what
+  stops the surfaces from drifting apart. Four variables select what it shows:
 
-  `tabbed` (home page) puts the groups behind a tab strip instead of stacking
-  them, so the panel stays one screen tall. It is progressive: the markup below
-  is the stacked no-JS layout, and the script at the bottom turns it into tabs.
-  `bare` drops the per-group heading, for a group index whose <h1> already
-  names it.
+  - `groups_only` — one tile per group instead of per application, for the
+    starters index, which lists only one step down.
+  - `only` — a group's _index.md path, to list that group's applications alone.
+  - `tabbed` — the home page: groups behind a tab strip rather than stacked, so
+    the panel stays one screen tall. Progressive — the markup below is the
+    stacked no-JS layout and the script at the bottom turns it into tabs.
+  - `bare` — drop the per-group heading, for a group index whose <h1> already
+    names it.
 #}
 {% set starters = get_section(path="starter/_index.md") %}
 {% if only %}
@@ -23,6 +25,50 @@
 {% else %}
   {% set groups = starters.subsections %}
 {% endif %}
+
+{% if groups_only %}
+{#
+  Group tiles. Each borrows the icon of its first application as the preview,
+  so the row reads like the application rows without needing artwork of its
+  own, and states how many applications are behind it.
+#}
+<div class="gallery">
+  <section class="gallery-group" aria-label="{{ starters.title }}">
+    <ul class="gallery-grid">
+      {% for path in groups %}
+      {% set group = get_section(path=path) %}
+      {% set cover = group.pages | first %}
+      <li class="gallery-card">
+        <a
+          href="{{ group.permalink | safe }}"
+          aria-label="{{ group.title }} — {{ group.pages | length }} applications"
+        >
+          <span class="gallery-name">{{ group.title }}</span>
+          <span class="gallery-box">
+            {% if cover and cover.extra.icon %}
+            <img
+              class="gallery-icon"
+              src="{{ cover.extra.icon | safe }}"
+              alt=""
+              loading="lazy"
+            />
+            {% else %}
+            <span class="gallery-icon gallery-initial" aria-hidden="true"
+              >{{ group.title | truncate(length=1, end="") }}</span
+            >
+            {% endif %}
+            <span class="gallery-note" aria-hidden="true"
+              >{{ group.pages | length }} applications</span
+            >
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+{% else %}
+
 <div class="gallery{% if tabbed %} is-tabbed{% endif %}">
   {% if tabbed %}
   <div class="gallery-tabs" role="tablist" aria-label="Starter groups">
@@ -147,4 +193,5 @@
     select(0, false);
   })();
 </script>
+{% endif %}
 {% endif %}

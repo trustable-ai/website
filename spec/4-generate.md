@@ -89,17 +89,23 @@ An application listed under two groups (`truk8s` is in both `Demo` and
 
 ## Index pages
 
-Both index levels list what is below them, rather than being a bare title:
+Each index level lists exactly one step down, rather than being a bare title:
 
-- **`/starter/`** — the complete catalog: every application in every group,
-  under its group heading, with the heading linking to the group page.
-- **`/starter/<group>/`** — the applications of that group alone.
+- **`/starter/`** — the **groups only**, one tile per group. It does not
+  descend into the applications: the whole catalog on one page is a wall of
+  tiles that buries the structure, and the group tile is the way into it.
+- **`/starter/<group>/`** — the applications of that group.
 
 Both render through the same `starter-cards.html` partial the home page uses,
-parameterised by an `only` variable: unset lists every group, set to a group's
-path lists just that one. The three surfaces therefore cannot drift apart, and
-the listing comes from the content tree at build time — the `_index.md` bodies
-stay empty and no application is ever named in markdown.
+so the surfaces cannot drift apart. Two variables select the level: `only`
+narrows to a single group's applications, and `groups_only` lists the groups
+themselves. The listing comes from the content tree at build time — the
+`_index.md` bodies stay empty and no application or group is ever named in
+markdown.
+
+A group tile shows the group name and a count of what is inside it, and uses
+the icon of its first application as the preview, so the four tiles read the
+same way the application tiles do.
 
 A group index also needs an **in-section sidebar**. `docs.html` derives the
 sidebar from the containing section, and for a section it climbed to the
