@@ -2,7 +2,7 @@
 # Build the Trustable site with Zola into docs/ (served by GitHub Pages).
 # Installs zola into ~/.local/bin when it is not already on PATH.
 #
-# Regenerates the starter gallery from the trustable-ai catalog first, then
+# Regenerates the AIpps gallery from the trustable-ai catalog first, then
 # commits the result if it changed — see spec/4-generate.md. NO_COMMIT=1 builds
 # without committing.
 set -e
@@ -73,7 +73,7 @@ fi
 # The gallery is regenerated from the live catalog on every build, so the
 # published site cannot drift from what trustable-ai/.github says today. A
 # failed fetch stops the build rather than quietly publishing a stale catalog.
-echo ">> generating the starter gallery"
+echo ">> generating the AIpps gallery"
 ./generator.py
 
 # Zola wipes its output dir, so CNAME and .nojekyll are re-published from
@@ -97,7 +97,7 @@ if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
   exit 0
 fi
 
-BUILD_PATHS=(content/starter static/starter index.json docs)
+BUILD_PATHS=(content/aipps static/aipps index.json docs)
 
 # --porcelain over these paths alone reports both tracked edits and untracked
 # new files (a newly added application page or icon) without touching the
@@ -114,6 +114,6 @@ fi
 git add -- "${BUILD_PATHS[@]}"
 git commit --quiet --only \
   -m "Rebuild the site" \
-  -m "Regenerated the starter gallery from the trustable-ai catalog and rebuilt docs/ with zola. Committed by build.sh." \
+  -m "Regenerated the AIpps gallery from the trustable-ai catalog and rebuilt docs/ with zola. Committed by build.sh." \
   -- "${BUILD_PATHS[@]}"
 echo ">> committed $(git rev-parse --short HEAD)"
