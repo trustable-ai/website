@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://trustable.ai/sitemap.xml
+Sitemap: https://trustable.it/sitemap.xml
