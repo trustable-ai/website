@@ -1,0 +1,15 @@
+[submodule "trureact-templates"]
+	path = trureact-templates
+	url = https://github.com/trustable-ai/trureact-templates
+[submodule "trudemo-templates"]
+	path = trudemo-templates
+	url = https://github.com/trustable-ai/trudemo-templates
+[submodule "truchat-templates"]
+	path = truchat-templates
+	url = https://github.com/trustable-ai/truchat-templates
+[submodule "trucommon-templates"]
+	path = trucommon-templates
+	url = https://github.com/trustable-ai/templates
+[submodule "trutil-templates"]
+	path = trutil-templates
+	url = https://github.com/trustable-ai/trutil-templates
