@@ -1,7 +1,7 @@
 +++
 title = "Chat"
 description = "Chat you can start from, ready to run on your own infrastructure."
-weight = 20
+weight = 10
 sort_by = "weight"
 template = "section.html"
 page_template = "page.html"
