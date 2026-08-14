@@ -14,7 +14,7 @@ Always do a plan and add it to the spec file before implementing and create a br
 
 Implement only the plan written in the spec <n>, keep updating the plan if the user asks.
 
-When the user ask to complete, bun build, create a PR, merge it in the main  switch to the updated main and push to github to update the site.
+Wait always the user to ask for complete, the build, create a PR, merge it in the main switch to the updated main and push to github to update the site.
 
 
 
