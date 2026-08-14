@@ -8,7 +8,8 @@
 #
 # Every path starts by regenerating the catalog from the live GitHub API into
 # support/index.json, so the site can never be generated from a stale one.
-# Publishing what `./build.sh build` commits is ./publish.sh's job.
+# Never pushes: what `./build.sh build` commits is published by the PR-and-merge
+# process in CLAUDE.md, which also pushes the support submodule.
 # NO_COMMIT=1 builds without committing.
 set -e
 
@@ -118,7 +119,7 @@ if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
 fi
 
 # The catalog itself is not here: it belongs to the support submodule and is
-# committed there by publish.sh.
+# committed and pushed there separately.
 BUILD_PATHS=(content/apps static/apps docs)
 
 # --porcelain over these paths alone reports both tracked edits and untracked
@@ -136,6 +137,6 @@ fi
 git add -- "${BUILD_PATHS[@]}"
 git commit --quiet --only \
   -m "Rebuild the site" \
-  -m "Regenerated the Apps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh; publish with ./publish.sh." \
+  -m "Regenerated the Apps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh." \
   -- "${BUILD_PATHS[@]}"
 echo ">> committed $(git rev-parse --short HEAD)"

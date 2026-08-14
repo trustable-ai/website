@@ -1,9 +1,15 @@
 # 7 — Preview build and publish
 
 Split what the build does into two deliberate steps: `build.sh` regenerates
-everything from the live GitHub catalog and previews it locally, and a new
-`publish.sh` pushes the result out — first the catalog in `support/`, then the
-site itself.
+everything from the live GitHub catalog and previews it locally, and publishing
+pushes the result out — first the catalog in `support/`, then the site itself.
+
+> **Superseded in part.** This was first implemented as a `publish.sh` script.
+> That script has since been removed: publishing is the PR-and-merge process in
+> CLAUDE.md, done by hand. Everything below about `build.sh`, `generator.py` and
+> the catalog still holds; only the publishing *mechanism* changed. The
+> ordering constraint it existed to enforce did not go away — see
+> "Publishing by hand" at the end.
 
 Today `build.sh` conflates the two: it fetches the published `index.json` over
 HTTP, generates the gallery, writes `docs/`, and commits. The catalog it reads
@@ -17,8 +23,8 @@ site is generated from that fresh file, and both are published together.
 - `support/` is a submodule of `trustable-ai/.github`, checked out on `main`
   tracking `origin/main`. `support/index.py` writes `index.json` next to itself.
   It used to carry a `--push` flag that committed and pushed the file; that is
-  now `publish.sh`'s job alone, so the flag was removed rather than left as a
-  second, divergent way to publish. See spec/8-index.md.
+  now the single publishing process's job, so the flag was removed rather than
+  left as a second, divergent way to publish. See spec/8-index.md.
 - `support/index.py` is a plain `#!/usr/bin/env python3` script with no PEP 723
   block. It uses only the standard library plus the `gh` CLI.
 - `generator.py` fetches `INDEX_URL` over HTTP, caches the response in
@@ -35,7 +41,7 @@ Replace the current single path with the pipeline below. The zola bootstrap
 1. **Regenerate the catalog.** Run `uv run --no-project support/index.py`, which
    leaves the refreshed `index.json` in `support/`. `uv` supplies the
    interpreter; `--no-project` keeps it from trying to resolve this repo as a
-   Python project. No `--push` here — publishing is `publish.sh`'s job. Fail the
+   Python project. No `--push` here — regenerating is not publishing. Fail the
    build if the script fails, so the site is never generated from a stale
    catalog.
 2. **Generate the gallery.** Run `./generator.py`, now reading
@@ -49,7 +55,7 @@ Replace the current single path with the pipeline below. The zola bootstrap
 `content/apps static/apps index.json docs`. `NO_COMMIT=1` and the detached
 HEAD guard keep working as they do now. The committed path list drops the root
 `index.json` and gains nothing — `support/index.json` belongs to the submodule
-and is committed there by `publish.sh`.
+and is committed and pushed there separately.
 
 `./build.sh serve` stays as an explicit alias for the default preview.
 
@@ -82,22 +88,24 @@ correctly from the live catalog without fixing them.
   `solarsystem.png` were still there). Add `clean_icons()`, run after
   generation, deleting any `*.png` not named by a current application.
 
-### 3. `publish.sh` — push the catalog, then the site
+### 3. Publishing by hand
 
-New executable script at the repo root, `set -e`, ordered so the site never
-references a catalog that has not been published yet.
+Originally a `publish.sh` script; now the process in CLAUDE.md — build, PR,
+merge, then push. The script is gone, but the constraint that shaped it
+remains, because nothing enforces it automatically any more:
 
-1. **Publish the catalog.** In `support/`: if `index.json` is dirty, `git add`,
-   commit ("Update application starter index"), and push. Skip cleanly when it
-   is unchanged. Refuse to push from a detached HEAD.
-2. **Publish the site.** In the main repo: `git add support` to record the new
-   submodule pointer, commit it together with anything the build left, and push
-   to `origin`.
-3. Report what was pushed at each step, and say so plainly when there was
-   nothing to do.
+**Push the catalog before the site.** `support/` is a submodule of
+`trustable-ai/.github`, and Trustable reads its `index.json` over
+raw.githubusercontent.com. If the site is published while the catalog commit
+sits unpushed, the submodule pointer in `main` names a commit GitHub does not
+have, and the published site describes applications the catalog cannot confirm.
+So, in order:
 
-`publish.sh` does not build. The intended sequence is `./build.sh build` and
-then `./publish.sh`.
+1. In `support/`: commit `index.json` and **push** it to `trustable-ai/.github`.
+2. In the website repo: `git add support` to record the moved pointer, commit
+   it with whatever the build left, and push.
+
+`./build.sh build` deliberately never pushes; it only commits what it owns.
 
 ## Out of scope
 

@@ -164,9 +164,9 @@ unchecked instead of claiming they are absent.
 ./support/index.py          # regenerate index.json and show what changed
 ```
 
-The script only rewrites the file; it never publishes. Pushing it is
-`./publish.sh` in the website repo, which commits the index here and then
-pushes the site generated from it — see spec/7-publish.md. The run still
+The script only rewrites the file; it never publishes. Pushing it is done by
+hand: commit and push `index.json` here **first**, then publish the website
+that was generated from it — see spec/7-publish.md. The run still
 reports whether the starter and application lists actually moved (`generated`
 alone changes every time and is not a real change). The script refuses to write
 an index with no starters, so an API hiccup cannot blank the published list.

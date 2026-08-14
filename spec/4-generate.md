@@ -29,9 +29,9 @@ published site always matches what the organization looks like today:
 The commit is confined to the three paths the build owns — `content/apps/`,
 `static/apps/` and `docs/` — so unrelated edits in the working tree are never
 swept into it. The catalog is not among them: it belongs to the `support`
-submodule and is committed there by `publish.sh`. Nothing is committed when
-those paths come back unchanged, and the commit is never pushed; publishing is
-`./publish.sh`.
+submodule and is committed and pushed there separately. Nothing is committed
+when those paths come back unchanged, and the commit is never pushed;
+publishing is the PR-and-merge process in CLAUDE.md.
 
 Two escape hatches, because a build that always commits is wrong in some
 contexts:
