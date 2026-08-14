@@ -8,17 +8,17 @@
         <h1>{{ section.title }}</h1>
         {{ section.content | safe }}
         {#
-          The AIpps index and each group index each list one step down,
-          through the same partial the home page uses: /aipps/ shows the
+          The Apps index and each group index each list one step down,
+          through the same partial the home page uses: /apps/ shows the
           groups, a group shows its applications. Keyed on the path so it
           stays confined to this branch of the tree — the documentation and
           architecture sections keep their plain prose index. See
           spec/4-generate.md.
         #}
-        {% if section.path == "/aipps/" %}
+        {% if section.path == "/apps/" %}
         {% set groups_only = true %}
         {% include "starter-cards.html" %}
-        {% elif section.path is starting_with("/aipps/") %}
+        {% elif section.path is starting_with("/apps/") %}
         {#
           `bare` drops the group heading: on a group index the <h1> above
           already names the group, so the partial's own title would print it

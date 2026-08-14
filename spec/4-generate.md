@@ -1,43 +1,54 @@
-# 4 — Generate the AIpps gallery
+# 4 — Generate the Apps gallery
 
 `generator.py` is a [uv](https://docs.astral.sh/uv/) script with embedded
 dependencies (PEP 723 header, `requests`) that turns the catalog published by
 the `trustable-ai/.github` repo into Zola content.
 
 ```bash
-./generator.py            # fetch + regenerate content/aipps/
-./generator.py --offline  # reuse the cached index.json and clones
+./generator.py            # regenerate content/apps/, pulling the clones
+./generator.py --offline  # reuse the existing clones instead of pulling
 ```
+
+The catalog is read from `support/index.json`, not fetched — `build.sh`
+regenerates that file first with `support/index.py`, so the gallery is built
+from the same catalog that is about to be published beside it. See
+spec/7-publish.md.
 
 ## build.sh runs it
 
-`build.sh` fetches the catalog and regenerates before every build, so the
-published site always matches what the catalog says today:
+`build.sh` regenerates the catalog and the gallery before every build, so the
+published site always matches what the organization looks like today:
 
-1. `generator.py` — fetch `index.json`, pull the templates repos, rewrite
-   `content/aipps/` and `static/aipps/`
-2. `zola build --output-dir docs`
-3. **commit** the result, if anything changed
+1. `support/index.py` — rebuild `support/index.json` from the GitHub API
+2. `generator.py` — read that index, pull the templates repos, rewrite
+   `content/apps/` and `static/apps/`
+3. `zola build --output-dir docs` (only for `./build.sh build`; the default
+   serves a preview instead)
+4. **commit** the result, if anything changed
 
-The commit is confined to the four paths the build owns — `content/aipps/`,
-`static/aipps/`, `index.json` and `docs/` — so unrelated edits in the working
-tree are never swept into it. Nothing is committed when those paths come back
-unchanged, and the commit is never pushed; publishing stays a separate,
-deliberate step.
+The commit is confined to the three paths the build owns — `content/apps/`,
+`static/apps/` and `docs/` — so unrelated edits in the working tree are never
+swept into it. The catalog is not among them: it belongs to the `support`
+submodule and is committed there by `publish.sh`. Nothing is committed when
+those paths come back unchanged, and the commit is never pushed; publishing is
+`./publish.sh`.
 
 Two escape hatches, because a build that always commits is wrong in some
 contexts:
 
-- `./build.sh serve` — preview only, no generate, no commit.
-- `NO_COMMIT=1 ./build.sh` — generate and build, leave the result in the
+- `./build.sh` / `./build.sh serve` — regenerate, then preview on
+  http://127.0.0.1:1111. Writes no `docs/` and commits nothing.
+- `NO_COMMIT=1 ./build.sh build` — write `docs/` but leave the result in the
   working tree. This is also what a detached HEAD gets automatically, since
   committing there would strand the commit.
 
-The generator needs the network on every build. If the fetch fails the build
-stops rather than silently publishing a stale catalog.
+Regenerating needs the network and the `gh` CLI on every build. If either step
+fails the build stops rather than silently publishing a stale catalog.
 
 ## Input
 
+`support/index.json` — the `support` submodule's checkout of
+`trustable-ai/.github`, published for Trustable itself to read at
 `https://raw.githubusercontent.com/trustable-ai/.github/refs/heads/main/index.json`
 
 ```json
@@ -62,29 +73,40 @@ front matter, which fails the build. From each checkout it takes:
 
 - **page body** — `<templates>/<name>.md`, falling back to the application
   repo's `README.md` when that file is absent
-- **icon** — `<templates>/<name>.png`, copied to `static/aipps/<name>.png`.
-  It is the gallery tile *and* the illustration at the top of the detail page,
-  so it is downloaded from GitHub into the site rather than hotlinked; the
-  published pages never reach raw.githubusercontent.com. An application listed
-  under two groups points at only one templates repo (`truk8s` is in `Demo` and
-  `Utilities` but the PNG lives only in `trutil-templates`), so both the icon
-  and the copy are looked up across every checkout before giving up.
+- **icon** — copied to `static/apps/<name>.png`. Two source layouts are in
+  use: a templates repo names the file after the application, `<name>.png`,
+  while an application's own repo publishes it as `screenshot.png` — which is
+  what the catalog's `icon` URLs point at today. `screenshot.png` is only
+  accepted from the application's own checkout, since unlike `<name>.png` it
+  does not identify itself and any other clone's screenshot belongs to a
+  different application. Either is published under `<name>.png` so the page URL
+  does not depend on where the icon came from. It is the gallery tile *and* the
+  illustration at the top of the detail page, so it is downloaded from GitHub
+  into the site rather than hotlinked; the published pages never reach
+  raw.githubusercontent.com. An application listed under two groups points at
+  only one templates repo (`truk8s` is in `Demo` and `Utilities` but the PNG
+  lives only in `trutil-templates`), so both the icon and the copy are looked
+  up across every checkout before giving up.
+
+Icons of applications that have left the catalog are deleted from
+`static/apps/` after generation; otherwise they stay published forever, since
+clearing the content directories does not touch them.
 
 ## Output
 
 ```
-content/aipps/_index.md          hand-written, untouched
-content/aipps/<group>/_index.md  generated section, one per group
-content/aipps/<group>/<name>.md  generated page, one per application
-static/aipps/<name>.png          copied icon
+content/apps/_index.md          hand-written, untouched
+content/apps/<group>/_index.md  generated section, one per group
+content/apps/<group>/<name>.md  generated page, one per application
+static/apps/<name>.png          copied icon
 templates/starter-cards.html       gallery partial, included by landing.html
 ```
 
-Group directories are slugified (`Apps` → `apps`, `Utilities` → `utilities`).
+Group directories are slugified (`Examples` → `examples`, `Utilities` → `utilities`).
 Every generated file opens with a `<!-- generated by generator.py -->` marker
 line inside the TOML frontmatter comment area, and the generator only ever
 deletes directories it recognises as generated, so hand-written content under
-`content/aipps/` survives a regeneration.
+`content/apps/` survives a regeneration.
 
 Page frontmatter:
 
@@ -94,9 +116,9 @@ title = "Mini CRM"
 description = "Mini Customer Relation Manager"
 weight = 20
 [extra]
-icon = "/aipps/minicrm.png"
+icon = "/apps/minicrm.png"
 repo = "https://github.com/trustable-ai/minicrm"
-group = "Apps"
+group = "Examples"
 +++
 ```
 
@@ -117,10 +139,10 @@ An application listed under two groups (`truk8s` is in both `Demo` and
 
 Each index level lists exactly one step down, rather than being a bare title:
 
-- **`/aipps/`** — the **groups only**, one tile per group. It does not
+- **`/apps/`** — the **groups only**, one tile per group. It does not
   descend into the applications: the whole catalog on one page is a wall of
   tiles that buries the structure, and the group tile is the way into it.
-- **`/aipps/<group>/`** — the applications of that group.
+- **`/apps/<group>/`** — the applications of that group.
 
 Both render through the same `starter-cards.html` partial the home page uses,
 so the surfaces cannot drift apart. Two variables select the level: `only`
@@ -142,14 +164,14 @@ applications. A section that has pages of its own now lists those.
 
 `page.html` renders the icon above the prose for any page carrying
 `extra.icon`, so each application page opens with its own screenshot rather
-than with bare text. The image is the copy under `static/aipps/`, never a
+than with bare text. The image is the copy under `static/apps/`, never a
 GitHub URL. Pages without an icon are unchanged.
 
 ## Gallery on the home page
 
-The "Customize AIpps" panel of [landing.html](../templates/landing.html)
+The "Customize Apps" panel of [landing.html](../templates/landing.html)
 drops its three hardcoded columns and includes `starter-cards.html`, which
-walks `content/aipps/`'s subsections. This is pure Zola templating over the
+walks `content/apps/`'s subsections. This is pure Zola templating over the
 generated sections — no data duplicated into the template.
 
 On the home page the groups are **tabbed**: a row of tab buttons, one per
@@ -200,6 +222,6 @@ only letterboxed against the card. The description is
 also stays in the tile's `title`/`aria-label` so it is announced rather than
 being purely visual.
 
-The section index (`content/aipps/_index.md`) keeps its own listing through
+The section index (`content/apps/_index.md`) keeps its own listing through
 the existing `section.html` sidebar, so every generated page is reachable from
-the AIpps nav as well as from the home page.
+the Apps nav as well as from the home page.

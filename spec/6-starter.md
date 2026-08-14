@@ -1,5 +1,10 @@
 # 6 — Rename "Starters" to "AIpps"
 
+> **Superseded by spec/9-apps.md.** "AIpps" was later renamed again to "Apps",
+> so `content/aipps/`, `static/aipps/` and the `/aipps/` URLs described below
+> are now `apps`. This spec is kept as the record of the Starters → AIpps
+> rename; read it for that history, not for current paths.
+
 The starter gallery is rebranded as **AIpps**. This renames the content tree,
 the icon directory, and every user-visible occurrence of the old wording.
 

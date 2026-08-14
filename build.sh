@@ -1,10 +1,15 @@
 #!/bin/bash
-# Build the Trustable site with Zola into docs/ (served by GitHub Pages).
+# Regenerate the Trustable site and preview it — see spec/7-publish.md.
 # Installs zola into ~/.local/bin when it is not already on PATH.
 #
-# Regenerates the AIpps gallery from the trustable-ai catalog first, then
-# commits the result if it changed — see spec/4-generate.md. NO_COMMIT=1 builds
-# without committing.
+#   ./build.sh          regenerate the catalog and gallery, then serve a preview
+#   ./build.sh serve    the same, said explicitly
+#   ./build.sh build    regenerate, write docs/, and commit the result
+#
+# Every path starts by regenerating the catalog from the live GitHub API into
+# support/index.json, so the site can never be generated from a stale one.
+# Publishing what `./build.sh build` commits is ./publish.sh's job.
+# NO_COMMIT=1 builds without committing.
 set -e
 
 ZOLA_VERSION="v0.19.2"
@@ -62,19 +67,34 @@ echo ">> using $("$ZOLA" --version) at $ZOLA"
 
 cd "$HERE"
 
-# `./build.sh serve` previews on http://127.0.0.1:1111 with live reload, and
-# does NOT write docs/ — run `./build.sh` with no argument for that. The port is
-# pinned so the URL is predictable; zola would otherwise drift to a free one.
-if [ "${1:-}" = "serve" ]; then
+MODE="${1:-serve}"
+case "$MODE" in
+serve | build) ;;
+*)
+  echo "usage: $0 [serve|build]" >&2
+  exit 1
+  ;;
+esac
+
+# The catalog is rebuilt from the GitHub API on every run, so the site cannot
+# drift from what the trustable-ai organization looks like today. index.py needs
+# the `gh` CLI and only the standard library, so uv just supplies the
+# interpreter; --no-project stops it treating this repo as a Python project.
+# A failure here stops the build rather than falling back to a stale catalog.
+echo ">> regenerating the starter index"
+uv run --no-project support/index.py
+
+# The gallery is generated from the support/index.json written just above.
+echo ">> generating the Apps gallery"
+./generator.py
+
+# `serve` previews on http://127.0.0.1:1111 with live reload and incremental
+# rebuilds, and does NOT write docs/. The port is pinned so the URL is
+# predictable; zola would otherwise drift to a free one.
+if [ "$MODE" = "serve" ]; then
   echo ">> preview on http://127.0.0.1:1111 (ctrl-c to stop)"
   exec "$ZOLA" serve --port 1111
 fi
-
-# The gallery is regenerated from the live catalog on every build, so the
-# published site cannot drift from what trustable-ai/.github says today. A
-# failed fetch stops the build rather than quietly publishing a stale catalog.
-echo ">> generating the AIpps gallery"
-./generator.py
 
 # Zola wipes its output dir, so CNAME and .nojekyll are re-published from
 # static/ on every build rather than being kept in docs/ by hand.
@@ -97,7 +117,9 @@ if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
   exit 0
 fi
 
-BUILD_PATHS=(content/aipps static/aipps index.json docs)
+# The catalog itself is not here: it belongs to the support submodule and is
+# committed there by publish.sh.
+BUILD_PATHS=(content/apps static/apps docs)
 
 # --porcelain over these paths alone reports both tracked edits and untracked
 # new files (a newly added application page or icon) without touching the
@@ -114,6 +136,6 @@ fi
 git add -- "${BUILD_PATHS[@]}"
 git commit --quiet --only \
   -m "Rebuild the site" \
-  -m "Regenerated the AIpps gallery from the trustable-ai catalog and rebuilt docs/ with zola. Committed by build.sh." \
+  -m "Regenerated the Apps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh; publish with ./publish.sh." \
   -- "${BUILD_PATHS[@]}"
 echo ">> committed $(git rev-parse --short HEAD)"

@@ -197,11 +197,11 @@
         }
       }
 
-      /* ---------- AIpps gallery ---------- */
+      /* ---------- Apps gallery ---------- */
 
       /*
        * Lives here rather than in landing.html because three surfaces render
-       * starter-cards.html: the home page panel, the AIpps index and each
+       * starter-cards.html: the home page panel, the Apps index and each
        * group index. See spec/4-generate.md.
        *
        * One block per group stacked down the panel. The 5% side inset is on
@@ -221,7 +221,7 @@
        * across breakpoints. Measuring against the viewport is what makes it a
        * flat 5%.
        *
-       * Scoped to the panel: inside the docs prose column (the AIpps and
+       * Scoped to the panel: inside the docs prose column (the Apps and
        * group indexes) a 100vw child is wider than its own container, which
        * scrolls the page sideways and collapses the grid to one tile per row.
        * There the 5% is of the prose column, which is what it should be.
@@ -1025,7 +1025,7 @@
           <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
           <li class="step">
             <a class="step-link" href="#start" data-step="start"
-              >Customize AIpps</a
+              >Customize Apps</a
             >
           </li>
           <li class="step" aria-hidden="true"><span class="step-arrow">→</span></li>
@@ -1119,20 +1119,7 @@
 
 <div class="gallery is-tabbed">
   
-  <div class="gallery-tabs" role="tablist" aria-label="AIpp groups">
-    
-    
-    
-    <button
-      class="gallery-tab"
-      type="button"
-      role="tab"
-      id="tab-apps"
-      aria-controls="panel-apps"
-      aria-selected="true"
-    >
-      Apps
-    </button>
+  <div class="gallery-tabs" role="tablist" aria-label="App groups">
     
     
     
@@ -1142,7 +1129,7 @@
       role="tab"
       id="tab-chat"
       aria-controls="panel-chat"
-      aria-selected="false"
+      aria-selected="true"
     >
       Chat
     </button>
@@ -1166,6 +1153,19 @@
       class="gallery-tab"
       type="button"
       role="tab"
+      id="tab-examples"
+      aria-controls="panel-examples"
+      aria-selected="false"
+    >
+      Examples
+    </button>
+    
+    
+    
+    <button
+      class="gallery-tab"
+      type="button"
+      role="tab"
       id="tab-utilities"
       aria-controls="panel-utilities"
       aria-selected="false"
@@ -1175,137 +1175,6 @@
     
   </div>
   
-  
-  
-  
-  <section
-    class="gallery-group"
-    
-    id="panel-apps"
-    role="tabpanel"
-    aria-labelledby="tab-apps"
-    
-  >
-    
-    <ul class="gallery-grid">
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/apps/apistatusmonitor/"
-          aria-label="API Status Monitor — API Status Mpnitor"
-        >
-          <span class="gallery-name">API Status Monitor</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/apistatusmonitor.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">API Status Mpnitor</span>
-            
-          </span>
-        </a>
-      </li>
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/apps/appsuite/"
-          aria-label="App Suite — Simple Productivity App suite"
-        >
-          <span class="gallery-name">App Suite</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/appsuite.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">Simple Productivity App suite</span>
-            
-          </span>
-        </a>
-      </li>
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/apps/minicrm/"
-          aria-label="Mini CRM — Mini Customer Relation Manager"
-        >
-          <span class="gallery-name">Mini CRM</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/minicrm.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">Mini Customer Relation Manager</span>
-            
-          </span>
-        </a>
-      </li>
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/apps/projectdashboard/"
-          aria-label="Project Dashboard — Project Dashboard"
-        >
-          <span class="gallery-name">Project Dashboard</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/projectdashboard.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">Project Dashboard</span>
-            
-          </span>
-        </a>
-      </li>
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/apps/securitycheck/"
-          aria-label="Security Check — Security Check"
-        >
-          <span class="gallery-name">Security Check</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/securitycheck.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">Security Check</span>
-            
-          </span>
-        </a>
-      </li>
-      
-    </ul>
-  </section>
   
   
   
@@ -1323,7 +1192,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/chat/dbmanagerai/"
+          href="https://trustable.it/apps/chat/dbmanagerai/"
           aria-label="AI Database Manager — Manage Databases with AI"
         >
           <span class="gallery-name">AI Database Manager</span>
@@ -1331,7 +1200,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/dbmanagerai.png"
+              src="/apps/dbmanagerai.png"
               alt=""
               loading="lazy"
             />
@@ -1346,7 +1215,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/chat/documentchatai/"
+          href="https://trustable.it/apps/chat/documentchatai/"
           aria-label="AI Document Manager — Manage Documents with AI"
         >
           <span class="gallery-name">AI Document Manager</span>
@@ -1354,7 +1223,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/documentchatai.png"
+              src="/apps/documentchatai.png"
               alt=""
               loading="lazy"
             />
@@ -1369,7 +1238,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/chat/emailmanagerai/"
+          href="https://trustable.it/apps/chat/emailmanagerai/"
           aria-label="AI Email Manager — Manager Email with AI"
         >
           <span class="gallery-name">AI Email Manager</span>
@@ -1377,7 +1246,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/emailmanagerai.png"
+              src="/apps/emailmanagerai.png"
               alt=""
               loading="lazy"
             />
@@ -1408,7 +1277,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/demo/truaicrm/"
+          href="https://trustable.it/apps/demo/truaicrm/"
           aria-label="AI CRM — AI CRM"
         >
           <span class="gallery-name">AI CRM</span>
@@ -1416,7 +1285,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/truaicrm.png"
+              src="/apps/truaicrm.png"
               alt=""
               loading="lazy"
             />
@@ -1431,7 +1300,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/demo/truk8s/"
+          href="https://trustable.it/apps/demo/truk8s/"
           aria-label="Kubernetes Manager — Kubernetes Manager"
         >
           <span class="gallery-name">Kubernetes Manager</span>
@@ -1439,7 +1308,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/truk8s.png"
+              src="/apps/truk8s.png"
               alt=""
               loading="lazy"
             />
@@ -1454,21 +1323,60 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/demo/solarsystem/"
-          aria-label="Solar System — Solar System Simulation"
+          href="https://trustable.it/apps/demo/tetris/"
+          aria-label="Tetris — Tetris Game"
         >
-          <span class="gallery-name">Solar System</span>
+          <span class="gallery-name">Tetris</span>
           <span class="gallery-box">
             
             <img
               class="gallery-icon"
-              src="/aipps/solarsystem.png"
+              src="/apps/tetris.png"
               alt=""
               loading="lazy"
             />
             
             
-            <span class="gallery-note" aria-hidden="true">Solar System Simulation</span>
+            <span class="gallery-note" aria-hidden="true">Tetris Game</span>
+            
+          </span>
+        </a>
+      </li>
+      
+    </ul>
+  </section>
+  
+  
+  
+  <section
+    class="gallery-group"
+    
+    id="panel-examples"
+    role="tabpanel"
+    aria-labelledby="tab-examples"
+    
+  >
+    
+    <ul class="gallery-grid">
+      
+      <li class="gallery-card">
+        
+        <a
+          href="https://trustable.it/apps/examples/apistatusmonitor/"
+          aria-label="API Status Monitor — API Status Mpnitor"
+        >
+          <span class="gallery-name">API Status Monitor</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/apps/apistatusmonitor.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">API Status Mpnitor</span>
             
           </span>
         </a>
@@ -1477,21 +1385,67 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/demo/tetris/"
-          aria-label="Tetris — Tetris Game"
+          href="https://trustable.it/apps/examples/appsuite/"
+          aria-label="App Suite — Simple Productivity App suite"
         >
-          <span class="gallery-name">Tetris</span>
+          <span class="gallery-name">App Suite</span>
           <span class="gallery-box">
             
             <img
               class="gallery-icon"
-              src="/aipps/tetris.png"
+              src="/apps/appsuite.png"
               alt=""
               loading="lazy"
             />
             
             
-            <span class="gallery-note" aria-hidden="true">Tetris Game</span>
+            <span class="gallery-note" aria-hidden="true">Simple Productivity App suite</span>
+            
+          </span>
+        </a>
+      </li>
+      
+      <li class="gallery-card">
+        
+        <a
+          href="https://trustable.it/apps/examples/minicrm/"
+          aria-label="Mini CRM — Mini Customer Relation Manager"
+        >
+          <span class="gallery-name">Mini CRM</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/apps/minicrm.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Mini Customer Relation Manager</span>
+            
+          </span>
+        </a>
+      </li>
+      
+      <li class="gallery-card">
+        
+        <a
+          href="https://trustable.it/apps/examples/projectdashboard/"
+          aria-label="Project Dashboard — Project Dashboard"
+        >
+          <span class="gallery-name">Project Dashboard</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/apps/projectdashboard.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Project Dashboard</span>
             
           </span>
         </a>
@@ -1516,7 +1470,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/utilities/truingest/"
+          href="https://trustable.it/apps/utilities/truingest/"
           aria-label="Document Ingest — Document Ingestion"
         >
           <span class="gallery-name">Document Ingest</span>
@@ -1524,7 +1478,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/truingest.png"
+              src="/apps/truingest.png"
               alt=""
               loading="lazy"
             />
@@ -1539,7 +1493,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/utilities/jsonformatter/"
+          href="https://trustable.it/apps/utilities/jsonformatter/"
           aria-label="JSON Formatter — JSON Formatter"
         >
           <span class="gallery-name">JSON Formatter</span>
@@ -1547,7 +1501,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/jsonformatter.png"
+              src="/apps/jsonformatter.png"
               alt=""
               loading="lazy"
             />
@@ -1562,30 +1516,7 @@
       <li class="gallery-card">
         
         <a
-          href="https://trustable.it/aipps/utilities/truk8s/"
-          aria-label="Kubernetes Manager — Kubernetes Manager"
-        >
-          <span class="gallery-name">Kubernetes Manager</span>
-          <span class="gallery-box">
-            
-            <img
-              class="gallery-icon"
-              src="/aipps/truk8s.png"
-              alt=""
-              loading="lazy"
-            />
-            
-            
-            <span class="gallery-note" aria-hidden="true">Kubernetes Manager</span>
-            
-          </span>
-        </a>
-      </li>
-      
-      <li class="gallery-card">
-        
-        <a
-          href="https://trustable.it/aipps/utilities/urlmetadata/"
+          href="https://trustable.it/apps/utilities/urlmetadata/"
           aria-label="URL Metadata — URL MetaData"
         >
           <span class="gallery-name">URL Metadata</span>
@@ -1593,7 +1524,7 @@
             
             <img
               class="gallery-icon"
-              src="/aipps/urlmetadata.png"
+              src="/apps/urlmetadata.png"
               alt=""
               loading="lazy"
             />
@@ -1661,8 +1592,8 @@
 
 
           <p class="cta-row">
-            <a class="cta" href="https://trustable.it/aipps/"
-              >Browse every AIpp</a
+            <a class="cta" href="https://trustable.it/apps/"
+              >Browse every App</a
             >
           </p>
         </div>
@@ -1871,7 +1802,7 @@
           <a href="https://trustable.it/documentation/">Documentation</a>
           
           
-          <a href="https://trustable.it/aipps/">AIpps</a>
+          <a href="https://trustable.it/apps/">Apps</a>
           
           
           <a href="https://trustable.it/architecture/">Architecture</a>
