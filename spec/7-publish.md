@@ -15,8 +15,10 @@ site is generated from that fresh file, and both are published together.
 ## Notes on the current code
 
 - `support/` is a submodule of `trustable-ai/.github`, checked out on `main`
-  tracking `origin/main`. `support/index.py` writes `index.json` next to itself
-  and has a `--push` flag that commits and pushes it.
+  tracking `origin/main`. `support/index.py` writes `index.json` next to itself.
+  It used to carry a `--push` flag that committed and pushed the file; that is
+  now `publish.sh`'s job alone, so the flag was removed rather than left as a
+  second, divergent way to publish. See spec/8-index.md.
 - `support/index.py` is a plain `#!/usr/bin/env python3` script with no PEP 723
   block. It uses only the standard library plus the `gh` CLI.
 - `generator.py` fetches `INDEX_URL` over HTTP, caches the response in

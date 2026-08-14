@@ -162,10 +162,14 @@ unchecked instead of claiming they are absent.
 
 ```
 ./support/index.py          # regenerate index.json and show what changed
-./support/index.py --push   # also commit and push it to trustable-ai/.github
 ```
 
-A plain run never publishes. `--push` is a no-op when the starter and application
-lists are both unchanged (`generated` alone is not a reason to commit). The
-script refuses to write an index with no starters, so an API hiccup cannot blank
-the published list.
+The script only rewrites the file; it never publishes. Pushing it is
+`./publish.sh` in the website repo, which commits the index here and then
+pushes the site generated from it — see spec/7-publish.md. The run still
+reports whether the starter and application lists actually moved (`generated`
+alone changes every time and is not a real change). The script refuses to write
+an index with no starters, so an API hiccup cannot blank the published list.
+
+`build.sh` runs it before every build, so a normal site build already
+regenerates the index and there is rarely a reason to invoke it by hand.
