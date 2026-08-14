@@ -757,10 +757,77 @@
           alt="AI Email Manager"
         />
         
-        <p>Implement a chat user insterface connecting to a server OpenAI available in
-https://192.168.100:11434/v1.</p>
-<p>The user insterface has an initial velcome screen with a
-configuraration screen and a button “chat”</p>
+        <h1 id="mailo-ai-email-manager">Mailo — AI Email Manager</h1>
+<p>An AI-powered email workspace that connects to your real Gmail account.</p>
+<p>Mailo is a full email client — folders, threads, composer, search — with an AI
+assistant sitting next to it. Anything you can do with the buttons you can also
+ask for in plain language, and the two stay in sync: the assistant acts on the
+same mailbox you are looking at, and the interface updates as it works.</p>
+<p><img src="https://trustable.it/apps/chat/emailmanagerai/screenshot.png" alt="Mailo" /></p>
+<h2 id="sign-in">Sign in</h2>
+<p>You connect with your own Google account. Sign-in goes through Google’s consent
+screen and grants Mailo temporary access to read, modify and send your mail; no
+password or client secret ever reaches the app. The session is re-validated
+against Google on every page load, and you can disconnect at any time from the
+top bar or the sidebar. If no Google client is configured, the app says so
+honestly instead of falling back to fake data.</p>
+<h2 id="the-mail-client">The mail client</h2>
+<p><strong>Folders and labels.</strong> Inbox, Starred, Important, Sent, Drafts, Spam, Trash and
+Archive, each with live counts, plus your own Gmail labels. The sidebar becomes a
+slide-over drawer on small screens, with a bottom navigation bar for the main
+folders.</p>
+<p><strong>Email list.</strong> Messages sorted by date, showing sender, subject, snippet, time,
+and badges for unread, starred, pinned, high-priority and attachments. Search
+filters the current view.</p>
+<p><strong>Thread viewer.</strong> Open a message to read the full conversation with its
+recipients, labels, attachments and body. Reply, Reply All, archive, delete,
+star, pin, mark read or unread, move to a folder, add or remove labels — every
+action goes straight to Gmail. Deleting shows an undo path via Restore.</p>
+<p><strong>Composer.</strong> Write a new message or a reply, with recipients, subject, body and
+attachments, and send it from your own address. Drafts can be saved and picked
+up later.</p>
+<p><strong>Command palette.</strong> Press ⌘K (Ctrl+K) for a quick launcher: ask the assistant,
+jump to a folder, compose, or clear the selection.</p>
+<h2 id="the-ai-assistant">The AI assistant</h2>
+<p>The assistant panel takes plain language and works on the mailbox you have open.</p>
+<p>Ask it to <strong>find</strong> things — unread mail, messages from a person, emails with
+attachments, a full-text search, what’s important right now.</p>
+<p>Ask it to <strong>read for you</strong> — summarize today’s inbox, summarize one message,
+pull out action items, extract deadlines and due dates.</p>
+<p>Ask it to <strong>write</strong> — reply politely or professionally, draft a follow-up,
+rewrite a message, change its tone, translate it into another language.</p>
+<p>Ask it to <strong>tidy up</strong> — delete spam, archive newsletters and promotions, archive
+the whole inbox.</p>
+<p>Answers stream in as markdown while they are generated, and a stop button
+interrupts a response mid-flight. Navigation and lookup questions are answered
+instantly from the mailbox already loaded in the browser; only the writing and
+reasoning tasks go to the language model, which receives the real email as
+context. Suggested prompts are offered when you don’t know what to ask, and
+<code>help</code> lists everything it understands.</p>
+<p>Every action the assistant performs raises a notification in the notification
+center, so you always see what changed.</p>
+<h2 id="the-experience">The experience</h2>
+<p>Dark and light mode, glassy cards, gradient accents and smooth motion
+throughout. Skeleton loaders while the mailbox syncs, clear empty states, and
+honest error states when Gmail can’t be reached or the Google session has
+expired. The layout adapts from a three-pane desktop workspace to a single-pane
+mobile client with drawers and sheets.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>The client is a React and TypeScript single-page app (Vite, Tailwind CSS,
+Framer Motion, TanStack Query) that talks to the Gmail REST API directly with
+your access token. Behind it runs a small serverless backend on Apache
+OpenServerless: one action validates the Google session, another streams the
+language-model responses from any OpenAI-compatible endpoint.</p>
+<p>The backend also carries a self-contained demo mailbox, so the conversational
+side of the app can be exercised end to end without connecting a real Google
+account.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>Set <code>VITE_GOOGLE_CLIENT_ID</code> to a Google OAuth client whose authorized
+JavaScript origin includes the app’s URL. Copy <code>.env.dist</code> to <code>.env</code> and set
+<code>AI_BASE_URL</code>, <code>AI_API_KEY</code> and <code>AI_CHAT_MODEL</code> to point at your model endpoint.</p>
 
 
       </article>
