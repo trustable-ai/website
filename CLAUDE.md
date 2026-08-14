@@ -8,13 +8,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Never implement anything unless you wrote a plan in a spec markdown. The spec can also be created by the user.
 
-Creste if not there a spec documents under spec/<n>-<description> where <n> is incremental.
+Create if not there a spec documents under spec/<n>-<description> where <n> is incremental.
 
-Always update the spec before implementing and create a branch spec-<n> when  implementing.
+Always do a plan and add it to the spec file before implementing and create a branch spec-<n> when  implementing.
 
-Implement only the plan written in the spec <n>, and update the plan if the user asks.
+Implement only the plan written in the spec <n>, keep updating the plan if the user asks.
 
-When the user ask to complete, create a PR, merge it in the main and switch to the updated main.
+When the user ask to complete, bun build, create a PR, merge it in the main  switch to the updated main and push to github to update the site.
+
 
 
 
