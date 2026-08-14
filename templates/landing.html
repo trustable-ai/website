@@ -306,10 +306,11 @@
         text-align: center;
       }
 
-      /* Product mark inside the Start section, below the lede. */
+      /* Product mark inside the Start section: it stands in for the <h2>, so
+         the .lede under it supplies the gap an <h2> would have. */
       .product-logo {
         width: 250px;
-        margin: 0 auto 2rem;
+        margin: 0 auto;
       }
 
       .panel-head {
@@ -483,6 +484,42 @@
         font-size: 1.02rem;
         line-height: 1.55;
         color: var(--muted);
+      }
+
+      /*
+       * The machine band is a figure like the animation above it, so its
+       * caption reuses .anim-caption. Its own margin already sets the gap to
+       * the video, so the figure adds none of its own.
+       */
+      .machines-figure {
+        margin: 0;
+      }
+
+      /* ---------- Build: templates walkthrough ---------- */
+
+      /* Shot above its caption, both centred in the panel. */
+      .templates {
+        margin: 3rem auto 0;
+        max-width: 1080px;
+        display: grid;
+        justify-items: center;
+      }
+
+      .templates-lead {
+        margin: 1.25rem auto 0;
+        max-width: 68ch;
+        text-align: center;
+        font-size: 1.02rem;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+
+      /* Never upscaled past the file's natural 635px. */
+      .templates-shot {
+        width: min(635px, 100%);
+        height: auto;
+        aspect-ratio: 635 / 564;
+        border-radius: 12px;
       }
 
       /* ---------- Scale: three columns joined by arrows ---------- */
@@ -698,10 +735,10 @@
       <section class="panel" id="build" data-panel="build">
         <div class="wrap">
           <div class="panel-head">
-            <h2>Build with AI</h2>
+            <h2>Build with Private AI on your PC</h2>
             <p class="lede">
-              Customize and build your AI application with AI coding with
-              Trustable.
+              Customize and build full stack applications with prompts, using
+              Local, Private or Sovereign AI.
             </p>
           </div>
 
@@ -726,14 +763,35 @@
             </figcaption>
           </figure>
 
-          <img
-            class="machines"
-            src="/trustable-machines.png"
-            alt="The range of machines Trustable runs on, from a laptop to a sovereign cloud."
-            width="1799"
-            height="274"
-            loading="lazy"
-          />
+          <figure class="machines-figure">
+            <img
+              class="machines"
+              src="/trustable-machines.png"
+              alt="The range of machines Trustable runs on, from a laptop to a sovereign cloud."
+              width="1799"
+              height="274"
+              loading="lazy"
+            />
+            <figcaption class="anim-caption">
+              Use your Local AI workstation. No code or data leaves your
+              infrastructure.
+            </figcaption>
+          </figure>
+
+          <figure class="templates">
+            <img
+              class="templates-shot"
+              src="/trustable-templates.png"
+              alt="The Trustable templates panel: a starter's templates listed on the left, the selected template's prompts loaded as editable steps on the right."
+              width="635"
+              height="564"
+              loading="lazy"
+            />
+            <figcaption class="templates-lead">
+              Use templates to build applications from a starter with predefined
+              prompts.
+            </figcaption>
+          </figure>
 
           <p class="cta-row">
             <a class="cta" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
@@ -747,8 +805,9 @@
       <section class="panel" id="start" data-panel="start">
         <div class="wrap">
           {#
-            No <h2>/lede here: the step nav above already names the step, and
-            the group tabs carry the heading for what is below them.
+            No <h2> here: the step nav above already names the step and the
+            product mark stands in for the heading, so the lede hangs off the
+            logo instead.
           #}
           <div class="panel-head">
             <img
@@ -758,6 +817,10 @@
               width="250"
               loading="lazy"
             />
+            <p class="lede">
+              No need to start from scratch. Pick one of our ready-to-use
+              application you can readily customise to your needs with the AI.
+            </p>
           </div>
 
           {% set tabbed = true %}
