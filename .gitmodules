@@ -13,3 +13,7 @@
 [submodule "trutil-templates"]
 	path = trutil-templates
 	url = https://github.com/trustable-ai/trutil-templates
+[submodule "support"]
+	path = support
+	url = https://github.com/trustable-ai/.github
+	branch = main
