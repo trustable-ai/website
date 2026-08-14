@@ -497,8 +497,9 @@
 
       /*
        * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
-       * Bold uppercase is the closest web font, so "IT is …" reads as part of
-       * the mark rather than as page copy set next to it.
+       * Bold is the closest web font, so "It is …" reads as part of the mark
+       * rather than as page copy set next to it. The words are set as written
+       * — sentence case, not shouted — so the lockup reads "It is Trustable".
        */
       .hero-title {
         display: flex;
@@ -509,7 +510,6 @@
         font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
         font-size: clamp(1.8rem, 1.1rem + 3vw, 3.4rem);
         font-weight: 700;
-        text-transform: uppercase;
         letter-spacing: 0.04em;
       }
 
@@ -521,10 +521,9 @@
       }
 
       /*
-       * "is" is the small connective part of "IT is trustable": two thirds the
-       * size of the shouted IT, lowercase against the block's uppercase, and
-       * set on the wordmark's own optical centre rather than on the baseline
-       * of a word half again its height.
+       * "is" is the small connective part of "It is Trustable": two thirds the
+       * size of the words around it, and set on the wordmark's own optical
+       * centre rather than on the baseline of a word half again its height.
        *
        * The nudge is needed because the logo file carries vertical padding, so
        * flex-centring on the image box leaves the words visibly high against
@@ -535,16 +534,81 @@
         font-size: 0.66em;
         line-height: 1;
         translate: 0 0.08em;
-        text-transform: lowercase;
         letter-spacing: 0.02em;
         color: var(--muted);
       }
 
+      /*
+       * The motto composes through four messages rather than stating one. The
+       * height is reserved for the longest of them at the current width, so
+       * the step nav below never shifts as lines type and clear; without that
+       * the whole page jumps on every message change.
+       */
       .motto {
         margin: 1rem 0 0;
         font-size: clamp(1rem, 0.85rem + 0.7vw, 1.35rem);
         font-weight: 500;
         color: var(--muted);
+        min-height: 2.8em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /*
+       * Until the script takes over, the four messages are a plain list: with
+       * no JavaScript, or with reduced motion, the copy is all readable at
+       * once instead of being trapped behind an animation that never runs.
+       */
+      .motto-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 1.1rem;
+        justify-content: center;
+      }
+
+      /* The composing line: one message at a time, with a blinking caret. */
+      .motto-line {
+        display: inline-block;
+        text-align: center;
+      }
+
+      .motto-caret {
+        display: inline-block;
+        width: 0.08em;
+        height: 1.1em;
+        margin-left: 0.06em;
+        translate: 0 0.16em;
+        background: var(--logo-blue);
+        animation: motto-blink 1s steps(1, end) infinite;
+      }
+
+      @keyframes motto-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* Reachable by screen readers without exposing the half-typed line. */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .motto-caret {
+          animation: none;
+        }
       }
 
       /*
@@ -1001,7 +1065,7 @@
     <header class="masthead">
       <div class="wrap">
         <h1 class="hero-title">
-          <span class="hero-word">IT</span>
+          <span class="hero-word">It</span>
           <span class="hero-word hero-small">is</span>
           <img
             class="hero-logo"
@@ -1010,7 +1074,15 @@
             width="420"
           />
         </h1>
-        <p class="motto">Lovable-like experience for Private AI</p>
+        
+        <div class="motto" id="motto">
+          <ul class="motto-list" id="motto-list">
+            <li>Build Apps with Private AI on your PC</li>
+            <li>Keep your code and data under your control</li>
+            <li>Enjoy a Lovable-like experience for Private AI</li>
+            <li>Deploy in your Server, Data Center or Sovereign Cloud</li>
+          </ul>
+        </div>
       </div>
     </header>
 
@@ -1785,6 +1857,100 @@
         var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
         if (reduced.matches) stopped = true;
         else play();
+      })();
+
+      /*
+       * The motto composes one message at a time: type it, hold it, erase it,
+       * move on. The messages come out of the markup rather than being
+       * repeated here, so the no-JS list stays the single source of the copy.
+       */
+      (function () {
+        var TYPE = 45;
+        var ERASE = 25;
+        var HOLD = 2200;
+        var GAP = 400;
+
+        var motto = document.getElementById("motto");
+        var list = document.getElementById("motto-list");
+        if (!motto || !list) return;
+
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (reduced.matches) return;
+
+        var messages = [].map.call(list.children, function (item) {
+          return item.textContent.trim();
+        });
+        if (!messages.length) return;
+
+        /*
+         * The animated line is hidden from assistive tech — a half-composed
+         * string is noise to a screen reader — and the full list stays in the
+         * DOM, visually hidden, as the accessible copy.
+         */
+        list.classList.remove("motto-list");
+        list.classList.add("visually-hidden");
+
+        var line = document.createElement("span");
+        line.className = "motto-line";
+        line.setAttribute("aria-hidden", "true");
+
+        var text = document.createTextNode("");
+        var caret = document.createElement("span");
+        caret.className = "motto-caret";
+        line.appendChild(text);
+        line.appendChild(caret);
+        motto.insertBefore(line, list);
+
+        var index = 0;
+        var count = 0;
+        var erasing = false;
+        var timer = null;
+
+        function step() {
+          var message = messages[index];
+          var wait;
+
+          if (!erasing) {
+            count += 1;
+            text.nodeValue = message.slice(0, count);
+            if (count === message.length) {
+              erasing = true;
+              wait = HOLD;
+            } else {
+              wait = TYPE;
+            }
+          } else {
+            count -= 1;
+            text.nodeValue = message.slice(0, count);
+            if (count === 0) {
+              erasing = false;
+              index = (index + 1) % messages.length;
+              wait = GAP;
+            } else {
+              wait = ERASE;
+            }
+          }
+
+          timer = setTimeout(step, wait);
+        }
+
+        function play() {
+          if (timer === null) timer = setTimeout(step, GAP);
+        }
+
+        function pause() {
+          if (timer === null) return;
+          clearTimeout(timer);
+          timer = null;
+        }
+
+        // Don't type into a backgrounded tab.
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) pause();
+          else play();
+        });
+
+        play();
       })();
     </script>
 
