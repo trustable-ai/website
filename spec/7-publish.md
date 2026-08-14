@@ -46,7 +46,7 @@ Replace the current single path with the pipeline below. The zola bootstrap
 
 `./build.sh build` keeps the publishing path: same steps 1 and 2, then
 `zola build --output-dir docs --force`, then the existing confined commit of
-`content/aipps static/aipps index.json docs`. `NO_COMMIT=1` and the detached
+`content/apps static/apps index.json docs`. `NO_COMMIT=1` and the detached
 HEAD guard keep working as they do now. The committed path list drops the root
 `index.json` and gains nothing — `support/index.json` belongs to the submodule
 and is committed there by `publish.sh`.
@@ -74,10 +74,10 @@ correctly from the live catalog without fixing them.
   applications lost their icon. Accept `screenshot.png` too — but only from the
   application's own checkout, since unlike `<name>.png` it is not
   self-identifying and any other clone's screenshot belongs to something else.
-  Publish either as `/aipps/<name>.png` so the page URL does not depend on
+  Publish either as `/apps/<name>.png` so the page URL does not depend on
   which layout the icon came from.
 - **Stale icons were never pruned.** `clean_generated()` clears content
-  directories but nothing cleans `static/aipps/`, so an application that leaves
+  directories but nothing cleans `static/apps/`, so an application that leaves
   the catalog keeps its icon published forever (`securitycheck.png` and
   `solarsystem.png` were still there). Add `clean_icons()`, run after
   generation, deleting any `*.png` not named by a current application.

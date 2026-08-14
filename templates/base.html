@@ -197,11 +197,11 @@
         }
       }
 
-      /* ---------- AIpps gallery ---------- */
+      /* ---------- Apps gallery ---------- */
 
       /*
        * Lives here rather than in landing.html because three surfaces render
-       * starter-cards.html: the home page panel, the AIpps index and each
+       * starter-cards.html: the home page panel, the Apps index and each
        * group index. See spec/4-generate.md.
        *
        * One block per group stacked down the panel. The 5% side inset is on
@@ -221,7 +221,7 @@
        * across breakpoints. Measuring against the viewport is what makes it a
        * flat 5%.
        *
-       * Scoped to the panel: inside the docs prose column (the AIpps and
+       * Scoped to the panel: inside the docs prose column (the Apps and
        * group indexes) a 100vw child is wider than its own container, which
        * scrolls the page sideways and collapses the grid to one tile per row.
        * There the 5% is of the prose column, which is what it should be.
@@ -450,7 +450,7 @@
           <img src="/logo-trustable.png" alt="Trustable" />
         </a>
         <nav class="sitenav" aria-label="Site">
-          {% for path in ["documentation/_index.md", "aipps/_index.md", "architecture/_index.md"] %}
+          {% for path in ["documentation/_index.md", "apps/_index.md", "architecture/_index.md"] %}
           {% set item = get_section(path=path, metadata_only=true) %}
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}
@@ -473,7 +473,7 @@
           removed section fails the build instead of leaving a dead link.
         #}
         <nav class="footer-nav" aria-label="Documentation">
-          {% for path in ["documentation/_index.md", "aipps/_index.md", "architecture/_index.md"] %}
+          {% for path in ["documentation/_index.md", "apps/_index.md", "architecture/_index.md"] %}
           {% set item = get_section(path=path, metadata_only=true) %}
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}

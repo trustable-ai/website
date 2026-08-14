@@ -85,7 +85,7 @@ echo ">> regenerating the starter index"
 uv run --no-project support/index.py
 
 # The gallery is generated from the support/index.json written just above.
-echo ">> generating the AIpps gallery"
+echo ">> generating the Apps gallery"
 ./generator.py
 
 # `serve` previews on http://127.0.0.1:1111 with live reload and incremental
@@ -119,7 +119,7 @@ fi
 
 # The catalog itself is not here: it belongs to the support submodule and is
 # committed there by publish.sh.
-BUILD_PATHS=(content/aipps static/aipps docs)
+BUILD_PATHS=(content/apps static/apps docs)
 
 # --porcelain over these paths alone reports both tracked edits and untracked
 # new files (a newly added application page or icon) without touching the
@@ -136,6 +136,6 @@ fi
 git add -- "${BUILD_PATHS[@]}"
 git commit --quiet --only \
   -m "Rebuild the site" \
-  -m "Regenerated the AIpps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh; publish with ./publish.sh." \
+  -m "Regenerated the Apps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh; publish with ./publish.sh." \
   -- "${BUILD_PATHS[@]}"
 echo ">> committed $(git rev-parse --short HEAD)"
