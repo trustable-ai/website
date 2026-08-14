@@ -8,4 +8,4 @@ group = "Demo"
 repo = "https://github.com/trustable-ai/truk8s"
 icon = "/aipps/truk8s.png"
 +++
-todo
+Kubernetes Manager

@@ -734,15 +734,6 @@
             
             <li>
               <a
-                href="https://trustable.it/aipps/demo/solarsystem/"
-                
-                >Solar System</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
                 href="https://trustable.it/aipps/demo/tetris/"
                 
                 >Tetris</a
@@ -766,7 +757,63 @@
           alt="AI CRM"
         />
         
-        <p>todo</p>
+        <h1 id="trustable-workspace">Trustable Workspace</h1>
+<p>Piattaforma serverless con frontend React/TypeScript e backend Python actions.</p>
+<h2 id="architettura">Architettura</h2>
+<ul>
+<li><strong>Frontend</strong>: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui</li>
+<li><strong>Backend</strong>: Python serverless actions (<code>packages/&lt;package&gt;/&lt;action&gt;/</code>)</li>
+<li><strong>Deployment</strong>: Continuo - non serve avviare dev server manualmente</li>
+</ul>
+<h2 id="comandi">Comandi</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> run build      </span><span style="color:#a7adba;"># Build produzione (output: /web)
+</span><span style="color:#bf616a;">npm</span><span> run lint       </span><span style="color:#a7adba;"># Controlli ESLint
+</span><span style="color:#bf616a;">npm</span><span> run preview    </span><span style="color:#a7adba;"># Anteprima build produzione
+</span></code></pre>
+<h2 id="backend-actions">Backend Actions</h2>
+<h3 id="creare-nuova-action-pubblica">Creare nuova action pubblica</h3>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">action-new</span><span> v1/mio-action
+</span></code></pre>
+<p>Endpoint risultante: <code>/api/my/v1/mio-action</code></p>
+<h3 id="servizi-disponibili">Servizi disponibili</h3>
+<ul>
+<li><strong>PostgreSQL</strong>: <code>action-add-postgresql v1/mio-action</code></li>
+<li><strong>Redis</strong>: <code>action-add-redis v1/mio-action</code></li>
+<li><strong>S3</strong>: <code>action-add-s3 v1/mio-action</code></li>
+<li><strong>Milvus</strong>: <code>action-add-milvus v1/mio-action</code></li>
+</ul>
+<h3 id="azioni-private-inizializzazione">Azioni private (inizializzazione)</h3>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">action-new</span><span> init/setup-db</span><span style="color:#bf616a;"> --public</span><span>=false
+</span></code></pre>
+<p>Usare <code>action-invoke</code> per eseguire azioni private.</p>
+<h2 id="test">Test</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># Unit test
+</span><span style="color:#bf616a;">pytest</span><span> tests/
+</span><span>
+</span><span style="color:#a7adba;"># Integration test (richiede OPSDEV_HOST)
+</span><span style="color:#bf616a;">OPSDEV_HOST</span><span>=</span><span style="color:#a3be8c;">https://dev.example.com </span><span style="color:#bf616a;">pytest</span><span> tests/</span><span style="color:#bf616a;"> -k</span><span> integration
+</span></code></pre>
+<h2 id="struttura-progetto">Struttura progetto</h2>
+<pre style="background-color:#eff1f5;color:#4f5b66;"><code><span>src/                    # Frontend source
+</span><span>├── components/ui/      # shadcn/ui components
+</span><span>├── pages/             # Page components
+</span><span>├── hooks/             # Custom React hooks
+</span><span>└── lib/               # Utility functions
+</span><span>
+</span><span>packages/              # Backend actions
+</span><span>├── v1/                # Public API package
+</span><span>└── init/              # Private initialization actions
+</span><span>
+</span><span>tests/                 # Python test suite
+</span><span>web/                   # Production build output
+</span></code></pre>
+<h2 id="documentazione">Documentazione</h2>
+<ul>
+<li><code>rules.md</code> - Regole operative del progetto</li>
+<li><code>skill.md</code> - Skill di progetto per agenti AI</li>
+<li><code>docs/architecture.md</code> - Documentazione architetturale</li>
+<li><code>agents.md</code> - Log delle attivita’ svolte</li>
+</ul>
 
 
       </article>

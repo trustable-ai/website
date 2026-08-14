@@ -8,4 +8,79 @@ group = "Demo"
 repo = "https://github.com/trustable-ai/truaicrm"
 icon = "/aipps/truaicrm.png"
 +++
-todo
+# Trustable Workspace
+
+Piattaforma serverless con frontend React/TypeScript e backend Python actions.
+
+## Architettura
+
+- **Frontend**: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui
+- **Backend**: Python serverless actions (`packages/<package>/<action>/`)
+- **Deployment**: Continuo - non serve avviare dev server manualmente
+
+## Comandi
+
+```bash
+npm run build      # Build produzione (output: /web)
+npm run lint       # Controlli ESLint
+npm run preview    # Anteprima build produzione
+```
+
+## Backend Actions
+
+### Creare nuova action pubblica
+
+```bash
+action-new v1/mio-action
+```
+
+Endpoint risultante: `/api/my/v1/mio-action`
+
+### Servizi disponibili
+
+- **PostgreSQL**: `action-add-postgresql v1/mio-action`
+- **Redis**: `action-add-redis v1/mio-action`
+- **S3**: `action-add-s3 v1/mio-action`
+- **Milvus**: `action-add-milvus v1/mio-action`
+
+### Azioni private (inizializzazione)
+
+```bash
+action-new init/setup-db --public=false
+```
+
+Usare `action-invoke` per eseguire azioni private.
+
+## Test
+
+```bash
+# Unit test
+pytest tests/
+
+# Integration test (richiede OPSDEV_HOST)
+OPSDEV_HOST=https://dev.example.com pytest tests/ -k integration
+```
+
+## Struttura progetto
+
+```
+src/                    # Frontend source
+├── components/ui/      # shadcn/ui components
+├── pages/             # Page components
+├── hooks/             # Custom React hooks
+└── lib/               # Utility functions
+
+packages/              # Backend actions
+├── v1/                # Public API package
+└── init/              # Private initialization actions
+
+tests/                 # Python test suite
+web/                   # Production build output
+```
+
+## Documentazione
+
+- `rules.md` - Regole operative del progetto
+- `skill.md` - Skill di progetto per agenti AI
+- `docs/architecture.md` - Documentazione architetturale
+- `agents.md` - Log delle attivita' svolte

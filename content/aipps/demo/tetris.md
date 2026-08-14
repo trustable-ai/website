@@ -8,4 +8,4 @@ group = "Demo"
 repo = "https://github.com/trustable-ai/tetris"
 icon = "/aipps/tetris.png"
 +++
-todo
+Tetris Game

@@ -7,24 +7,6 @@
         <loc>https://trustable.it/aipps/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/aipps/apps/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/apps/apistatusmonitor/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/apps/appsuite/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/apps/minicrm/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/apps/projectdashboard/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/apps/securitycheck/</loc>
-    </url>
-    <url>
         <loc>https://trustable.it/aipps/chat/</loc>
     </url>
     <url>
@@ -40,9 +22,6 @@
         <loc>https://trustable.it/aipps/demo/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/aipps/demo/solarsystem/</loc>
-    </url>
-    <url>
         <loc>https://trustable.it/aipps/demo/tetris/</loc>
     </url>
     <url>
@@ -52,6 +31,21 @@
         <loc>https://trustable.it/aipps/demo/truk8s/</loc>
     </url>
     <url>
+        <loc>https://trustable.it/aipps/examples/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/aipps/examples/apistatusmonitor/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/aipps/examples/appsuite/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/aipps/examples/minicrm/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/aipps/examples/projectdashboard/</loc>
+    </url>
+    <url>
         <loc>https://trustable.it/aipps/utilities/</loc>
     </url>
     <url>
@@ -59,9 +53,6 @@
     </url>
     <url>
         <loc>https://trustable.it/aipps/utilities/truingest/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/aipps/utilities/truk8s/</loc>
     </url>
     <url>
         <loc>https://trustable.it/aipps/utilities/urlmetadata/</loc>
