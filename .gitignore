@@ -3,3 +3,4 @@
 public/
 .templates/
 playground.md
+__pycache__/

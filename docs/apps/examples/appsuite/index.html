@@ -762,11 +762,59 @@
         
         <img
           class="page-hero"
-          src="/apps/appsuite.png"
+          src="/images/trustable-ai-appsuite.png"
           alt="App Suite"
         />
         
-        <p>Simple Productivity App suite</p>
+        <p>Four small everyday tools behind one menu: a todo list, an address book, a
+pomodoro timer and a unit converter.</p>
+<p>The home page is a simple card menu — pick a tool, and every tool has a link
+back. Nothing is nested more than one level deep.</p>
+<h2 id="todo">Todo</h2>
+<p>Type what needs doing and add it. Each item can be ticked complete, renamed —
+double-click the text to edit in place — or deleted. A line at the top keeps
+count of how many are still open out of the total, and an empty list says so
+rather than showing nothing.</p>
+<p>Todos are stored server-side, so they’re still there next time you open the app.</p>
+<h2 id="address-book">Address Book</h2>
+<p>Contacts with a name, email, phone and free-form notes; only the name is
+required. Add one from the form at the top, edit any contact inline with the
+full set of fields, or delete it. Like the todo list, it persists between
+sessions and tells you plainly when it’s empty.</p>
+<h2 id="pomodoro-timer">Pomodoro Timer</h2>
+<p>A work/break countdown with the classic defaults: 25 minutes of work, a 5-minute
+short break, a 15-minute long break, and a long break after every 4 rounds. All
+four are adjustable.</p>
+<p>Start, pause, reset the current phase, or skip straight to the next one. The
+timer advances the cycle for you — work, short break, work, and a long break when
+the round count comes due — tracking completed rounds and showing progress
+through the current phase. “Reset everything” puts the whole cycle back to the
+start.</p>
+<h2 id="unit-converter">Unit Converter</h2>
+<p>Convert between units across eight categories: <strong>length</strong>, <strong>weight</strong>,
+<strong>volume</strong>, <strong>area</strong>, <strong>speed</strong>, <strong>time</strong>, <strong>digital storage</strong> and
+<strong>temperature</strong>. Pick a category, choose the units on each side, type a number,
+and the result appears as you type. A swap button flips the two units.</p>
+<p>Length alone covers millimetres through nautical miles; temperature handles
+Celsius, Fahrenheit, Kelvin and Rankine with real conversion formulas rather than
+ratios, so it doesn’t get the offsets wrong.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS, shadcn/ui) over two
+Python actions on Apache OpenServerless:</p>
+<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
+<tr><td><code>GET/POST /api/my/v1/todos</code>, <code>PUT/DELETE /api/my/v1/todos/&lt;id&gt;</code></td><td>list, create, update and delete todos</td></tr>
+<tr><td><code>GET/POST /api/my/v1/contacts</code>, <code>PUT/DELETE /api/my/v1/contacts/&lt;id&gt;</code></td><td>the same for contacts</td></tr>
+</tbody></table>
+<p>Both are backed by <strong>PostgreSQL</strong>, with a <code>setup/database</code> action that creates
+the <code>todos</code> and <code>contacts</code> tables if they don’t exist — safe to run repeatedly.</p>
+<p>The pomodoro timer and the unit converter need no backend at all; they run
+entirely in the browser.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>The todo list and address book need PostgreSQL configured; run the setup action
+once to create the tables. The timer and converter work immediately.</p>
 
 
       </article>

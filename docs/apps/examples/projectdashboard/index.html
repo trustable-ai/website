@@ -762,11 +762,76 @@
         
         <img
           class="page-hero"
-          src="/apps/projectdashboard.png"
+          src="/images/trustable-ai-projectdashboard.png"
           alt="Project Dashboard"
         />
         
-        <p>Project Dashboard</p>
+        <h1 id="project-dashboard-task">Project Dashboard Task</h1>
+<p>A task tracker with a statistics dashboard in front of it: see where the work
+stands, click the number that worries you, and land on exactly those tasks.</p>
+<p>Built mobile-first — the same app works from a 320-pixel phone to a wide desktop
+without horizontal scrolling, with a sidebar on desktop and a slide-out drawer on
+mobile.</p>
+<h2 id="dashboard">Dashboard</h2>
+<p>Five cards across the top: <strong>Total</strong>, <strong>Completed</strong> (with the completion
+percentage), <strong>Pending</strong>, <strong>Overdue</strong> and <strong>Completion</strong>. Every one is
+clickable — pressing it takes you to the Tasks page with the matching filter
+already applied and preserved, so “3 overdue” is one tap from the three tasks in
+question.</p>
+<p>Below them, two breakdowns — <strong>by priority</strong> and <strong>by category</strong> — showing how
+the work is distributed as proportional bars. Those are clickable too, and filter
+the Tasks page the same way.</p>
+<p>Last comes <strong>Upcoming</strong>: the next four unfinished tasks by due date, as cards you
+can act on without leaving the dashboard. Every statistic recalculates itself as
+soon as anything changes.</p>
+<h2 id="tasks">Tasks</h2>
+<p><strong>Search</strong> across title, description and category, updating as you type. Filter
+by <strong>status</strong> (To Do, In Progress, Completed, or “pending” meaning anything not
+finished), by <strong>priority</strong>, by <strong>category</strong>, and with an <strong>overdue only</strong> toggle.
+Filters combine, and the ones you arrived with from the dashboard stay applied.</p>
+<p>Each task shows its title, description, category, due date, and colour-coded
+status and priority badges. Overdue tasks are called out. A task carries a title,
+description, category, priority (low, medium, high), status (To Do, In Progress,
+Completed), a due date and its creation date.</p>
+<p>The action on a card advances the task through its lifecycle — <strong>Start</strong> on a
+to-do, <strong>Complete</strong> on one in progress — with <strong>Reopen</strong> to send a finished task
+back. <strong>Edit</strong> opens the full form; <strong>Delete</strong> removes it. New tasks are created
+from a dialog with the same form.</p>
+<p>Loading, empty and error states are all explicit: a spinner while the list
+loads, “No tasks match the current search or filters” when nothing does, and a
+readable message when the backend can’t be reached. Touch targets are at least
+44 by 44 pixels throughout.</p>
+<h2 id="where-the-data-comes-from">Where the data comes from</h2>
+<p>The app tells you. A small label on the dashboard and the Tasks page shows
+whether the list you’re looking at came <strong>via mongo</strong>, <strong>via redis</strong>, or was
+<strong>served from cache</strong> — useful when you want to know whether you’re seeing fresh
+data or a cached list.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS, React Router), with
+task operations routed through a single gateway in the services layer so
+creates, updates, deletes and status changes all go through one path.</p>
+<p>Behind it is one Python action on Apache OpenServerless:</p>
+<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
+<tr><td><code>GET /api/my/v1/tasks</code></td><td>list and search, with <code>status</code>, <code>priority</code>, <code>category</code>, <code>q</code> and <code>overdue</code> filters</td></tr>
+<tr><td><code>POST /api/my/v1/tasks</code></td><td>create</td></tr>
+<tr><td><code>PUT /api/my/v1/tasks/&lt;id&gt;</code></td><td>update</td></tr>
+<tr><td><code>DELETE /api/my/v1/tasks/&lt;id&gt;</code></td><td>delete</td></tr>
+</tbody></table>
+<p><strong>MongoDB</strong> is the primary store. <strong>Redis</strong> does two jobs: it caches list and
+search results for 60 seconds, invalidated on every write, and it acts as a
+complete fallback store — if MongoDB is unreachable, reads and writes switch
+to Redis transparently so the app keeps working rather than failing. Every
+response says which store served it, which is where the UI’s badge comes from.</p>
+<p>Two supporting actions round it out: <code>setup/database</code> creates the collection and
+its indexes and seeds starter tasks exactly once (falling back to seeding Redis
+when Mongo is down), and <code>v1/mongo-check</code> is a diagnostic for working out which
+authentication mechanism the Mongo endpoint accepts. Both are safe to re-run.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>The backend needs MongoDB and Redis configured; run the setup action once to
+create the store and seed it. The app opens on the dashboard.</p>
 
 
       </article>

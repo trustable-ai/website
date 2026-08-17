@@ -753,11 +753,54 @@
         
         <img
           class="page-hero"
-          src="/apps/tetris.png"
+          src="/images/trustable-ai-tetris.png"
           alt="Tetris"
         />
         
-        <p>Tetris Game</p>
+        <p>A classic block puzzle game, playable in the browser.</p>
+<p>Pieces fall into a ten-by-twenty well; you slide and rotate them to complete
+horizontal lines, which clear and score. The faster you clear, the faster
+everything falls.</p>
+<h2 id="playing">Playing</h2>
+<p>The title screen has one button: <strong>Play Tetris</strong>. From there you’re straight
+into a game — no menus, no setup.</p>
+<p><strong>Controls</strong></p>
+<table><thead><tr><th>Key</th><th>Does</th></tr></thead><tbody>
+<tr><td>← →</td><td>Move left and right</td></tr>
+<tr><td>↑</td><td>Rotate</td></tr>
+<tr><td>↓</td><td>Soft drop — nudge the piece down a row</td></tr>
+<tr><td>Space</td><td>Hard drop — slam it to the bottom and lock it</td></tr>
+<tr><td>P</td><td>Pause and resume</td></tr>
+</tbody></table>
+<p>The same five moves are mirrored as on-screen buttons under the board, so the
+game is playable by touch or mouse as well as by keyboard.</p>
+<p>Alongside the board sit <strong>Pause</strong>, <strong>Restart</strong> and <strong>Back</strong>, a preview of the
+<strong>next</strong> piece, and a panel tracking <strong>score</strong>, <strong>lines</strong> and <strong>level</strong>. Pausing
+dims the board and puts a “Paused” overlay across it.</p>
+<h2 id="how-it-plays">How it plays</h2>
+<p>All seven tetrominoes are here — I, O, T, S, Z, J and L — each in its
+traditional colour, from the cyan I-piece to the orange L.</p>
+<p><strong>Scoring</strong> rewards greedy clears. A single line is worth 40 points, a double
+100, a triple 300, and clearing four rows at once — a tetris — is worth 1200.
+Every clear is then multiplied by your current level, so the same stack is worth
+far more later in a game.</p>
+<p><strong>Levelling</strong> happens every ten lines. Each new level shortens the drop interval
+by 50 milliseconds, from a leisurely 800 down to a floor of 100, so the game
+tightens steadily rather than spiking.</p>
+<p><strong>Game over</strong> comes when a fresh piece has nowhere to spawn. A dialog shows your
+final score, lines and level, with <strong>Play Again</strong> to start over. Scores live in
+the session only — nothing is saved between games.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS), rendered as a CSS
+grid of coloured cells — no canvas, no game engine, no external assets. The
+board, collision detection, rotation, line clearing and scoring are plain
+functions; the game loop is a single interval whose delay is the current drop
+speed. It runs entirely in the browser with no backend.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>Open the page, press Play Tetris, and use the arrow keys.</p>
 
 
       </article>
