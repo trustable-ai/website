@@ -762,11 +762,79 @@
         
         <img
           class="page-hero"
-          src="/apps/apistatusmonitor.png"
+          src="/images/trustable-ai-apistatusmonitor.png"
           alt="API Status Monitor"
         />
         
-        <p>API Status Mpnitor</p>
+        <h1 id="statuspulse-api-monitoring">StatusPulse — API Monitoring</h1>
+<p>Keep an eye on your HTTP endpoints: register the URLs you care about, check
+them, and see whether they answered, how fast, and what went wrong when they
+didn’t.</p>
+<p>Checks are real — the backend performs an actual HTTP request to your URL,
+times it, and records the outcome. Nothing is simulated.</p>
+<h2 id="dashboard">Dashboard</h2>
+<p>The landing page counts your endpoints at a glance: total monitors, how many
+are currently online, and how many are offline or unreachable. Beside it sits an
+uptime summary and a <strong>Recent failures</strong> panel listing the latest failed checks
+across every monitor, so a problem anywhere shows up on the first screen.</p>
+<h2 id="monitors">Monitors</h2>
+<p><strong>Create a monitor</strong> with a name and a URL. The form validates as you go: a name
+is required and capped at 80 characters, and the URL must be a real <code>http</code> or
+<code>https</code> address — bad input is rejected with an explanation rather than silently
+saved.</p>
+<p><strong>Each monitor is a card</strong> showing its name, URL, current status (Online,
+Offline or Unknown until first checked), the time of the last check, and the
+response time in milliseconds. A colour-coded badge makes the state readable at
+a distance.</p>
+<p><strong>Check Now</strong> runs the check on demand. The button shows progress, and only that
+monitor’s card updates when the result comes back. <strong>Delete</strong> removes a monitor.
+Until you create your first one, the page shows an empty state pointing you at
+the form.</p>
+<h2 id="monitor-details">Monitor details</h2>
+<p>Click through from a card to a full page for that endpoint:</p>
+<ul>
+<li>its current status, URL and last response time, with a Check Now button that
+also refreshes the page’s data</li>
+<li><strong>uptime percentage</strong>, computed from the recorded checks</li>
+<li>a <strong>response-time chart</strong> — one bar per check, oldest to newest, scaled to the
+slowest response, coloured green for successful checks and red for failures,
+with the exact time, duration and status on hover</li>
+<li>a <strong>history table</strong> of recent checks: time, status, response time, and the
+error message when there was one</li>
+</ul>
+<p>Empty and error states are explicit throughout — “No response time data yet. Run
+a check to start collecting metrics” rather than a blank panel.</p>
+<h2 id="settings">Settings</h2>
+<p>Application preferences: check interval, notification toggle, and light/dark
+appearance. These are local UI preferences — checks are run on demand from the
+monitor cards; there is no scheduler polling in the background yet.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>The interface is a React and TypeScript single-page app (Vite, Tailwind CSS)
+with a sidebar navigation across Dashboard, Monitors and Settings, and a
+responsive layout that collapses on small screens.</p>
+<p>Behind it runs a Python API on Apache OpenServerless, backed by three stores,
+each doing what it is good at:</p>
+<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
+<tr><td><code>GET/POST/DELETE /api/my/v1/monitors</code></td><td>list, create and delete monitors</td></tr>
+<tr><td><code>POST /api/my/v1/check</code></td><td>run a real HTTP check and record the result</td></tr>
+<tr><td><code>GET /api/my/v1/history</code></td><td>a monitor’s check history, or recent failures across all monitors</td></tr>
+</tbody></table>
+<p>A check issues an HTTP GET with a 10-second timeout, treats any 2xx or 3xx as
+online, captures the failure reason otherwise (<code>HTTP 503</code>, a DNS or connection
+error), and measures elapsed time in milliseconds. The result is written to
+<strong>PostgreSQL</strong> as the monitor’s current state, cached in <strong>Redis</strong> for an hour,
+and appended to <strong>MongoDB</strong> as a history record. History is best-effort: if it
+can’t be written, the live status still stands.</p>
+<p>Two idempotent setup actions prepare the stores — <code>setup/database</code> creates the
+<code>monitors</code> table, <code>setup/history</code> creates the index on the <code>check_history</code>
+collection that makes per-monitor and recent-failure lookups fast.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>The backend needs PostgreSQL, Redis and MongoDB configured; run the two setup
+actions once before the first check. Then create a monitor, press Check Now, and
+watch its history build up.</p>
 
 
       </article>

@@ -79,9 +79,15 @@
         <loc>https://trustable.it/documentation/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/documentation/applications/</loc>
+        <loc>https://trustable.it/documentation/config/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/documentation/provider/</loc>
+        <loc>https://trustable.it/documentation/edit/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/documentation/list/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/documentation/setup/</loc>
     </url>
 </urlset>

@@ -1,37 +1,38 @@
 # 4 — Generate the Apps gallery
 
-`generator.py` is a [uv](https://docs.astral.sh/uv/) script with embedded
-dependencies (PEP 723 header, `requests`) that turns the catalog published by
-the `trustable-ai/.github` repo into Zola content.
+`generator.py` is a [uv](https://docs.astral.sh/uv/) script (PEP 723 header, no
+dependencies beyond the standard library and the `gh` CLI). It builds the
+catalog of the `trustable-ai` organization, downloads every image the site
+shows, and turns both into Zola content. Since spec/13-generate.md it is the
+only script the build runs, and the only one that talks to the GitHub API.
 
 ```bash
-./generator.py            # regenerate content/apps/, pulling the clones
-./generator.py --offline  # reuse the existing clones instead of pulling
+./generator.py            # fetch the catalog, pull the clones, regenerate
+./generator.py --offline  # reuse static/index.json and the existing clones
 ```
 
-The catalog is read from `support/index.json`, not fetched — `build.sh`
-regenerates that file first with `support/index.py`, so the gallery is built
-from the same catalog that is about to be published beside it. See
-spec/7-publish.md.
+The catalog logic — the `Trustable:` marker, `templates=`, the `_index.md`
+listing and its grouping — is specified in spec/8-index.md, which
+`support/index.py` implements too for Trustable's own discovery. The website no
+longer reads that submodule's `index.json`.
 
 ## build.sh runs it
 
 `build.sh` regenerates the catalog and the gallery before every build, so the
 published site always matches what the organization looks like today:
 
-1. `support/index.py` — rebuild `support/index.json` from the GitHub API
-2. `generator.py` — read that index, pull the templates repos, rewrite
-   `content/apps/` and `static/apps/`
-3. `zola build --output-dir docs` (only for `./build.sh build`; the default
+1. `generator.py` — fetch the catalog from the GitHub API, write
+   `static/index.json`, pull the application repos, download their images into
+   `static/images/`, rewrite `content/apps/`
+2. `zola build --output-dir docs` (only for `./build.sh build`; the default
    serves a preview instead)
-4. **commit** the result, if anything changed
+3. **commit** the result, if anything changed
 
-The commit is confined to the three paths the build owns — `content/apps/`,
-`static/apps/` and `docs/` — so unrelated edits in the working tree are never
-swept into it. The catalog is not among them: it belongs to the `support`
-submodule and is committed and pushed there separately. Nothing is committed
-when those paths come back unchanged, and the commit is never pushed;
-publishing is the PR-and-merge process in CLAUDE.md.
+The commit is confined to the paths the build owns — `content/apps/`,
+`static/index.json`, `static/images/` and `docs/` — so unrelated edits in the
+working tree are never swept into it. Nothing is committed when those paths
+come back unchanged, and the commit is never pushed; publishing is the
+PR-and-merge process in CLAUDE.md.
 
 Two escape hatches, because a build that always commits is wrong in some
 contexts:
@@ -41,56 +42,107 @@ contexts:
 - `NO_COMMIT=1 ./build.sh build` — write `docs/` but leave the result in the
   working tree. This is also what a detached HEAD gets automatically, since
   committing there would strand the commit.
+- `./build.sh [serve|build] --fast` — reuse the catalog and images from the last
+  full run (`generator.py --offline`) instead of asking GitHub for them. Pages
+  are still regenerated, so template and generator changes show up; only the
+  network work is skipped, and neither `gh` nor a connection is needed. For
+  iterating locally — a publishing build should be a full one.
 
-Regenerating needs the network and the `gh` CLI on every build. If either step
-fails the build stops rather than silently publishing a stale catalog.
+Regenerating needs the network and the `gh` CLI on every build. `build.sh`
+checks for an authenticated `gh` up front, since the requirement is the
+website's own now rather than something inherited from the `support` submodule.
+If generation fails the build stops rather than silently publishing a stale
+catalog — and the "no starters" guard runs **before** anything is deleted, so an
+API hiccup cannot blank an existing gallery.
 
-## Input
+## Input and output catalog
 
-`support/index.json` — the `support` submodule's checkout of
-`trustable-ai/.github`, published for Trustable itself to read at
-`https://raw.githubusercontent.com/trustable-ai/.github/refs/heads/main/index.json`
+The input is the `trustable-ai` organization itself, read through `gh`. The
+catalog built from it is written to `static/index.json` and published at
+`https://trustable.it/index.json`:
 
 ```json
 {
+  "generated":    "2026-08-17T09:00:00Z",
   "starters":     [ { "name", "repo", "templates", "description" } ],
   "applications": { "<Group>": [ { "name", "title", "repo", "icon", "description" } ] }
 }
 ```
 
 `applications` is a map of **group** → list of applications. Group order in the
-JSON is the order the gallery uses.
+JSON is the order the gallery uses. Each `icon` is the full
+`https://trustable.it/images/<file>` URL of the downloaded copy, since whatever
+reads this catalog is not being served from this site; the generated pages keep
+the bare `/images/<file>` path instead, which also resolves under a local
+preview. An application whose image could not be fetched carries no `icon` at
+all. `starters` is written through unchanged — its `repo` and `templates` are
+where a user clones from, so they keep naming GitHub.
 
-## Copy taken locally
+With `--offline` this file is the **input** instead: the catalog is read back
+from it and the images already in `static/images/` are reused, so a rebuild
+needs no network at all.
 
-Every application's prose and icon live in the `*-templates` repository the
-`icon` URL points at, not in the application repo — most application READMEs
-are the generic `# Trustable Workspace` stub. The generator clones (or pulls)
-each templates repo once into `.templates/<repo>/`, a gitignored working
-directory, and copies out of it. The clones deliberately sit **outside**
-`content/`: zola parses every file below it and a bare repo README carries no
-front matter, which fails the build. From each checkout it takes:
+## Copy read from the README
 
-- **page body** — `<templates>/<name>.md`, falling back to the application
-  repo's `README.md` when that file is absent
-- **icon** — copied to `static/apps/<name>.png`. Two source layouts are in
-  use: a templates repo names the file after the application, `<name>.png`,
-  while an application's own repo publishes it as `screenshot.png` — which is
-  what the catalog's `icon` URLs point at today. `screenshot.png` is only
-  accepted from the application's own checkout, since unlike `<name>.png` it
-  does not identify itself and any other clone's screenshot belongs to a
-  different application. Either is published under `<name>.png` so the page URL
-  does not depend on where the icon came from. It is the gallery tile *and* the
-  illustration at the top of the detail page, so it is downloaded from GitHub
-  into the site rather than hotlinked; the published pages never reach
-  raw.githubusercontent.com. An application listed under two groups points at
-  only one templates repo (`truk8s` is in `Demo` and `Utilities` but the PNG
-  lives only in `trutil-templates`), so both the icon and the copy are looked
-  up across every checkout before giving up.
+The page body is the application repository's own `README.md` — see
+spec/12-readme.md. The generator clones (or pulls) each application repo once
+into `.templates/<name>/`, a gitignored working directory, and reads the README
+out of it. The clones deliberately sit **outside** `content/`: zola parses every
+file below it and a bare repo README carries no front matter, which fails the
+build.
 
-Icons of applications that have left the catalog are deleted from
-`static/apps/` after generation; otherwise they stay published forever, since
-clearing the content directories does not touch them.
+The `*-templates` repos are **not** read. Their per-application markdown is the
+prompt an application was built from ("Step 1 — Create the Mini CRM
+Foundation"), not a description of what it does.
+
+A README that is only the `# Trustable Workspace` stub, or empty, falls back to
+the catalog description.
+
+## Screenshots served from trustable.it
+
+Every image the site shows is copied into `static/images/` and referenced at a
+site-absolute path, so a published page reaches nothing but its own origin.
+This reverses the hotlinking of spec/12-readme.md — see spec/13-generate.md for
+the trade.
+
+The name is the repository the image came from:
+
+```
+static/images/<owner>-<repo>.png          screenshot.png at the repo root
+static/images/<owner>-<repo>-<path>.<ext> any other image in the README
+```
+
+So `trustable-ai/minicrm`'s `screenshot.png` is `trustable-ai-minicrm.png`,
+served at `https://trustable.it/images/trustable-ai-minicrm.png`. Deriving the
+name from owner and repository alone means an application listed under two
+groups resolves to one file, copied once. A README's *second* illustration keeps
+its path in the name (`docs/ui/detail.png` → `-docs-ui-detail`), so it cannot
+collide with the screenshot; the source extension is kept, so a `.jpg` or `.svg`
+survives.
+
+The file is normally taken **from the clone** the generator already made for the
+README, so a build does no extra network I/O; only an image missing from the
+checkout is fetched over HTTP, and with `--offline` an already-downloaded copy
+stands in. An image that cannot be had at all leaves the entry with no icon
+rather than a link to nothing.
+
+The README illustrates itself with a **relative** `![Title](screenshot.png)`,
+which resolves to nothing once rendered under `/apps/<group>/<name>/`. Every
+relative markdown image in the body is therefore rewritten to the local copy;
+so is one already pointing at `raw.githubusercontent.com`, since that is the
+hotlink being removed. An image deliberately hosted anywhere else is left alone.
+
+That rewrite makes the README's own illustration **the same image** as
+`extra.icon`, which `page.html` renders as the page hero — so the screenshot
+would appear twice on every page. The body's copy is therefore dropped: an
+image alone on its line whose source equals the icon is removed, and the blank
+run it leaves behind is collapsed. The hero is the one that stays, since the
+gallery tile is built from the same field and so cannot drift from the page.
+A README image that is *not* the icon is left where it is.
+
+`static/images/` is wholly generator-owned: after generation, any file in it
+that no application referenced this run is deleted, so an application leaving
+the catalog does not keep its image published forever.
 
 ## Output
 
@@ -98,7 +150,8 @@ clearing the content directories does not touch them.
 content/apps/_index.md          hand-written, untouched
 content/apps/<group>/_index.md  generated section, one per group
 content/apps/<group>/<name>.md  generated page, one per application
-static/apps/<name>.png          copied icon
+static/index.json               the catalog, served at trustable.it/index.json
+static/images/<owner>-<repo>.png  one image per application, served locally
 templates/starter-cards.html       gallery partial, included by landing.html
 ```
 
@@ -116,7 +169,7 @@ title = "Mini CRM"
 description = "Mini Customer Relation Manager"
 weight = 20
 [extra]
-icon = "/apps/minicrm.png"
+icon = "/images/trustable-ai-minicrm.png"
 repo = "https://github.com/trustable-ai/minicrm"
 group = "Examples"
 +++
@@ -129,11 +182,8 @@ in the title counts (`# Database Manager` under "AI Database Manager"), a longer
 one does not, because most copy opens with a real step heading
 (`# 1 - Application Foundation`) that must survive.
 
-A body that is only the `# Trustable Workspace` stub, or empty, falls back to
-the catalog description.
-
 An application listed under two groups (`truk8s` is in both `Demo` and
-`Utilities`) gets a page in each group; the icon is shared.
+`Utilities`) gets a page in each group from the one clone of its repo.
 
 ## Index pages
 
@@ -164,8 +214,8 @@ applications. A section that has pages of its own now lists those.
 
 `page.html` renders the icon above the prose for any page carrying
 `extra.icon`, so each application page opens with its own screenshot rather
-than with bare text. The image is the copy under `static/apps/`, never a
-GitHub URL. Pages without an icon are unchanged.
+than with bare text. The image is the site's own copy under `/images/`. Pages
+without an icon are unchanged.
 
 ## Gallery on the home page
 

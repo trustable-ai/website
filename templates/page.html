@@ -7,10 +7,11 @@
 {% block doc_content %}
         <h1>{{ page.title }}</h1>
         {#
-          App pages carry the screenshot generator.py copied out of the
-          templates repo (see spec/4-generate.md); open with it so the page
-          leads with the application rather than with bare prose. Every other
-          page has no extra.icon and is unchanged.
+          App pages carry the catalog's screenshot URL (see spec/12-readme.md);
+          open with it so the page leads with the application rather than with
+          bare prose. This is the page's only copy of that screenshot —
+          generator.py drops the README's own copy of it from the body. Every
+          other page has no extra.icon and is unchanged.
         #}
         {% if page.extra.icon %}
         <img

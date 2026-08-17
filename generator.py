@@ -1,48 +1,523 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["requests>=2.31"]
 # ///
-"""Generate the Apps gallery from the trustable-ai catalog.
+"""Generate the Trustable catalog and the Apps gallery.
 
-See spec/4-generate.md and spec/7-publish.md. Reads support/index.json — the
-catalog regenerated in place by support/index.py, which build.sh runs first —
-clones each *-templates repo for the per-application copy and icons, and writes
-Zola sections under content/apps/<group>/ plus the icons under static/apps/.
-The output is committed, so build.sh never needs the network.
+See spec/13-generate.md. This is the only script the site build runs, and the
+only thing that talks to the GitHub API — with `gh`, so it uses the
+maintainer's credentials and rate limit.
+
+It does three things:
+
+1. **Builds the catalog** from the trustable-ai organization, the logic
+   described in spec/8-index.md and previously living in support/index.py: an
+   application starter is a public repository whose description begins with
+   "Trustable:", carrying <key>=<value> parameters (currently only templates=)
+   which are stripped from the human-readable text. Applications are read from
+   the _index.md of the templates repository and grouped by its first "# "
+   heading.
+2. **Downloads every image** the site shows into static/images/, named after
+   the repository it came from, so the published site reaches nothing but its
+   own origin.
+3. **Writes the gallery**: Zola sections under content/apps/<group>/, each page
+   built from the application repository's README, plus the catalog itself at
+   static/index.json — served as https://trustable.it/index.json.
+
+support/index.py still publishes the upstream index.json read by Trustable
+itself; it is a separate consumer and this script does not touch it.
+
+Usage:
+    ./generator.py             # fetch the catalog, then generate
+    ./generator.py --offline   # reuse static/index.json and the clones
 """
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
-
-import requests
-
-RAW = "https://raw.githubusercontent.com/{repo}/refs/heads/main/{path}"
 
 HERE = Path(__file__).resolve().parent
 CONTENT = HERE / "content" / "apps"
-STATIC = HERE / "static" / "apps"
-# The catalog is read from the support submodule rather than fetched, so the
-# site is always generated from the index that is about to be published
-# alongside it — see spec/7-publish.md.
-INDEX = HERE / "support" / "index.json"
-# The templates clones must stay outside content/: zola parses everything under
-# it and a repo's bare README has no front matter, which fails the build.
+STATIC = HERE / "static"
+# The catalog this site publishes, served at https://trustable.it/index.json.
+# With --offline it is the input instead of the output.
+INDEX = STATIC / "index.json"
+# Every image the site shows, downloaded so a page reaches only our own origin.
+# Wholly owned by this script: clean_images() deletes anything here it did not
+# just write, so no hand-written file belongs in it.
+IMAGES = STATIC / "images"
+# The clones must stay outside content/: zola parses everything under it and a
+# repo's bare README has no front matter, which fails the build.
 WORK = HERE / ".templates"
+
+ORG = "trustable-ai"
+
+# The site's canonical domain, matching base_url in config.toml and static/CNAME
+# — see spec/5-domain.md. The published catalog carries absolute URLs so a
+# consumer reading it from anywhere can resolve an icon without knowing where
+# the file came from; the generated pages keep the site-absolute path, which
+# resolves under a local preview too.
+SITE = "https://trustable.it"
+
+# The marker a repository's GitHub description begins with to be part of the
+# catalog. Not to be confused with MARKER below, which stamps generated files.
+DESCRIPTION_MARKER = "trustable:"
+
+RAW_BASE = "https://raw.githubusercontent.com/{repo}/refs/heads/main/{path}"
+RAW_PREFIX = "https://raw.githubusercontent.com/"
+APPLICATION_INDEX = "_index.md"
+
+# An application's icon, published by the application's own repository. This is
+# the file ./screenshot.sh stages in a workbench, so an application ships its
+# own image and the templates repository holds none.
+APPLICATION_SCREENSHOT = "screenshot.png"
+
+# An application's own repository, named by the template linked in _index.md:
+# "- [Tetris](tetris.md)" lives in https://github.com/trustable-ai/tetris.
+REPO_BASE = "https://github.com/{org}/{template}"
+
+# Convention for a marked repository that carries no templates=: its
+# applications live in a sibling repository with this suffix.
+TEMPLATES_SUFFIX = "-templates"
+
+# <key>=<value> tokens carried in the description. A bare value is
+# whitespace-delimited; a "quoted" one may contain spaces, so a parameter is not
+# limited to single-word values.
+KEY_VALUE = re.compile(r"""\b([A-Za-z][A-Za-z0-9_-]*)=(?:"([^"]*)"|(\S+))""")
+
+# Same shape trustable-app accepts for notebook.repository: owner/repository.
+REPO_SEGMENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+# One application per line: "- [<name>](<file>.md) <description>". The
+# description is optional; anything else in the file is ignored.
+APPLICATION_LINE = re.compile(r"^\s*[-*]\s*\[([^\]]+)\]\(([^)\s]+\.md)\)\s*(.*)$")
+
+# The group name is the first top-level "# " heading of an _index.md.
+GROUP_HEADING = re.compile(r"^#\s+(.*\S)\s*$")
 
 # Written into every generated file; a directory whose _index.md carries it is
 # ours to delete and rewrite, anything else under content/apps/ is
 # hand-written and left alone.
-MARKER = "generated by generator.py — see spec/4-generate.md"
+MARKER = "generated by generator.py — see spec/13-generate.md"
 
 # A README that is only the workspace stub carries no information about the
 # application, so such a page falls back to the catalog description instead.
 STUB_READMES = {"# trustable workspace"}
+
+
+# ---------------------------------------------------------------------------
+# The catalog — see spec/8-index.md
+# ---------------------------------------------------------------------------
+
+
+def run(args):
+    """Run a command and return stdout, failing loudly."""
+    result = subprocess.run(args, capture_output=True, text=True)
+    if result.returncode != 0:
+        sys.exit(f"error: {' '.join(args)} failed:\n{result.stderr.strip()}")
+    return result.stdout
+
+
+def normalize_templates(value):
+    """Normalize a templates= value to owner/repository.
+
+    Accepts a bare owner/repo or a full GitHub URL. Returns None when the value
+    cannot be understood, which disqualifies the repository as a starter.
+    """
+    value = (value or "").strip()
+    for prefix in ("https://github.com/", "http://github.com/"):
+        if value.lower().startswith(prefix):
+            value = value[len(prefix):]
+            break
+    if "://" in value:
+        return None
+    value = value.strip("/")
+    if value.endswith(".git"):
+        value = value[: -len(".git")]
+    parts = value.split("/")
+    if len(parts) != 2 or not all(REPO_SEGMENT.match(part) for part in parts):
+        return None
+    return f"{parts[0]}/{parts[1]}"
+
+
+def raw_url(repo, path):
+    """URL of a file on the main branch of repo, as raw.githubusercontent.com."""
+    return RAW_BASE.format(repo=repo, path=path.lstrip("/"))
+
+
+def fetch_file(repo, path):
+    """Fetch a file from a repository, returning None when it is not published.
+
+    Read through `gh` rather than raw.githubusercontent.com. Both serve the
+    same bytes, but the raw host is anonymous and rate-limits hard enough to
+    fail a build (429 after a few dozen requests), while `gh` carries the
+    maintainer's 5000/hour credentials — which this script already depends on
+    for the repository listing. The raw host stays as a fallback for the case
+    where `gh` cannot answer at all.
+    """
+    result = subprocess.run(
+        ["gh", "api", f"repos/{repo}/contents/{path.lstrip('/')}",
+         "--header", "Accept: application/vnd.github.raw"],
+        capture_output=True, text=True,
+    )
+    if result.returncode == 0:
+        return result.stdout
+    if "404" in result.stderr or "Not Found" in result.stderr:
+        return None
+
+    url = raw_url(repo, path)
+    print(f"   ! gh could not read {repo}/{path}, trying {url}", file=sys.stderr)
+    try:
+        with urllib.request.urlopen(url, timeout=30) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as error:
+        if error.code == 404:
+            return None
+        sys.exit(f"error: GET {url} failed: {error.code} {error.reason}")
+    except urllib.error.URLError as error:
+        sys.exit(f"error: GET {url} failed: {error.reason}")
+
+
+def repo_exists(repo):
+    """Whether owner/repository exists on GitHub, via the gh CLI.
+
+    An anonymous HEAD on github.com cannot tell a missing repository from a
+    private one, and both matter here: an application whose repository is
+    private is as unusable to a user as one that was never created. `gh` is
+    already a dependency and carries the maintainer's credentials, so it sees
+    private repositories of the organization too.
+
+    Returns True when the repository exists, False on a definite 404, and None
+    when the answer is unknown (gh missing, not authenticated, network down) so
+    a broken environment produces no misleading "does not exist" warnings.
+    """
+    result = subprocess.run(["gh", "api", f"repos/{repo}"],
+                            capture_output=True, text=True)
+    if result.returncode == 0:
+        return True
+    if "404" in result.stderr or "Not Found" in result.stderr:
+        return False
+    return None
+
+
+def parse_applications(text):
+    """Parse a templates _index.md into (group, applications).
+
+    The group is the first "# " heading with the marker removed; it is None
+    when the file has none.
+
+    A line "- [<title>](<template>.md) <description>" yields all three fields:
+    <template> is the application's identity — it names both "name" and the
+    repository https://github.com/<ORG>/<template> — while the link text is the
+    human-readable "title" and the trailing prose the "description". The icon is
+    the screenshot.png published by that same application repository, which is
+    what ./screenshot.sh stages, so an application carries its own image
+    instead of the templates repository holding one per entry.
+    """
+    group = None
+    applications = []
+    for line in (text or "").splitlines():
+        if group is None:
+            heading = GROUP_HEADING.match(line)
+            if heading:
+                group = " ".join(heading.group(1).split()) or None
+        match = APPLICATION_LINE.match(line)
+        if not match:
+            continue
+        title, path, description = match.groups()
+        template = os.path.basename(path)[: -len(".md")]
+        applications.append({
+            "name": template,
+            "title": " ".join(title.split()),
+            "repo": REPO_BASE.format(org=ORG, template=template),
+            "icon": raw_url(f"{ORG}/{template}", APPLICATION_SCREENSHOT),
+            "description": " ".join(description.split()),
+        })
+    return group, applications
+
+
+def parse_description(description):
+    """Split "Trustable: <text>" into (text, params).
+
+    Returns (None, None) when the description does not carry the marker, which
+    is how non-starter repositories are filtered out.
+    """
+    trimmed = (description or "").strip()
+    if trimmed[: len(DESCRIPTION_MARKER)].lower() != DESCRIPTION_MARKER:
+        return None, None
+    rest = trimmed[len(DESCRIPTION_MARKER):]
+    # Only one of the two value groups matches; the other is the empty string.
+    params = {key.lower(): quoted or bare
+              for key, quoted, bare in KEY_VALUE.findall(rest)}
+    text = " ".join(KEY_VALUE.sub(" ", rest).split())
+    return text, params
+
+
+def fetch_repositories():
+    """List the org's public repositories with the gh CLI."""
+    output = run([
+        "gh", "api", "--paginate",
+        f"orgs/{ORG}/repos?type=public&per_page=100",
+    ])
+    # --paginate concatenates one JSON array per page when the output is piped
+    # through jq; without jq it returns a single stream of arrays. Decode
+    # defensively so both shapes work.
+    decoder = json.JSONDecoder()
+    repositories = []
+    position = 0
+    while position < len(output):
+        while position < len(output) and output[position].isspace():
+            position += 1
+        if position >= len(output):
+            break
+        page, position = decoder.raw_decode(output, position)
+        repositories.extend(page)
+    return repositories
+
+
+def build_starters(repositories):
+    """Build the starter list and the applications each one's templates offer.
+
+    A repository with a usable templates= is a starter, and its applications
+    come from the templates repository. A repository carrying the marker
+    *without* templates= is not a starter but still contributes applications,
+    read from the conventional <name>-templates repository and falling back to
+    the repository itself — that is how a plain collection of applications is
+    published without offering a starter.
+
+    A repository whose _index.md is absent contributes no applications.
+
+    Applications are grouped under the first "# " heading of the _index.md they
+    came from. Two repositories sharing a heading share the group.
+    """
+    starters = []
+    groups = {}
+    for repo in repositories:
+        if repo.get("private") or repo.get("archived") or repo.get("disabled"):
+            continue
+        text, params = parse_description(repo.get("description"))
+        if text is None:
+            continue
+        name = (repo.get("name") or "").strip()
+        full_name = (repo.get("full_name") or "").strip() or f"{ORG}/{name}"
+        if not name:
+            continue
+        templates = normalize_templates(params.get("templates"))
+        if templates:
+            starters.append({
+                "name": name,
+                "repo": full_name,
+                "templates": templates,
+                "description": text,
+            })
+        else:
+            print(f"   {full_name}: no templates=, applications only",
+                  file=sys.stderr)
+        # Without templates= the applications live in the conventional
+        # <name>-templates repository, falling back to the repository itself.
+        source = templates or f"{full_name}{TEMPLATES_SUFFIX}"
+        listing = fetch_file(source, APPLICATION_INDEX)
+        if listing is None and not templates:
+            source = full_name
+            listing = fetch_file(source, APPLICATION_INDEX)
+        if listing is None:
+            print(f"   {source}: no {APPLICATION_INDEX}", file=sys.stderr)
+            continue
+        group, entries = parse_applications(listing)
+        if entries and group is None:
+            group = name
+            print(f"   {source}: no '# ' heading, grouping under {group}",
+                  file=sys.stderr)
+        for entry in entries:
+            groups.setdefault(group, []).append(entry)
+    starters.sort(key=lambda item: item["name"])
+    applications = {
+        group: sorted(entries, key=lambda item: (item["title"], item["name"]))
+        for group, entries in sorted(groups.items())
+    }
+    return starters, applications
+
+
+def check_repositories(applications, checkouts):
+    """Warn about applications whose repository could not be had.
+
+    The repository is a convention derived from the template name linked in
+    _index.md, so a typo there — or a template listed before its repository was
+    created — points at nothing. Like a missing image this is a warning and not
+    an error: the entry stays in the catalog and the repository can be created
+    later.
+
+    A repository that did not clone is reported here too rather than warned
+    about separately, so one broken application produces one warning. Each
+    distinct repository is probed once, since the same template may be listed
+    by more than one _index.md.
+    """
+    urls = sorted({app["repo"] for entries in applications.values()
+                   for app in entries})
+    verdicts = {}
+    for url in urls:
+        repo = url.removeprefix("https://github.com/").rstrip("/")
+        # A repo that cloned exists; only ask GitHub about the ones that did not.
+        verdicts[url] = True if checkouts.get(repo) else repo_exists(repo)
+    missing = {url for url, exists in verdicts.items() if exists is False}
+    unknown = {url for url, exists in verdicts.items() if exists is None}
+    seen = set()
+    for entries in applications.values():
+        for app in entries:
+            if app["repo"] in missing and app["repo"] not in seen:
+                seen.add(app["repo"])
+                print(f"   ! no repository for {app['title']} — {app['repo']}",
+                      file=sys.stderr)
+    if unknown:
+        print(f"   ! could not check {len(unknown)} repositories "
+              f"(is gh authenticated?)", file=sys.stderr)
+    return missing
+
+
+# ---------------------------------------------------------------------------
+# Images — downloaded so the published site reaches only its own origin
+# ---------------------------------------------------------------------------
+
+
+def image_name(repo, path):
+    """Name of the local copy of <path> in <repo>: '<owner>-<repo>[-<path>]'.
+
+    The screenshot at the repository root is the icon and by far the common
+    case, so it drops the path and is simply '<owner>-<repo>.png'. Any other
+    image keeps its path in the name, so a README's second illustration cannot
+    collide with the screenshot or with another repository's.
+    """
+    path = path.lstrip("./")
+    stem = re.sub(r"[^a-z0-9]+", "-", repo.lower()).strip("-")
+    extension = Path(path).suffix or ".png"
+    if path != APPLICATION_SCREENSHOT:
+        slug_path = re.sub(r"[^a-z0-9]+", "-", str(Path(path).with_suffix("")).lower())
+        stem = f"{stem}-{slug_path.strip('-')}"
+    return stem + extension
+
+
+def split_raw(url):
+    """Split a raw.githubusercontent.com URL into (repo, path).
+
+    Returns (None, None) for anything else: an image deliberately hosted
+    somewhere other than GitHub is not ours to copy.
+    """
+    if not url.startswith(RAW_PREFIX):
+        return None, None
+    parts = url[len(RAW_PREFIX):].split("/")
+    # <owner>/<repo>/refs/heads/<branch>/<path...>
+    if len(parts) >= 6 and parts[2] == "refs" and parts[3] == "heads":
+        return f"{parts[0]}/{parts[1]}", "/".join(parts[5:])
+    # <owner>/<repo>/<branch>/<path...>
+    if len(parts) >= 4:
+        return f"{parts[0]}/{parts[1]}", "/".join(parts[3:])
+    return None, None
+
+
+def local_image(repo, path, checkouts, used, offline):
+    """Copy an image into static/images/ and return its site-absolute path.
+
+    The application repo is already cloned for its README, so the file is
+    normally taken from the checkout and a build does no extra network I/O.
+    Only a file missing from the clone is fetched, and only when online.
+
+    Returns None when the image cannot be had, which leaves the entry with no
+    icon rather than a link to nothing.
+    """
+    name = image_name(repo, path)
+    target = IMAGES / name
+    url = f"/images/{name}"
+    if name in used:
+        return url
+
+    source = checkouts.get(repo)
+    candidate = source / path if source else None
+    if candidate is not None and candidate.is_file():
+        IMAGES.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(candidate, target)
+        used.add(name)
+        return url
+
+    # Not in the clone. An already-downloaded copy stands in when offline, so a
+    # network-free rebuild keeps the images the previous run fetched.
+    if offline:
+        if target.is_file():
+            used.add(name)
+            return url
+        print(f"   ! {repo}: no {path} in the clone and --offline given",
+              file=sys.stderr)
+        return None
+
+    # Through `gh` for the same reason fetch_file() does: the anonymous raw
+    # host rate-limits hard enough to fail a build. --raw keeps the bytes
+    # untouched, so an image survives the round trip.
+    result = subprocess.run(
+        ["gh", "api", f"repos/{repo}/contents/{path.lstrip('/')}",
+         "--header", "Accept: application/vnd.github.raw"],
+        capture_output=True,
+    )
+    if result.returncode == 0:
+        payload = result.stdout
+    else:
+        try:
+            with urllib.request.urlopen(raw_url(repo, path), timeout=30) as response:
+                payload = response.read()
+        except (urllib.error.URLError, OSError) as error:
+            reason = getattr(error, "reason", error)
+            print(f"   ! {repo}: cannot fetch {path} — {reason}", file=sys.stderr)
+            return None
+    IMAGES.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(payload)
+    used.add(name)
+    return url
+
+
+def keep_image(url, used):
+    """Claim an already-downloaded image named by a site-absolute /images/ path.
+
+    Reading our own catalog back, an icon already names a file a previous run
+    wrote. Marking it used is what stops clean_images() from deleting the very
+    images that run is about to publish. A path naming a file that is no longer
+    there yields None, so the entry loses its icon rather than pointing at a
+    gap.
+    """
+    name = url[len("/images/"):]
+    if not (IMAGES / name).is_file():
+        print(f"   ! {url} is in the catalog but not in "
+              f"{IMAGES.relative_to(HERE)}", file=sys.stderr)
+        return None
+    used.add(name)
+    return url
+
+
+def clean_images(used):
+    """Delete images no application referenced this run.
+
+    Without this an application that leaves the catalog keeps its image
+    published forever. The directory is generator-owned, so anything not just
+    written is stale by definition.
+    """
+    if not IMAGES.is_dir():
+        return 0
+    removed = 0
+    for child in sorted(IMAGES.iterdir()):
+        if child.is_file() and child.name not in used:
+            child.unlink()
+            removed += 1
+    return removed
+
+
+# ---------------------------------------------------------------------------
+# The gallery
+# ---------------------------------------------------------------------------
 
 
 def slug(text: str) -> str:
@@ -54,20 +529,13 @@ def toml_str(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def templates_repo(app: dict) -> str | None:
-    """The <owner>/<name>-templates repo an application's icon is served from.
-
-    The catalog does not link an application to its templates repo directly;
-    the icon URL is the only place that association is recorded.
-    """
-    match = re.match(
-        r"https://raw\.githubusercontent\.com/([^/]+/[^/]+)/", app.get("icon", "")
-    )
-    return match.group(1) if match else None
+def app_repo(app: dict) -> str:
+    """The <owner>/<name> the application's own repository lives at."""
+    return app["repo"].removeprefix("https://github.com/").rstrip("/")
 
 
 def clone(repo: str, offline: bool) -> Path | None:
-    """Clone or refresh a templates repo into its gitignored working copy."""
+    """Clone or refresh an application repo into its gitignored working copy."""
     WORK.mkdir(parents=True, exist_ok=True)
     dest = WORK / repo.split("/")[-1]
     if dest.exists():
@@ -87,30 +555,78 @@ def clone(repo: str, offline: bool) -> Path | None:
     return dest if result.returncode == 0 else None
 
 
-def fetch_readme(repo_url: str) -> str:
-    """The application repo's README, used when the templates repo has no page."""
-    repo = repo_url.removeprefix("https://github.com/").rstrip("/")
-    try:
-        response = requests.get(RAW.format(repo=repo, path="README.md"), timeout=20)
-    except requests.RequestException:
-        return ""
-    return response.text if response.ok else ""
+def body_for(checkout: Path | None) -> str:
+    """Page body: the application repo's README.
 
-
-def body_for(app: dict, checkout: Path | None, checkouts: dict) -> str:
-    """Page body: the templates repo's copy, else the application README.
-
-    Like the icon, the copy for an application listed under two groups may sit
-    in a sibling templates repo, so every checkout is tried before falling back
-    to the application repo.
+    The *-templates repos are not read: their per-application markdown is the
+    prompt an application was built from, not a description of it — see
+    spec/12-readme.md.
     """
-    for source in [checkout] + list(checkouts.values()):
-        if source is None:
-            continue
-        local = source / f"{app['name']}.md"
-        if local.is_file():
-            return local.read_text(encoding="utf-8")
-    return fetch_readme(app["repo"])
+    if checkout is None:
+        return ""
+    readme = checkout / "README.md"
+    return readme.read_text(encoding="utf-8") if readme.is_file() else ""
+
+
+# A markdown image whose source is relative — anything not starting with a
+# scheme, a protocol-relative //, or a site-absolute /.
+RELATIVE_IMAGE = re.compile(r"(!\[[^\]]*\]\()(?!\w+:|//|/)([^)\s]+)")
+
+# An absolute markdown image, so a README pointing straight at raw GitHub is
+# localized like a relative one rather than left hotlinking.
+ABSOLUTE_IMAGE = re.compile(r"(!\[[^\]]*\]\()(https?://[^)\s]+)")
+
+
+def localize_images(body, repo, checkouts, used, offline):
+    """Point the README's images at our own copies under /images/.
+
+    A README illustrates itself with `![Title](screenshot.png)`, relative to the
+    repository root. Rendered under /apps/<group>/<name>/ that resolves to
+    nothing, so every relative source is copied into static/images/ and
+    rewritten to the site-absolute path of that copy. A source already pointing
+    at raw.githubusercontent.com is localized the same way; anything else
+    absolute is deliberately hosted elsewhere and left alone.
+
+    An image that cannot be had keeps its original source rather than becoming
+    a link to nothing.
+    """
+    def relative(match):
+        path = match.group(2).lstrip("./")
+        url = local_image(repo, path, checkouts, used, offline)
+        return match.group(1) + (url or match.group(2))
+
+    def absolute(match):
+        source_repo, path = split_raw(match.group(2))
+        if not source_repo:
+            return match.group(0)
+        url = local_image(source_repo, path, checkouts, used, offline)
+        return match.group(1) + (url or match.group(2))
+
+    return ABSOLUTE_IMAGE.sub(absolute, RELATIVE_IMAGE.sub(relative, body))
+
+
+# An image standing alone on its line, so removing it takes the whole line
+# rather than leaving an empty paragraph behind.
+STANDALONE_IMAGE = re.compile(r"^[ \t]*!\[[^\]]*\]\(\s*(\S+?)\s*(?:\s+[\"'][^\n]*)?\)[ \t]*$\n?", re.M)
+
+
+def drop_icon_image(body: str, icon: str | None) -> str:
+    """Remove the README's own copy of the screenshot page.html already shows.
+
+    Every README opens by illustrating itself with the same screenshot the
+    catalog points `icon` at, and page.html renders that icon as the page hero
+    — so left alone the application's screenshot appears twice on the page.
+    The hero is the one that stays: the gallery tile is built from the same
+    field, so tile and page cannot drift apart.
+    """
+    if not icon:
+        return body
+    body = STANDALONE_IMAGE.sub(
+        lambda m: "" if m.group(1) == icon else m.group(0), body
+    )
+    # Removing the line leaves the blank line above and below it adjacent;
+    # collapse the run so the generated markdown reads as if it never existed.
+    return re.sub(r"\n{3,}", "\n\n", body)
 
 
 def app_key(title: str) -> str:
@@ -134,37 +650,6 @@ def strip_title(body: str, title: str, name: str) -> str:
     return body.strip()
 
 
-def copy_icon(app: dict, checkout: Path | None, checkouts: dict) -> str | None:
-    """Copy an application's icon out of the checkouts into static/apps/.
-
-    Two layouts are in use. A templates repo names the file after the
-    application, <name>.png; an application's own repo publishes it as
-    screenshot.png, which the catalog now points at. Either is published as
-    /apps/<name>.png so the page URL does not depend on where it came from.
-
-    An application listed under two groups points at the icon of only one of
-    them (truk8s is in Demo and Utilities but the PNG lives only in
-    trutil-templates), so any checkout holding the file will do.
-    """
-    candidates = [checkout] + list(checkouts.values())
-    for source in candidates:
-        if source is None:
-            continue
-        for name in (f"{app['name']}.png", "screenshot.png"):
-            icon = source / name
-            # screenshot.png is per-repo, so only the application's own
-            # checkout may answer with it — any other clone's screenshot
-            # belongs to a different application.
-            if name == "screenshot.png" and source is not checkout:
-                continue
-            if icon.is_file():
-                STATIC.mkdir(parents=True, exist_ok=True)
-                published = f"{app['name']}.png"
-                shutil.copyfile(icon, STATIC / published)
-                return f"/apps/{published}"
-    return None
-
-
 def clean_generated() -> None:
     """Remove previously generated group directories, keeping everything else."""
     for child in sorted(CONTENT.iterdir()):
@@ -173,25 +658,7 @@ def clean_generated() -> None:
             shutil.rmtree(child)
 
 
-def clean_icons(applications: dict) -> int:
-    """Delete icons of applications the catalog no longer lists.
-
-    copy_icon only ever writes <name>.png, so anything else under static/apps/
-    belongs to an application that has since left the catalog and would
-    otherwise stay published forever.
-    """
-    if not STATIC.is_dir():
-        return 0
-    keep = {f"{app['name']}.png" for apps in applications.values() for app in apps}
-    removed = 0
-    for icon in sorted(STATIC.glob("*.png")):
-        if icon.name not in keep:
-            icon.unlink()
-            removed += 1
-    return removed
-
-
-def write_group(group: str, apps: list[dict], weight: int, checkouts: dict) -> int:
+def write_group(group, apps, weight, checkouts, used, offline):
     directory = CONTENT / slug(group)
     directory.mkdir(parents=True, exist_ok=True)
     directory.joinpath("_index.md").write_text(
@@ -210,12 +677,39 @@ def write_group(group: str, apps: list[dict], weight: int, checkouts: dict) -> i
 
     written = 0
     for order, app in enumerate(apps, start=1):
-        checkout = checkouts.get(templates_repo(app))
+        repo = app_repo(app)
         title = app.get("title") or app["name"]
-        body = strip_title(body_for(app, checkout, checkouts), title, app["name"])
+        # The catalog points at the screenshot in the application's own repo;
+        # the page shows our copy of it, so the site serves its own images.
+        # Reading our own catalog back (--offline) the icon is already one of
+        # ours, so it is only stripped back to the path the page wants — the
+        # image it names is in static/images/ from the run that wrote it.
+        icon = app.get("icon")
+        if icon and icon.startswith(SITE + "/images/"):
+            icon = keep_image(icon[len(SITE):], used)
+        elif icon:
+            source_repo, path = split_raw(icon)
+            icon = (local_image(source_repo, path, checkouts, used, offline)
+                    if source_repo else icon)
+        # The page keeps the site-absolute path, which resolves under a local
+        # preview as well as in production; the published catalog gets the full
+        # URL, since whatever reads it is not being served from this site.
+        if icon:
+            app["icon"] = SITE + icon
+        else:
+            app.pop("icon", None)
+            print(f"   ! {repo} has no icon")
+        body = strip_title(body_for(checkouts.get(repo)), title, app["name"])
         if body.strip().lower() in STUB_READMES or not body.strip():
+            # Worth saying out loud: the page is now one line of catalog copy
+            # because the repo has no usable README, not because it has none.
+            print(f"   ! {repo} has no usable README, using the description")
             body = app.get("description", "")
-        icon = copy_icon(app, checkout, checkouts)
+        else:
+            # Localize first, so the icon comparison is between like and like.
+            body = drop_icon_image(
+                localize_images(body, repo, checkouts, used, offline), icon
+            )
 
         front = [
             "+++",
@@ -238,49 +732,95 @@ def write_group(group: str, apps: list[dict], weight: int, checkouts: dict) -> i
     return written
 
 
+def catalog_content(text):
+    """The parts of a catalog worth comparing — everything but `generated`."""
+    try:
+        document = json.loads(text)
+        return document.get("starters"), document.get("applications")
+    except (ValueError, AttributeError):
+        return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--offline",
         action="store_true",
-        help="reuse the existing template clones instead of pulling them",
+        help="reuse static/index.json and the existing clones instead of "
+             "fetching the catalog from GitHub",
     )
     args = parser.parse_args()
 
-    if not INDEX.is_file():
-        print(
-            f"error: {INDEX} not found — the support submodule is not checked "
-            "out. Run: git submodule update --init support",
-            file=sys.stderr,
-        )
+    previous = INDEX.read_text(encoding="utf-8") if INDEX.is_file() else ""
+
+    if args.offline:
+        if not previous:
+            print(f"error: {INDEX.relative_to(HERE)} not found — --offline has "
+                  "no catalog to reuse. Run without it once.", file=sys.stderr)
+            return 1
+        print(f">> reading {INDEX.relative_to(HERE)} (offline)")
+        catalog = json.loads(previous)
+        starters = catalog.get("starters", [])
+        applications = catalog.get("applications", {})
+        generated = catalog.get("generated", "")
+    else:
+        print(f">> fetching the catalog from the {ORG} organization")
+        starters, applications = build_starters(fetch_repositories())
+        generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Guard before anything is deleted: clean_generated() removes the existing
+    # pages, so an API hiccup must not be allowed to blank the gallery.
+    if not starters:
+        print("error: no starters found — refusing to rebuild from an empty "
+              "catalog", file=sys.stderr)
         return 1
-    index = json.loads(INDEX.read_text(encoding="utf-8"))
-    print(f">> reading {INDEX.relative_to(HERE)}")
 
-    applications = index.get("applications", {})
+    print(f">> {len(starters)} starters, "
+          f"{sum(len(entries) for entries in applications.values())} "
+          f"applications in {len(applications)} groups")
+    for starter in starters:
+        print(f"   {starter['name']:<16} {starter['repo']:<32} "
+              f"templates={starter['templates']}")
 
-    # One clone per templates repo, shared by every application in it.
-    repos = {
-        repo
-        for apps in applications.values()
-        for app in apps
-        if (repo := templates_repo(app))
-    }
+    # One clone per application repo, shared by an application listed under
+    # more than one group.
+    repos = {app_repo(app) for apps in applications.values() for app in apps}
     checkouts = {repo: clone(repo, args.offline) for repo in sorted(repos)}
+    if not args.offline:
+        check_repositories(applications, checkouts)
 
     clean_generated()
 
+    used = set()
     total = 0
     for weight, (group, apps) in enumerate(applications.items(), start=1):
-        count = write_group(group, apps, weight * 10, checkouts)
+        count = write_group(group, apps, weight * 10, checkouts, used, args.offline)
         print(f">> {group}: {count} pages")
         total += count
 
-    stale = clean_icons(applications)
-    if stale:
-        print(f">> removed {stale} icons no longer in the catalog")
+    removed = clean_images(used)
+    print(f">> {len(used)} images in {IMAGES.relative_to(HERE)}"
+          + (f", {removed} stale removed" if removed else ""))
+
+    STATIC.mkdir(parents=True, exist_ok=True)
+    INDEX.write_text(
+        json.dumps(
+            {"generated": generated, "starters": starters,
+             "applications": applications},
+            indent=2, ensure_ascii=False,
+        ) + "\n",
+        encoding="utf-8",
+    )
+    print(f">> wrote {INDEX.relative_to(HERE)}")
 
     print(f">> generated {total} pages in {len(applications)} groups")
+
+    # "generated" changes on every run, so compare the content itself to decide
+    # whether anything worth publishing actually moved.
+    if catalog_content(previous) == (starters, applications):
+        print(">> starter and application lists unchanged")
+    else:
+        print(">> starter or application lists changed")
     return 0
 
 

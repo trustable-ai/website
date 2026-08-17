@@ -165,11 +165,28 @@ unchecked instead of claiming they are absent.
 ```
 
 The script only rewrites the file; it never publishes. Pushing it is done by
-hand: commit and push `index.json` here **first**, then publish the website
-that was generated from it — see spec/7-publish.md. The run still
-reports whether the starter and application lists actually moved (`generated`
-alone changes every time and is not a real change). The script refuses to write
-an index with no starters, so an API hiccup cannot blank the published list.
+hand. The run reports whether the starter and application lists actually moved
+(`generated` alone changes every time and is not a real change). The script
+refuses to write an index with no starters, so an API hiccup cannot blank the
+published list.
 
-`build.sh` runs it before every build, so a normal site build already
-regenerates the index and there is rarely a reason to invoke it by hand.
+# Two catalogs, one set of rules
+
+Everything above describes the rules for building a catalog. Since
+spec/13-generate.md there are **two independent implementations of them**, for
+two consumers:
+
+- **`support/index.py`** → `https://raw.githubusercontent.com/trustable-ai/.github/refs/heads/main/index.json`.
+  The upstream catalog, read by **Trustable itself** for discovery. Unchanged,
+  and still the file everything above refers to.
+- **`generator.py`** → `https://trustable.it/index.json`. The catalog the
+  **website** publishes, generated during its build. Identical entry for entry,
+  except that each `icon` is
+  `https://trustable.it/images/<owner>-<repo>.png`, naming the copy the
+  generator downloaded, so a consumer resolves the image from our domain rather
+  than from GitHub.
+
+The website used to read `support/index.json` through the submodule; it no
+longer does, which is what decoupled the two release cycles. The rules in this
+document are the specification both implementations follow — a change to them
+belongs in both.

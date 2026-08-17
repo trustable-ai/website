@@ -753,11 +753,69 @@
         
         <img
           class="page-hero"
-          src="/apps/truk8s.png"
+          src="/images/trustable-ai-truk8s.png"
           alt="Kubernetes Manager"
         />
         
-        <p>Kubernetes Manager</p>
+        <h1 id="truk8s-kubernetes-cluster-dashboard">Truk8s — Kubernetes Cluster Dashboard</h1>
+<p>Point it at a Kubernetes cluster and see what’s running: pods, persistent volume
+claims and nodes, plus a chat window you can ask about any of them.</p>
+<p>Read-only. Truk8s reports on your cluster; it never changes it.</p>
+<h2 id="connecting-a-cluster">Connecting a cluster</h2>
+<p>Upload your <strong>kubeconfig</strong> from the home page. It is validated before anything
+else happens — the file must parse as YAML and carry the <code>clusters</code>, <code>users</code> and
+<code>contexts</code> sections a real kubeconfig has — and you’re told how many of each it
+contains. Invalid files are rejected with the reason.</p>
+<p>Valid configs are stored, and the most recently uploaded one is the cluster
+everything else talks to. Upload another to switch.</p>
+<h2 id="monitoring">Monitoring</h2>
+<p>Pods, PVCs and nodes each get their own view, reachable individually or together
+as tabs on one dashboard.</p>
+<p><strong>Pods</strong> — every pod across all namespaces, with its namespace, phase (Running,
+Pending, Failed, Succeeded), the node it landed on and its containers. A summary
+line counts the total and how many are running, and status badges are
+colour-coded so failures stand out.</p>
+<p><strong>PVCs</strong> — every claim with its namespace, phase (Bound, Pending, Lost),
+requested capacity, access modes and bound volume, with a count of how many are
+bound.</p>
+<p><strong>Nodes</strong> — every node with its Ready state, its role (control plane or worker),
+its conditions, and its capacity and allocatable resources, with a count of how
+many are ready.</p>
+<p>Each view reloads on demand, and the pod view can reload with a verbose log
+showing exactly what it fetched and processed — useful when a cluster isn’t
+responding as expected.</p>
+<p>Some columns in the tables are placeholders showing <strong>N/A</strong> — pod restarts and
+age, node CPU, memory and pod counts, PVC usage. The monitoring API doesn’t
+collect them yet.</p>
+<h2 id="chat">Chat</h2>
+<p>Ask about the cluster in plain language — “how many pods are failing?”, “what’s
+the node status?”, “show me the deployments”. The question goes to a language
+model together with a snapshot of the live cluster: every pod, PVC, node and
+deployment at that moment, so answers are grounded in the real state rather than
+guessed.</p>
+<p>If the model can’t be reached, the chat degrades gracefully instead of failing:
+it falls back to deterministic keyword answers that still report the real
+numbers — failing pods by name, nodes ready out of total, counts of PVCs and
+deployments.</p>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS, shadcn/ui, TanStack
+Query) over three Python actions on Apache OpenServerless, all using the official
+Kubernetes client:</p>
+<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
+<tr><td><code>POST /api/my/v1/upload-kubeconfig</code></td><td>validate a kubeconfig and store it</td></tr>
+<tr><td><code>GET /api/my/v1/cluster-monitor</code></td><td>pods, PVCs and nodes, with per-status summaries</td></tr>
+<tr><td><code>POST /api/my/v1/ai-chat</code></td><td>answer a question using a live cluster snapshot</td></tr>
+</tbody></table>
+<p>Kubeconfigs are kept in <strong>S3</strong>, uploaded under a unique key with the original
+filename and cluster/user counts as metadata; the actions load the newest one
+into the Kubernetes client in memory. The chat calls an <strong>Ollama</strong> endpoint,
+configured through <code>OLLAMA_URL</code> and <code>OLLAMA_MODEL</code>.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>The backend needs S3 configured for kubeconfig storage, and an Ollama endpoint
+for the chat. Upload a kubeconfig from the home page, then open the dashboard.</p>
 
 
       </article>

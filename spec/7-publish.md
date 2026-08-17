@@ -1,5 +1,13 @@
 # 7 — Preview build and publish
 
+> **Largely superseded by spec/13-generate.md.** `generator.py` has absorbed
+> `support/index.py`: it fetches the catalog from the GitHub API itself and
+> writes it to `static/index.json`, so `build.sh` no longer runs `index.py`
+> (step 1), the generator no longer reads `support/index.json` (step 2), and
+> the "push the catalog before the site" ordering constraint (step 3) is gone
+> — there is no submodule commit for the site to get ahead of. The `build.sh`
+> serve/build split described below still holds.
+
 Split what the build does into two deliberate steps: `build.sh` regenerates
 everything from the live GitHub catalog and previews it locally, and publishing
 pushes the result out — first the catalog in `support/`, then the site itself.
@@ -52,7 +60,8 @@ Replace the current single path with the pipeline below. The zola bootstrap
 
 `./build.sh build` keeps the publishing path: same steps 1 and 2, then
 `zola build --output-dir docs --force`, then the existing confined commit of
-`content/apps static/apps index.json docs`. `NO_COMMIT=1` and the detached
+`content/apps index.json docs` (`static/apps` was dropped by
+spec/12-readme.md). `NO_COMMIT=1` and the detached
 HEAD guard keep working as they do now. The committed path list drops the root
 `index.json` and gains nothing — `support/index.json` belongs to the submodule
 and is committed and pushed there separately.
@@ -65,14 +74,18 @@ and is committed and pushed there separately.
   the `requests.get` of the index, and the write-back of the fetched copy.
 - Drop the `--offline` flag: with no fetch there is nothing to be offline from.
   `generator.py` still uses `requests` for READMEs, so the dependency block
-  stays.
+  stays. (Superseded by spec/12-readme.md: READMEs are now read from the
+  clones, and the `requests` dependency is gone.)
 - Error clearly if `support/index.json` is missing, naming the submodule — that
   means `support/` was never checked out (`git submodule update --init`).
 - Delete the root `index.json`; it was only the HTTP cache.
 
 Two icon bugs surfaced once the generator started reading a freshly regenerated
 catalog. The stale cache had been hiding both, and the site cannot be generated
-correctly from the live catalog without fixing them.
+correctly from the live catalog without fixing them. (Both fixes are since
+superseded by spec/12-readme.md, which stopped copying icons altogether: the
+screenshot is linked at its raw GitHub URL, so there is no local copy to find
+or to prune.)
 
 - **`copy_icon` found nothing.** It looks for `<name>.png` in the checkout
   derived from the icon URL. The catalog now points icons at each application's

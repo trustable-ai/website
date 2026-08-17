@@ -1,15 +1,18 @@
 #!/bin/bash
-# Regenerate the Trustable site and preview it — see spec/7-publish.md.
+# Regenerate the Trustable site and preview it — see spec/13-generate.md.
 # Installs zola into ~/.local/bin when it is not already on PATH.
 #
 #   ./build.sh          regenerate the catalog and gallery, then serve a preview
 #   ./build.sh serve    the same, said explicitly
 #   ./build.sh build    regenerate, write docs/, and commit the result
+#   ./build.sh [...] --fast   reuse the last catalog and images, skipping GitHub
 #
-# Every path starts by regenerating the catalog from the live GitHub API into
-# support/index.json, so the site can never be generated from a stale one.
-# Never pushes: what `./build.sh build` commits is published by the PR-and-merge
-# process in CLAUDE.md, which also pushes the support submodule.
+# generator.py regenerates the catalog from the live GitHub API into
+# static/index.json on every run, so the site can never be generated from a
+# stale one. --fast trades that guarantee for speed while iterating locally: it
+# reuses what the last full run left behind and needs neither the network nor
+# `gh`. Never pushes: what `./build.sh build` commits is published by the
+# PR-and-merge process in CLAUDE.md.
 # NO_COMMIT=1 builds without committing.
 set -e
 
@@ -68,26 +71,50 @@ echo ">> using $("$ZOLA" --version) at $ZOLA"
 
 cd "$HERE"
 
-MODE="${1:-serve}"
-case "$MODE" in
-serve | build) ;;
-*)
-  echo "usage: $0 [serve|build]" >&2
-  exit 1
-  ;;
-esac
+MODE="serve"
+FAST=""
+for arg in "$@"; do
+  case "$arg" in
+  serve | build) MODE="$arg" ;;
+  --fast) FAST=1 ;;
+  *)
+    echo "usage: $0 [serve|build] [--fast]" >&2
+    exit 1
+    ;;
+  esac
+done
 
-# The catalog is rebuilt from the GitHub API on every run, so the site cannot
-# drift from what the trustable-ai organization looks like today. index.py needs
-# the `gh` CLI and only the standard library, so uv just supplies the
-# interpreter; --no-project stops it treating this repo as a Python project.
-# A failure here stops the build rather than falling back to a stale catalog.
-echo ">> regenerating the starter index"
-uv run --no-project support/index.py
+# --fast reuses the catalog and images from the last full run instead of asking
+# GitHub for them again: generator.py --offline reads static/index.json back and
+# leaves static/images/ alone. It still regenerates every page, so a template or
+# a spec change is picked up — only the network work is skipped. Use it while
+# iterating; a publishing build should be a full one, or the site is generated
+# from whatever the organization looked like the last time someone ran it.
+if [ -n "$FAST" ]; then
+  echo ">> --fast: reusing the catalog and images from the last full run"
+  ./generator.py --offline
+else
+  # generator.py talks to the GitHub API with `gh`, so a missing or unauthorized
+  # CLI is the build's problem now rather than the support submodule's. Say so
+  # here instead of failing deep inside the generator. --fast needs neither, so
+  # this is checked only on the path that does.
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "error: the gh CLI is required to build the catalog — https://cli.github.com" >&2
+    echo "       (or rebuild from the last catalog with: $0 $MODE --fast)" >&2
+    exit 1
+  fi
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "error: gh is not authenticated — run: gh auth login" >&2
+    echo "       (or rebuild from the last catalog with: $0 $MODE --fast)" >&2
+    exit 1
+  fi
 
-# The gallery is generated from the support/index.json written just above.
-echo ">> generating the Apps gallery"
-./generator.py
+  # One step: fetch the catalog from the live GitHub API, download every image
+  # the site shows, and generate the gallery. A failure here stops the build
+  # rather than falling back to a stale catalog.
+  echo ">> generating the catalog and the Apps gallery"
+  ./generator.py
+fi
 
 # `serve` previews on http://127.0.0.1:1111 with live reload and incremental
 # rebuilds, and does NOT write docs/. The port is pinned so the URL is
@@ -118,9 +145,9 @@ if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
   exit 0
 fi
 
-# The catalog itself is not here: it belongs to the support submodule and is
-# committed and pushed there separately.
-BUILD_PATHS=(content/apps static/apps docs)
+# The catalog and the images the generator downloaded are committed here now,
+# so the published site serves both from trustable.it.
+BUILD_PATHS=(content/apps static/index.json static/images docs)
 
 # --porcelain over these paths alone reports both tracked edits and untracked
 # new files (a newly added application page or icon) without touching the
@@ -137,6 +164,6 @@ fi
 git add -- "${BUILD_PATHS[@]}"
 git commit --quiet --only \
   -m "Rebuild the site" \
-  -m "Regenerated the Apps gallery from support/index.json and rebuilt docs/ with zola. Committed by build.sh." \
+  -m "Regenerated the catalog into static/index.json, downloaded the application images into static/images/, regenerated the Apps gallery and rebuilt docs/ with zola. Committed by build.sh." \
   -- "${BUILD_PATHS[@]}"
 echo ">> committed $(git rev-parse --short HEAD)"

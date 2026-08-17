@@ -10,7 +10,7 @@ does not have to start from an empty prompt.
 
 The content to show, in order:
 
-- **Build with Private AI on your PC** (the panel heading)
+- **Build Apps with Local AI on your PC** (the panel heading)
 - Lede: Customize and build full stack applications with prompts, using Local,
   Private or Sovereign AI.
 - `trustable-anim.mp4` — with the existing caption: *Describe what you want and

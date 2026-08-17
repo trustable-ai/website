@@ -762,11 +762,66 @@
         
         <img
           class="page-hero"
-          src="/apps/minicrm.png"
+          src="/images/trustable-ai-minicrm.png"
           alt="Mini CRM"
         />
         
-        <p>Mini Customer Relation Manager</p>
+        <p>A small CRM for the two things that actually matter day to day: who your
+customers are, and what you owe them next.</p>
+<p>Customers on one side, scheduled activities on the other, and a dashboard that
+always shows what’s due first.</p>
+<h2 id="dashboard">Dashboard</h2>
+<p>The home page opens on four counters — <strong>Customers</strong>, <strong>Total activities</strong>,
+<strong>Pending</strong> and <strong>Completed</strong>. Each one is a button: click it to drill into the
+matching list, with a back link to return. The numbers refresh themselves after
+every change; nothing ever needs a reload.</p>
+<p>Below them, every activity is listed in due-date order, each showing the
+customer it belongs to. Completed ones are struck through and greyed out so the
+open work stands out. On each row you can:</p>
+<ul>
+<li><strong>mark it complete</strong> — or reopen it if you ticked it by mistake</li>
+<li><strong>postpone it</strong> to another date, chosen in a dialog</li>
+<li><strong>delete it</strong>, behind a confirmation that names the activity</li>
+</ul>
+<p>The list re-sorts itself immediately after any of these, so a postponed task
+moves to its new place at once.</p>
+<h2 id="creating-an-activity-quickly">Creating an activity quickly</h2>
+<p>A panel sits on the dashboard beside the list, built for speed. Start typing a
+customer’s name and the matches filter as you type; pick one, add a title, an
+optional description and a due date, and save. The new activity drops straight
+into its chronological position, the counters update, and the form clears itself
+ready for the next one. Title and due date are required and say so inline.</p>
+<h2 id="customers">Customers</h2>
+<p>The Customers page lists everyone with their company, contact details and how
+many activities they have. Search matches across name, company, email and phone.
+You can add a customer, edit one, or delete one after confirming.</p>
+<p>Clicking through opens the customer’s own page: full contact details — company,
+email, phone, notes — a count of pending work, and their complete activity
+history. Edit and delete are available there too, and deleting returns you to
+the list.</p>
+<p>A customer needs only a name; company, email, phone and notes are all optional,
+and empty fields show as a dash rather than a gap.</p>
+<h2 id="the-activity-lists">The activity lists</h2>
+<p>Each dashboard counter opens a focused view, all of them searchable across
+activity title, description, customer name and company, and all kept in due-date
+order:</p>
+<ul>
+<li><strong>All activities</strong> — everything, whatever its status</li>
+<li><strong>Pending</strong> — only what’s still open, with complete, postpone and delete</li>
+<li><strong>Completed</strong> — only what’s done, with reopen and delete</li>
+</ul>
+<h2 id="how-it-is-put-together">How it is put together</h2>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS, React Router), laid
+out to work from phone to desktop.</p>
+<p>Data lives in an in-memory store seeded with a handful of example customers and
+activities. Everything you add or change is real for as long as the tab is open
+and resets when you reload — the store is deliberately kept behind simple
+functions so it can be swapped for a real API without touching the interface.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run dev
+</span></code></pre>
+<p>The app opens on the dashboard with the sample data loaded.</p>
 
 
       </article>
