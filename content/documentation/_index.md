@@ -48,6 +48,8 @@ the other with a single action.
 
 - [setup](setup.md)
 - [configuration](config.md)
-- [app lisgt](list.md)
+- [app chat](chat.md)
+- [app list](list.md)
 - [app edit](edit.md)
+- [template](template.md)
 
