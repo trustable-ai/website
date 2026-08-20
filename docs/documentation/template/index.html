@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Templates — Trustable</title>
+    <meta
+      name="description"
+      content="A Lovable-like experience for Private AI. Build, run and publish AI applications that never leave your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+      }
+
+      /* The wordmark is the whole brand now, so it carries the header. */
+      .brand img {
+        height: 2.4rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      /* ---------- Apps gallery ---------- */
+
+      /*
+       * Lives here rather than in landing.html because three surfaces render
+       * starter-cards.html: the home page panel, the Apps index and each
+       * group index. See spec/4-generate.md.
+       *
+       * One block per group stacked down the panel. The 5% side inset is on
+       * the gallery rather than on each row, so the tiles of every group line
+       * up on the same two edges at every width.
+       */
+      .gallery {
+        display: grid;
+        gap: 2rem;
+        padding-inline: 5%;
+      }
+
+      /*
+       * On the landing page the gallery breaks out of its .wrap parent: the
+       * wrap caps at 1200px and adds its own 1.5rem margin, which would stack
+       * on top of the 5% and leave the real inset drifting between 3% and 8%
+       * across breakpoints. Measuring against the viewport is what makes it a
+       * flat 5%.
+       *
+       * Scoped to the panel: inside the docs prose column (the Apps and
+       * group indexes) a 100vw child is wider than its own container, which
+       * scrolls the page sideways and collapses the grid to one tile per row.
+       * There the 5% is of the prose column, which is what it should be.
+       */
+      .panel .gallery {
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        padding-inline: 5vw;
+      }
+
+      /* ---------- tabbed variant (home page only) ---------- */
+
+      /*
+       * The tab strip replaces the per-group headings. Without JS every group
+       * is still rendered stacked below it, so the strip is inert rather than
+       * misleading — .js-tabs is only added once the script has actually taken
+       * the panels over.
+       */
+      .gallery-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.35rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .gallery-tab {
+        appearance: none;
+        border: 1px solid var(--hairline);
+        background: var(--card);
+        color: var(--navy);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.74rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease,
+          border-color var(--fade) ease;
+      }
+
+      .gallery-tab:hover {
+        background: #e6ecf8;
+      }
+
+      .gallery-tab:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .js-tabs .gallery-tab[aria-selected="true"] {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+
+      .gallery-title {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .gallery-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .gallery-title a:hover {
+        color: var(--blue);
+      }
+
+      /*
+       * Mobile first: one tile per row filling the whole inset band — `1fr`
+       * with no column gap to eat into it, so the tile is a true 100%.
+       */
+      .gallery-grid {
+        --tile-gap: 1.25rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem var(--tile-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .gallery-card a {
+        display: grid;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+      }
+
+      .gallery-card a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+
+      /* The title sits above the box, so it is page text rather than card
+         furniture and stays readable against the panel background. */
+      .gallery-name {
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      /*
+       * The box holds the icon alone. It is the positioning context for the
+       * description popup and the thing that lifts on hover.
+       */
+      .gallery-box {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 0.9rem;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        transition:
+          border-color var(--fade) ease,
+          transform var(--fade) ease;
+      }
+
+      .gallery-card a:hover .gallery-box {
+        border-color: var(--blue);
+        transform: translateY(-2px);
+      }
+
+      /*
+       * The preview slot is 3:4 portrait, so its height follows the column
+       * width and every tile in a row matches whatever its icon's own aspect
+       * is. The source screenshots are all portrait (0.55:1 to 0.97:1), so
+       * they seat here with little waste. `contain` letterboxes rather than
+       * cropping — a shot is never cut off to fill the slot.
+       */
+      .gallery-icon {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      /* Fallback tile for an application whose templates repo ships no icon. */
+      .gallery-initial {
+        display: grid;
+        place-items: center;
+        background: #e6ecf8;
+        color: var(--blue);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+
+      /*
+       * The description is a popup over the icon rather than a line under the
+       * tile. It is aria-hidden and duplicated into the link's aria-label, so
+       * hiding it visually costs a screen reader nothing.
+       */
+      .gallery-note {
+        position: absolute;
+        inset: auto 0 0;
+        padding: 0.7rem 0.9rem;
+        background: rgba(11, 27, 58, 0.92);
+        color: #fff;
+        font-size: 0.9rem;
+        line-height: 1.35;
+        opacity: 0;
+        translate: 0 100%;
+        transition:
+          opacity var(--fade) ease,
+          translate var(--fade) ease;
+      }
+
+      .gallery-card a:hover .gallery-note,
+      .gallery-card a:focus-visible .gallery-note {
+        opacity: 1;
+        translate: 0 0;
+      }
+
+      /*
+       * Tablet two up, desktop three up. Equal `1fr` columns with the gutter
+       * as a real column-gap: every tile is then exactly the same width, which
+       * is what keeps the 3:4 preview slots on one line. An earlier version
+       * sized the columns in percent and took the gutter out of each tile's
+       * padding — that left the last column in each row a gutter wider than
+       * its siblings, and a 3:4 slot turns any width difference into a
+       * visible height difference.
+       *
+       * The band widens as the columns divide, so the tiles still clear their
+       * specified share: see spec/4-generate.md for the measured widths.
+       */
+      @media (min-width: 600px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: var(--tile-gap);
+        }
+      }
+
+      @media (min-width: 1000px) {
+        .gallery-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      /*
+       * 74ch is a measure for reading prose; the Apps indexes are a tile
+       * grid, and at that width three columns are too narrow to show a
+       * screenshot. They take the full docs column instead.
+       */
+      .prose:has(.gallery) {
+        max-width: none;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      /*
+       * The App screenshot at the top of an application page. It inherits
+       * the .prose img card, and only caps the height: these are portrait
+       * phone shots as often as landscape ones, and a tall render would
+       * otherwise push the whole page body below the fold.
+       */
+      .prose .page-hero {
+        margin-top: 0;
+        max-height: 420px;
+        width: auto;
+        object-fit: contain;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="Trustable" />
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.it/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.it/apps/">Apps</a>
+          
+          
+          <a href="https://trustable.it/architecture/">Architecture</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Documentation</h2>
+        <nav aria-label="Documentation">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.it/documentation/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/setup/"
+                
+                >Setup</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/config/"
+                
+                >Configuration</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/list/"
+                
+                >App List</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/edit/"
+                
+                >App Edit</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/chat/"
+                
+                >App Chat</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/template/"
+                aria-current="page"
+                >Templates</a
+              >
+            </li>
+            
+            
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>Templates</h1>
+        
+        
+        <p>A <strong>template</strong> is an ordered list of prompts — a recipe you run instead of typing
+the same sequence of instructions again. Build the sequence once, and it becomes
+repeatable: for you tomorrow, and for anyone else on the same repository.</p>
+<p>Templates are ordinary Markdown files on GitHub, with <code>---</code> separating one prompt
+from the next, so they can be reviewed and edited like any other file in a
+repository. This page covers working with them from inside the workbench —
+opening one, running it, editing its steps, and creating one from a conversation.
+The panel that lists them is described in
+<a href="https://trustable.it/documentation/chat/#templates">Application chat</a>.</p>
+<h2 id="choose-template">Choose template</h2>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-35-16.png" alt="" /></p>
+<p>The top of the Templates panel shows two things.</p>
+<p><strong>Source</strong> — the repository and branch the catalog is read from, here
+<code>trustable-ai/templates · main</code>, with <strong>Refresh</strong> to re-read it.</p>
+<p>Below it, <strong>the working copy</strong>: the template currently loaded into your
+application. It is a real file, <code>template.md</code>, at the root of your application’s
+checkout — not a reference to a remote one. That is deliberate: a template
+travels with the application, is committed with it, and is published with it, so
+the recipe that built an application stays with that application.</p>
+<p>The box names it (<strong>App Suite</strong>), records where it came from
+(<code>trustable-ai/trureact-templates · appsuite.md</code>), and offers <strong>Open</strong>. When you
+have edited it, two editable fields appear — the display <strong>name</strong> and the <strong>file
+name</strong> — which is how a template is renamed.</p>
+<p>The note <em>“add in configuration your github token to edit templates”</em> means only
+that saving <em>back to GitHub</em> needs a token. Everything else works without one.</p>
+<h3 id="changed">Changed</h3>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-36-52.png" alt="" /></p>
+<p>The <strong>CHANGED</strong> badge marks a working copy that differs from the catalog version —
+you have edited, added, moved or removed a step.</p>
+<p>The badge appears whether or not a GitHub token is configured, on purpose: it is
+how you find out your edits are local-only. Without a token they stay in your
+application; with one, a <strong>Save to GitHub</strong> button publishes them back to the
+catalog.</p>
+<p>Saving checks that the file has not changed on GitHub since you loaded it. If
+someone else has pushed in the meantime, the save is refused rather than
+overwriting their work.</p>
+<h2 id="open">Open</h2>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-37-09.png" alt="" /></p>
+<p><strong>Open</strong> loads the working copy into the conversation as a series of steps.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-37-56.png" alt="" /></p>
+<p>Each prompt becomes its own node. A node shows:</p>
+<ul>
+<li>a <strong>radio button</strong> marking the selected step — the one Run next will execute;</li>
+<li>a <strong>state badge</strong>: <strong>NOT RUN</strong>, <strong>RUNNING…</strong>, or <strong>RUN</strong>;</li>
+<li>a <strong>title</strong>, taken from the prompt’s first heading or first meaningful line;</li>
+<li><strong>Task details</strong>, a disclosure holding the full prompt text.</li>
+</ul>
+<p>The state is shown by colour <em>and</em> by name — muted for not run, amber for
+running, green for run — so it is legible regardless of colour perception. A step
+counts as run once it has produced output, which means the states survive closing
+and resuming the session rather than resetting.</p>
+<p>The template above builds an application in stages: create the homepage with its
+menu, then add an address book, a TODO list, a pomodoro timer, and so on. Each
+step is small and checkable, which is exactly what makes the sequence worth
+keeping.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-39-16.png" alt="" /></p>
+<p>Expanding <strong>Task details</strong> shows the complete prompt. Titles are shortened for
+scanning; this is the text that actually runs, and it is worth reading before you
+run a template you did not write.</p>
+<p>Note this one ends with <em>“Do not implement the pages”</em> — templates are often
+written to constrain the assistant as much as to instruct it, keeping each step
+to one reviewable change.</p>
+<h2 id="run">Run</h2>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-39-38.png" alt="" /></p>
+<p>Run the selected step — from the node’s own <strong>Run</strong> button, or from <strong>Run next
+step</strong> on the toolbar, which additionally advances to the following step.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-40-13.png" alt="" /></p>
+<p>A running step streams its work directly below the node:</p>
+<ul>
+<li>the badge turns amber and reads <strong>RUNNING…</strong>;</li>
+<li><strong>AGENT RESPONSE</strong> carries the assistant’s output, with its <strong>Reasoning</strong>
+available under a disclosure — here it works out that the pages already exist
+and decides to replace them with placeholders, because the prompt said not to
+implement them;</li>
+<li><strong>ACTIVITY</strong> lists the tool calls as they happen (<code>Tool read</code>, <code>Tool write</code>, …)
+in a small scrolling window that follows the latest one while keeping the whole
+history.</li>
+</ul>
+<p>The response is what you read; the activity is what you check when the response
+surprises you.</p>
+<p><strong>Run all steps</strong> runs everything from the current selection to the end. Steps
+run strictly one at a time, since they share a single session. Two behaviours are
+worth knowing: each prompt is <strong>re-read when it executes</strong>, so an edit you make
+mid-run is the version that runs; and a <strong>failed step ends the run</strong> rather than
+firing the remaining prompts into a broken state.</p>
+<p>The composer’s <strong>Stop</strong> button aborts the whole run, not just the current step,
+and leaves the selection on the step that was stopped — so <strong>Run all steps</strong>
+resumes from there rather than starting over.</p>
+<h2 id="menu-specific-template">Menu specific template</h2>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-41-06.png" alt="" /></p>
+<p>Each step carries four controls: <strong>Run</strong>, <strong>Edit</strong>, <strong>Move</strong> and <strong>Remove</strong>.
+Together they mean a template is not something you can only consume: you adjust
+it in place, in the conversation, and the working copy is rewritten as you go.</p>
+<h3 id="edit">Edit</h3>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-42-14.png" alt="" /></p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-42-44.png" alt="" /></p>
+<p><strong>Edit</strong> replaces the node’s body with a prompt editor, in place, and swaps
+Run/Remove for <strong>Save</strong> and <strong>Cancel</strong>.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-43-06.png" alt="" /></p>
+<p><strong>Save</strong> commits the new prompt text, marks the template changed and writes the
+working copy. It does <strong>not</strong> run the step — running stays with the Run controls,
+so you can revise a whole template before executing any of it. <strong>Cancel</strong> discards
+the draft.</p>
+<p>Editing one step does not block the rest of the conversation: you can still send
+an ordinary message while a node is open for editing.</p>
+<h3 id="move">Move</h3>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-43-38.png" alt="" /></p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-44-19.png" alt="" /></p>
+<p><strong>Move</strong> reorders a step, and is keyboard-driven: the node’s controls are replaced
+by the hint <em>“use arrow to move, enter to confirm esc to cancel”</em>.</p>
+<ul>
+<li><strong>Arrow keys</strong> move the step one position at a time, so you see the new order
+as you choose it.</li>
+<li><strong>Enter</strong> commits it and writes the working copy.</li>
+<li><strong>Esc</strong> restores the order as it was when you started and writes nothing.</li>
+</ul>
+<p>Only Enter writes, which is what makes Esc a true cancel rather than a second
+edit. Edit and Move are both modal on a single node, so starting one ends the
+other, and neither is offered while a step is running.</p>
+<h3 id="remove">Remove</h3>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-44-49.png" alt="" /></p>
+<p><strong>Remove</strong> deletes the step from the template. Like the other edits it changes the
+working copy in your application; the catalog version on GitHub is untouched until
+you explicitly save.</p>
+<h2 id="creating-a-template-from-a-conversation">Creating a template from a conversation</h2>
+<p>There is deliberately <strong>no “new template” form</strong>. A template is created by
+promoting messages you have already sent — which means you write it by doing the
+work once, keeping the prompts that turned out well.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-55-30.png" alt="" /></p>
+<p>Type an ordinary message and send it.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-55-01.png" alt="" /></p>
+<p>While a template is loaded, your own messages appear as <strong>AD-HOC INPUT</strong> nodes.
+They run normally and stream their output, but they are <em>not</em> part of the
+template: they are inserted before the selected step, they do not advance the
+selection, and they are excluded when the template is saved.</p>
+<p>They carry two controls of their own: <strong>Add to template</strong> and <strong>Remove</strong>.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-56-02.png" alt="" /></p>
+<p><strong>Add to template</strong> — <em>pinning</em> — promotes the message into a real step. It gains
+the standard Run / Edit / Move / Remove controls and is included in saves. The
+assistant’s reply is carried across too, so pinning does not discard what the step
+produced.</p>
+<p>With <strong>no</strong> template loaded the same action is labelled <strong>New template</strong>: the
+first pin creates a working copy, turns that message into its first step, and
+switches the conversation into template mode. You name it later, when you save.</p>
+<p>This is the whole creation path — build something by talking to the assistant,
+pin the prompts that worked, and you have a repeatable recipe.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-56-15.png" alt="" /></p>
+<p><strong>Remove</strong> discards an ad-hoc node without pinning it — for the messages that did
+not lead anywhere.</p>
+<p><img src="https://trustable.it/documentation/template/images/2026-08-20-14-56-35.png" alt="" /></p>
+<p>A green <strong>RUN</strong> badge marks a step that has already produced output, ad-hoc nodes
+included, so you can see at a glance what has and has not been done in this
+session.</p>
+<h2 id="next">Next</h2>
+<ul>
+<li><a href="https://trustable.it/documentation/chat/">Application chat</a> — the assistant and the Templates
+panel.</li>
+<li><a href="https://trustable.it/documentation/config/#template-repository">Configuration</a> — pointing
+Trustable at your own template repository and adding a GitHub token.</li>
+</ul>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.it/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.it/apps/">Apps</a>
+          
+          
+          <a href="https://trustable.it/architecture/">Architecture</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

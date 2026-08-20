@@ -495,33 +495,6 @@
         margin: 0;
       }
 
-      /* ---------- Build: templates walkthrough ---------- */
-
-      /* Shot above its caption, both centred in the panel. */
-      .templates {
-        margin: 3rem auto 0;
-        max-width: 1080px;
-        display: grid;
-        justify-items: center;
-      }
-
-      .templates-lead {
-        margin: 1.25rem auto 0;
-        max-width: 68ch;
-        text-align: center;
-        font-size: 1.02rem;
-        line-height: 1.55;
-        color: var(--muted);
-      }
-
-      /* Never upscaled past the file's natural 635px. */
-      .templates-shot {
-        width: min(635px, 100%);
-        height: auto;
-        aspect-ratio: 635 / 564;
-        border-radius: 12px;
-      }
-
       /* ---------- Scale: three columns joined by arrows ---------- */
 
       .flow {
@@ -775,21 +748,6 @@
             <figcaption class="anim-caption">
               Use your Local AI workstation. No code or data leaves your
               infrastructure.
-            </figcaption>
-          </figure>
-
-          <figure class="templates">
-            <img
-              class="templates-shot"
-              src="/trustable-templates.png"
-              alt="The Trustable templates panel: a starter's templates listed on the left, the selected template's prompts loaded as editable steps on the right."
-              width="635"
-              height="564"
-              loading="lazy"
-            />
-            <figcaption class="templates-lead">
-              Use templates to build applications from a starter with predefined
-              prompts.
             </figcaption>
           </figure>
 

@@ -100,3 +100,14 @@ margins.
 reads "Build with Private AI on your PC", all three images carry their captions,
 the templates caption sits under its shot, and switching between the four steps
 does not reflow the panels below.
+
+## Later change: the templates shot was removed
+
+Step 3 above is no longer part of the Build panel. The `<figure class="templates">`
+holding `trustable-templates.png` and the caption "Use templates to build
+applications from a starter with predefined prompts." was removed at the user's
+request, together with the now-orphaned `.templates`, `.templates-lead` and
+`.templates-shot` rules.
+
+The panel now ends at the machine band followed by the `.cta-row`.
+`static/trustable-templates.png` is left in place — nothing references it.

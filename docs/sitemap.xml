@@ -4,6 +4,9 @@
         <loc>https://trustable.it/</loc>
     </url>
     <url>
+        <loc>https://trustable.it/app/</loc>
+    </url>
+    <url>
         <loc>https://trustable.it/apps/</loc>
     </url>
     <url>
@@ -79,6 +82,9 @@
         <loc>https://trustable.it/documentation/</loc>
     </url>
     <url>
+        <loc>https://trustable.it/documentation/chat/</loc>
+    </url>
+    <url>
         <loc>https://trustable.it/documentation/config/</loc>
     </url>
     <url>
@@ -89,5 +95,8 @@
     </url>
     <url>
         <loc>https://trustable.it/documentation/setup/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/documentation/template/</loc>
     </url>
 </urlset>

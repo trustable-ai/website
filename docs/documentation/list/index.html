@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App List — Trustable</title>
+    <meta
+      name="description"
+      content="A Lovable-like experience for Private AI. Build, run and publish AI applications that never leave your own infrastructure."
+    />
+    <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /* ---------- palette, lifted from the landing page ---------- */
+      :root {
+        --navy: #0b1b3a;
+        --blue: #1e63d0;
+        --cyan: #22c1e8;
+        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
+        --logo-blue: #198cb3;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --hairline: #dde3ee;
+        --muted: #55637d;
+        --fade: 400ms;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--navy);
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .wrap {
+        width: min(1200px, 100% - 3rem);
+        margin-inline: auto;
+      }
+
+      /* ---------- site header ---------- */
+
+      .sitebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(245, 247, 251, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hairline);
+        padding: 0.85rem 0;
+      }
+
+      .sitebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+      }
+
+      /* The wordmark is the whole brand now, so it carries the header. */
+      .brand img {
+        height: 2.4rem;
+        width: auto;
+      }
+
+      .sitenav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .sitenav a {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--navy);
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
+      }
+
+      .sitenav a:hover {
+        background: #e6ecf8;
+      }
+
+      .sitenav a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .sitenav a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- footer ---------- */
+
+      .footer {
+        background: var(--navy);
+        color: #a9b7d2;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer img {
+        width: 150px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      }
+
+      .footer a:hover {
+        border-bottom-color: #fff;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      /*
+       * The .footer a underline is for the text links; on the logo it would
+       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       */
+      .footer-logo-link {
+        display: inline-block;
+        border-bottom: 0;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-logo-link:hover {
+        border-bottom: 0;
+        opacity: 0.75;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        :root {
+          --fade: 0ms;
+        }
+      }
+
+      /* ---------- Apps gallery ---------- */
+
+      /*
+       * Lives here rather than in landing.html because three surfaces render
+       * starter-cards.html: the home page panel, the Apps index and each
+       * group index. See spec/4-generate.md.
+       *
+       * One block per group stacked down the panel. The 5% side inset is on
+       * the gallery rather than on each row, so the tiles of every group line
+       * up on the same two edges at every width.
+       */
+      .gallery {
+        display: grid;
+        gap: 2rem;
+        padding-inline: 5%;
+      }
+
+      /*
+       * On the landing page the gallery breaks out of its .wrap parent: the
+       * wrap caps at 1200px and adds its own 1.5rem margin, which would stack
+       * on top of the 5% and leave the real inset drifting between 3% and 8%
+       * across breakpoints. Measuring against the viewport is what makes it a
+       * flat 5%.
+       *
+       * Scoped to the panel: inside the docs prose column (the Apps and
+       * group indexes) a 100vw child is wider than its own container, which
+       * scrolls the page sideways and collapses the grid to one tile per row.
+       * There the 5% is of the prose column, which is what it should be.
+       */
+      .panel .gallery {
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        padding-inline: 5vw;
+      }
+
+      /* ---------- tabbed variant (home page only) ---------- */
+
+      /*
+       * The tab strip replaces the per-group headings. Without JS every group
+       * is still rendered stacked below it, so the strip is inert rather than
+       * misleading — .js-tabs is only added once the script has actually taken
+       * the panels over.
+       */
+      .gallery-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.35rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .gallery-tab {
+        appearance: none;
+        border: 1px solid var(--hairline);
+        background: var(--card);
+        color: var(--navy);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.74rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease,
+          border-color var(--fade) ease;
+      }
+
+      .gallery-tab:hover {
+        background: #e6ecf8;
+      }
+
+      .gallery-tab:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+
+      .js-tabs .gallery-tab[aria-selected="true"] {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+
+      .gallery-title {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .gallery-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .gallery-title a:hover {
+        color: var(--blue);
+      }
+
+      /*
+       * Mobile first: one tile per row filling the whole inset band — `1fr`
+       * with no column gap to eat into it, so the tile is a true 100%.
+       */
+      .gallery-grid {
+        --tile-gap: 1.25rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem var(--tile-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .gallery-card a {
+        display: grid;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--navy);
+      }
+
+      .gallery-card a:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+
+      /* The title sits above the box, so it is page text rather than card
+         furniture and stays readable against the panel background. */
+      .gallery-name {
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      /*
+       * The box holds the icon alone. It is the positioning context for the
+       * description popup and the thing that lifts on hover.
+       */
+      .gallery-box {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 0.9rem;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        transition:
+          border-color var(--fade) ease,
+          transform var(--fade) ease;
+      }
+
+      .gallery-card a:hover .gallery-box {
+        border-color: var(--blue);
+        transform: translateY(-2px);
+      }
+
+      /*
+       * The preview slot is 3:4 portrait, so its height follows the column
+       * width and every tile in a row matches whatever its icon's own aspect
+       * is. The source screenshots are all portrait (0.55:1 to 0.97:1), so
+       * they seat here with little waste. `contain` letterboxes rather than
+       * cropping — a shot is never cut off to fill the slot.
+       */
+      .gallery-icon {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      /* Fallback tile for an application whose templates repo ships no icon. */
+      .gallery-initial {
+        display: grid;
+        place-items: center;
+        background: #e6ecf8;
+        color: var(--blue);
+        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+
+      /*
+       * The description is a popup over the icon rather than a line under the
+       * tile. It is aria-hidden and duplicated into the link's aria-label, so
+       * hiding it visually costs a screen reader nothing.
+       */
+      .gallery-note {
+        position: absolute;
+        inset: auto 0 0;
+        padding: 0.7rem 0.9rem;
+        background: rgba(11, 27, 58, 0.92);
+        color: #fff;
+        font-size: 0.9rem;
+        line-height: 1.35;
+        opacity: 0;
+        translate: 0 100%;
+        transition:
+          opacity var(--fade) ease,
+          translate var(--fade) ease;
+      }
+
+      .gallery-card a:hover .gallery-note,
+      .gallery-card a:focus-visible .gallery-note {
+        opacity: 1;
+        translate: 0 0;
+      }
+
+      /*
+       * Tablet two up, desktop three up. Equal `1fr` columns with the gutter
+       * as a real column-gap: every tile is then exactly the same width, which
+       * is what keeps the 3:4 preview slots on one line. An earlier version
+       * sized the columns in percent and took the gutter out of each tile's
+       * padding — that left the last column in each row a gutter wider than
+       * its siblings, and a 3:4 slot turns any width difference into a
+       * visible height difference.
+       *
+       * The band widens as the columns divide, so the tiles still clear their
+       * specified share: see spec/4-generate.md for the measured widths.
+       */
+      @media (min-width: 600px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: var(--tile-gap);
+        }
+      }
+
+      @media (min-width: 1000px) {
+        .gallery-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      
+      /* ---------- docs layout ---------- */
+
+      .docs {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3.5rem;
+        align-items: start;
+        padding-top: 2.5rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        /* Clear the sticky site bar above it. */
+        top: 5rem;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 0.9rem;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .sidebar ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .sidebar li + li {
+        margin-top: 0.15rem;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--navy);
+        font-weight: 500;
+        transition: background var(--fade) ease;
+      }
+
+      .sidebar a:hover {
+        background: #e6ecf8;
+      }
+
+      .sidebar a[aria-current="page"] {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        max-width: 74ch;
+        min-width: 0;
+      }
+
+      /*
+       * 74ch is a measure for reading prose; the Apps indexes are a tile
+       * grid, and at that width three columns are too narrow to show a
+       * screenshot. They take the full docs column instead.
+       */
+      .prose:has(.gallery) {
+        max-width: none;
+      }
+
+      .prose h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .prose h2 {
+        margin: 3rem 0 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.2;
+      }
+
+      .prose h3 {
+        margin: 2.25rem 0 0.75rem;
+        font-size: 1.22rem;
+        font-weight: 700;
+      }
+
+      .prose p,
+      .prose li {
+        color: #23324f;
+      }
+
+      .prose a {
+        color: var(--blue);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+      }
+
+      .prose a:hover {
+        border-bottom-color: var(--blue);
+      }
+
+      .prose strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      .prose ul,
+      .prose ol {
+        padding-left: 1.3rem;
+      }
+
+      .prose li + li {
+        margin-top: 0.4rem;
+      }
+
+      /* Screenshots read as objects on the light page, like the stack diagram
+         card on the landing page. */
+      .prose img {
+        margin: 1.75rem 0;
+        background: var(--card);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        padding: 0.5rem;
+      }
+
+      /*
+       * The App screenshot at the top of an application page. It inherits
+       * the .prose img card, and only caps the height: these are portrait
+       * phone shots as often as landscape ones, and a tall render would
+       * otherwise push the whole page body below the fold.
+       */
+      .prose .page-hero {
+        margin-top: 0;
+        max-height: 420px;
+        width: auto;
+        object-fit: contain;
+      }
+
+      .prose hr {
+        margin: 3rem 0;
+        border: 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .prose blockquote {
+        margin: 1.75rem 0;
+        padding: 0.25rem 0 0.25rem 1.25rem;
+        border-left: 3px solid var(--cyan);
+        color: var(--muted);
+      }
+
+      .prose code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: #e9edf6;
+        border-radius: 5px;
+        padding: 0.12em 0.38em;
+      }
+
+      .prose pre {
+        margin: 1.75rem 0;
+        padding: 1rem 1.15rem;
+        overflow-x: auto;
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .prose pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /*
+       * Zola emits a bare <table> with no wrapper, so a small script boxes
+       * each one in .table-scroll. The fallback (no JS) is a real full-width
+       * table that can overflow on very narrow screens; `.prose` is min-width:0
+       * inside the grid, so the page body still never scrolls.
+       */
+      .table-scroll {
+        overflow-x: auto;
+        margin: 1.75rem 0;
+      }
+
+      .prose table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .table-scroll table {
+        margin: 0;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid var(--hairline);
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .prose th {
+        background: var(--card);
+        font-weight: 600;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        .docs {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .sidebar {
+          position: static;
+          background: var(--card);
+          border: 1px solid var(--hairline);
+          border-radius: 12px;
+          padding: 1.1rem 1rem;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <header class="sitebar">
+      <div class="wrap sitebar-inner">
+        
+        <a class="brand" href="/">
+          <img src="/logo-trustable.png" alt="Trustable" />
+        </a>
+        <nav class="sitenav" aria-label="Site">
+          
+          
+          <a href="https://trustable.it/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.it/apps/">Apps</a>
+          
+          
+          <a href="https://trustable.it/architecture/">Architecture</a>
+          
+          <a href="https://nuvolaris.io">Nuvolaris</a>
+        </nav>
+      </div>
+    </header>
+    
+
+    
+    <main class="wrap docs">
+      
+      
+        
+      
+      <aside class="sidebar">
+        <h2>Documentation</h2>
+        <nav aria-label="Documentation">
+          <ul>
+            <li>
+              <a
+                href="https://trustable.it/documentation/"
+                
+                >Overview</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/setup/"
+                
+                >Setup</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/config/"
+                
+                >Configuration</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/list/"
+                aria-current="page"
+                >App List</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/edit/"
+                
+                >App Edit</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/chat/"
+                
+                >App Chat</a
+              >
+            </li>
+            
+            
+            <li>
+              <a
+                href="https://trustable.it/documentation/template/"
+                
+                >Templates</a
+              >
+            </li>
+            
+            
+            
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="prose">
+        
+        <h1>App List</h1>
+        
+        
+        <p>The application list is Trustable’s home screen. Everything you build lives here,
+and every action that operates on a whole application — open it, edit its
+environment, sync it with GitHub, publish it, remove it — starts from this page.</p>
+<p>List application</p>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-10-51-56.png" alt="" /></p>
+<p>The page has four bands.</p>
+<p><strong>The header</strong> carries the Trustable logo, the product name, and a compact
+release tag — <code>V0.4.0 · MAIN</code> above — giving the version and the build stream it
+came from. Hovering it reveals the exact source branch and build label, which is
+how you tell a local build from a development or release image. At the far right
+sit the two global buttons, <strong>CONFIGURE</strong> and <strong>ADD APP</strong>.</p>
+<p><strong>The summary row</strong> counts four things at a glance:</p>
+<ul>
+<li><strong>APPLICATIONS</strong> — how many you have in total.</li>
+<li><strong>PRODUCTION</strong> — how many are configured for production, i.e. have a cluster to
+publish to.</li>
+<li><strong>DEVELOPMENT</strong> — how many exist only locally so far.</li>
+<li><strong>REPOSITORIES</strong> — how many have a Git repository behind them.</li>
+</ul>
+<p><strong>The Applications card</strong> — labelled <em>WORKBENCH INVENTORY</em> — is the list itself,
+with its search box, sort selector, view switch and filters. The count under the
+heading (<em>“1 application”</em>) always reflects what the current search and filter
+actually show.</p>
+<p><strong>The footer</strong> reports the build identifier and the expiry date of this Trustable
+version, plus a short hash identifying the ops task set in use. Trustable builds
+carry an expiry; past it, the app asks you to update.</p>
+<blockquote>
+<p>When your provider is <strong>Sovereign AI</strong>, a <strong>Credits</strong> pill appears just under
+the title showing your remaining balance, refreshed every minute. With any other
+provider there are no credits to track and the pill is not shown.</p>
+</blockquote>
+<h2 id="configure-button">Configure button</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-10-52-35.png" alt="" /></p>
+<p>Opens the <a href="https://trustable.it/documentation/config/">Configuration</a> page — provider, models,
+license, Git identity and shared environment values. It is workbench-wide
+settings, not per-application ones; those live behind each row’s <strong>ENV</strong> button.</p>
+<h2 id="add-applications">Add applications</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-10-52-57.png" alt="" /></p>
+<p><strong>ADD APP</strong> opens the <em>Add Application</em> dialog. There are two ways to get a new
+application, presented as tabs: start from a <strong>Starter</strong> — an empty but correctly
+wired skeleton you then describe to the AI — or pick a <strong>ready-made application</strong>
+from the catalog and adapt it.</p>
+<h3 id="starter">Starter</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-13-07-09.png" alt="" /></p>
+<p>The <strong>STARTER</strong> tab is the default. It offers a short radio list of starters —
+minimal, convention-compatible repositories maintained for Trustable — each with
+its name as a link to its GitHub page and a one-line description:</p>
+<ul>
+<li><strong>truchat</strong> — AI chat UI with RAG.</li>
+<li><strong>trudemo</strong> — collection of demos.</li>
+<li><strong>trureact</strong> — a generic React starter.</li>
+<li><strong>My Application Starter</strong> — always the last row, for using a repository of
+your own rather than a published starter.</li>
+</ul>
+<p>Below the list:</p>
+<ul>
+<li><strong>Application Name</strong> — the name of the new application, and the identity it
+keeps everywhere: its repository, its workspace, its URL. It must be <strong>6–20
+alphanumeric characters starting with a letter</strong>, as the hint says, and it must
+not collide with an application you already have.</li>
+<li><strong>GitHub Repository</strong> — in <code>org/repo</code> form. It is prefilled from the starter you
+selected and is where the code comes from. Choosing <strong>My Application Starter</strong>
+is what makes this field yours to fill in; it is also the case where a private
+repository may need a connected GitHub account, so the dialog offers to connect
+one there.</li>
+</ul>
+<p><strong>CREATE</strong> creates the application: Trustable clones the starter into a durable
+repository of its own for this app, registers it, and returns you to the list. If
+the starter declares environment variables with no value, Trustable asks you to
+fill them in before going further.</p>
+<p>Starters are discovered from a published index rather than by querying GitHub, so
+the list is identical on every installation. If it cannot be loaded, the dialog
+says so and leaves <em>My Application Starter</em> available, so you are never stuck.</p>
+<h3 id="chat">Chat</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-13-09-05.png" alt="" /></p>
+<p>The remaining tabs — <strong>CHAT</strong>, <strong>DEMO</strong>, <strong>EXAMPLES</strong>, <strong>UTILITIES</strong> — browse the
+catalog of complete, working applications. Each tab is one group, shown as a
+carousel: <strong>one application at a time</strong>, with its <strong>title</strong> at the top linking to
+its GitHub repository, a <strong>screenshot</strong> in the middle, and its <strong>description</strong>
+underneath.</p>
+<p>The <strong>‹</strong> and <strong>›</strong> arrows step through the group and wrap around at both ends;
+the arrow keys do the same. The <strong>“1 of 3”</strong> counter tells you how far along you
+are. A group holding a single application shows neither arrows nor counter.</p>
+<p>The Chat group collects conversational applications — here <strong>AI Database
+Manager</strong>, an interface that turns plain-language questions into live PostgreSQL
+work.</p>
+<p>Clicking anywhere on the card except the title link opens a small <strong>name panel</strong>:
+it names the application and the repository it will be created from, prefills an
+<strong>Application Name</strong>, and offers Cancel and Confirm. The prefilled name is only a
+starting point — you can edit it freely, and if the obvious name is taken
+Trustable appends the smallest free number (<code>tetris</code>, <code>tetris1</code>, <code>tetris2</code>).
+<strong>Cancel returns to the carousel</strong> rather than closing the dialog, because you are
+choosing, not aborting.</p>
+<h3 id="demo">Demo</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-13-09-31.png" alt="" /></p>
+<p><strong>DEMO</strong> holds showcase applications demonstrating what Trustable can build —
+here <strong>AI CRM</strong>, a contact-and-ticket dashboard.</p>
+<h3 id="examples">Examples</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-13-09-52.png" alt="" /></p>
+<p><strong>EXAMPLES</strong> holds worked examples you can learn from or build on — here <strong>API
+Status Monitor</strong>, which polls endpoints and records uptime, response times and
+check history.</p>
+<h3 id="utilities">Utilities</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-13-10-12.png" alt="" /></p>
+<p><strong>UTILITIES</strong> holds practical tools — here <strong>Document Ingest</strong>, which uploads PDFs
+and runs them through an ingestion pipeline so an AI application can search them.</p>
+<p>An application can be listed under more than one group. Whichever tab you create
+it from, it is created from <strong>that entry’s own repository</strong>, so two entries in the
+same group give you two genuinely different applications.</p>
+<blockquote>
+<p>Switching tabs never loses what you typed elsewhere: the Starter tab keeps its
+selection and name. Reopening the dialog always resets to Starter.</p>
+</blockquote>
+<h2 id="application">Application</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-21-33.png" alt="" /></p>
+<p>The <strong>APPLICATION</strong> column identifies each application: a colour-coded initials
+badge, the application name, and — when it is running — a <strong>DEVELOPMENT</strong> link
+that opens the live local application in a new tab. That link is how you look at
+what you are building outside the editor.</p>
+<h2 id="filters">Filters</h2>
+<p>Three segmented filters restrict what the list shows. They combine with the search
+box, and the <em>“N applications”</em> count follows both.</p>
+<h3 id="all">All</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-15-57-41.png" alt="" /></p>
+<p><strong>ALL</strong> — the default. Every application, whatever its state.</p>
+<h3 id="production">Production</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-15-58-15.png" alt="" /></p>
+<p><strong>PRODUCTION</strong> — only applications configured for production, meaning they have a
+cluster host, user and credentials recorded and can be published.</p>
+<h3 id="development-only">Development only</h3>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-15-58-43.png" alt="" /></p>
+<p><strong>DEVELOPMENT ONLY</strong> — the complement: applications that exist only locally and
+have never been given a production target. Useful for spotting work that is ready
+to ship but not yet configured.</p>
+<h2 id="search">Search</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-15-59-28.png" alt="" /></p>
+<p>The controls above the filters:</p>
+<ul>
+<li><strong>Search apps or repositories</strong> — filters as you type, entirely in the browser
+with no round trip to the server. It matches the application name, the
+repository, and the production host and user, so you can find an application by
+where it is deployed as well as by what it is called.</li>
+<li><strong>Name</strong> — the sort selector; sort by application name or by repository.</li>
+<li><strong>GRID / LIST</strong> — the view switch. <strong>LIST</strong> is the default dense table.</li>
+</ul>
+<h2 id="grid">Grid</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-20-10-12-47.png" alt="" /></p>
+<p><strong>GRID</strong> shows each application as a card instead of a table row. The card carries
+the same information laid out vertically: the initials badge and name, the
+repository link, state chips (<em>Development</em>, <em>REPO</em>), then two wide buttons for
+the environments — <strong>DEVELOPMENT</strong>, which opens the running local application, and
+<strong>NO PRODUCTION</strong>, which is inert here and simply reports that this application has
+no published deployment yet. The actions sit at the bottom of the card.</p>
+<p>Grid is the better view when applications have screenshots or you are scanning a
+handful of them; List is better once you have many.</p>
+<h2 id="repository">Repository</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-22-00.png" alt="" /></p>
+<p>The <strong>REPOSITORY</strong> column shows the GitHub repository backing the application, as
+<code>org/repo</code>, linked to its GitHub page. This is the code’s public home — the target
+of Git Pull and Git Push — as distinct from the durable local copy Trustable keeps
+for itself.</p>
+<h2 id="status">Status</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-22-21.png" alt="" /></p>
+<p>The <strong>STATUS</strong> column reports which of the two states the application is in:
+<strong>DEVELOPMENT</strong> when it exists only locally, <strong>PRODUCTION</strong> once it has been
+published to a cluster and is serving real users.</p>
+<h2 id="action">Action</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-19-30.png" alt="" /></p>
+<p>The <strong>ACTIONS</strong> column carries every per-application operation. They are described
+one by one below, in the order they appear.</p>
+<h2 id="edit">Edit</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-10-53-48.png" alt="" /></p>
+<p><strong>EDIT</strong> is the main one — it opens the application in the workbench editor, where
+you talk to the AI assistant and watch your application update live. See
+<a href="https://trustable.it/documentation/edit/">Editing</a>.</p>
+<p>Clicking it <em>launches</em> the application, which is real work: Trustable checks the
+code out into a working area, regenerates its configuration files, logs in to the
+cluster, installs dependencies and starts the development server. A progress bar
+tracks the actual lifecycle stages rather than a timer, so it reflects genuine
+progress; if a stage fails, the bar stops where it got to and the error is shown.</p>
+<p>Clicking Edit again — from this tab or another — is safe. Trustable reuses a
+runtime that is already healthy instead of starting a second one.</p>
+<h2 id="env">Env</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-10-56-13.png" alt="" /></p>
+<p><strong>ENV</strong> opens the environment editor for this application: a table with a
+<strong>VARIABLE</strong> column and separate <strong>Development</strong> and <strong>Production</strong> values, so one
+application can point at a test database locally and the real one in production.</p>
+<p>Four rows are fixed and cannot be removed:</p>
+<ul>
+<li><strong>OPS_APIHOST</strong> — the cluster the application publishes to.</li>
+<li><strong>OPS_USER</strong> and <strong>OPS_PASSWORD</strong> — its credentials on that cluster.</li>
+<li><strong>OPS_REPO</strong> — its production repository, initialized from the Git origin.</li>
+</ul>
+<p>For these, the development value is managed by Trustable and read-only; the
+production value is yours to set. Below them you add and remove your own
+variables freely.</p>
+<p><strong>Import <code>.env</code></strong> and <strong>Import <code>.env.production</code></strong> fill a column from a local file,
+parsed in the browser. Neither import writes anything until you press <strong>Save</strong>,
+which writes both files; <strong>Close</strong> warns you if changes are pending.</p>
+<blockquote>
+<p>Values you keep in <a href="https://trustable.it/documentation/config/">Predefined Environment Variables</a>
+are offered here through a <strong>Use predefined values</strong> button when a required
+variable has no value. Nothing is copied in without you confirming it.</p>
+</blockquote>
+<h2 id="git-pull">Git Pull</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-16-39.png" alt="" /></p>
+<p><strong>GIT PULL</strong> brings changes from GitHub into Trustable — work done elsewhere, by a
+teammate or by you on another machine.</p>
+<p>It pulls from the configured production repository when there is one, and from the
+application’s original origin otherwise, then updates both Trustable’s durable copy
+and, if the application is checked out, the working copy.</p>
+<p>The pull is deliberately <strong>conservative</strong>: it never merges, rebases, hard-resets or
+overwrites uncommitted work. If you have local changes or the histories have
+diverged, it stops and tells you, leaving your work untouched — commit or set your
+changes aside first, then pull again.</p>
+<p>When the pull did change the checked-out copy, Trustable asks whether you want to
+<strong>deploy</strong> as well, since fresh code usually needs redeploying to take effect.
+Declining changes nothing.</p>
+<h2 id="git-push">Git Push</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-17-08.png" alt="" /></p>
+<p><strong>GIT PUSH</strong> sends your committed work to GitHub — the reverse of Git Pull.</p>
+<p>The first push for an application needs a target, so Trustable asks for the
+<strong>production repository</strong> in <code>org/repo</code> form. The same dialog offers to connect
+your GitHub account, which is the recommended path: Trustable then pushes over
+HTTPS using the connection, with no key to manage. If you would rather not connect
+an account, a collapsed <em>“Use an SSH deploy key instead”</em> option reveals a key you
+can add to the repository’s deploy keys with write access.</p>
+<p>Once configured, the repository is remembered and later pushes go straight through.
+Trustable pushes the repository’s own default branch rather than assuming <code>main</code>.</p>
+<blockquote>
+<p>Git Push requires a valid <strong>license</strong>. Without one, Trustable offers to install
+a license rather than failing silently. See
+<a href="https://trustable.it/documentation/config/#license">Configuration</a>.</p>
+</blockquote>
+<h2 id="publish">Publish</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-17-57.png" alt="" /></p>
+<p><strong>PUBLISH</strong> deploys the application to your OpenServerless cluster and moves it
+into the <em>Production</em> state, reachable at its own URL by real users.</p>
+<p>The first publish asks for the cluster details — <strong>OPS_APIHOST</strong>, <strong>OPS_USER</strong> and
+<strong>OPS_PASSWORD</strong> — since Trustable cannot guess where you want it to run. The
+dialog notes that you need an OpenServerless environment, and points at
+<a href="mailto:info@nuvolaris.io">info@nuvolaris.io</a> or the
+<a href="https://openserverless.apache.org">OpenServerless project</a> if you do not have one.</p>
+<p>With the target known, Trustable prepares a clean checkout, generates the
+production environment files, logs in to the cluster in production mode, and
+deploys. Later publishes skip straight to the deployment.</p>
+<blockquote>
+<p>Publish requires a valid <strong>license</strong>, and the license must cover the specific
+cluster host you are publishing to — a valid license for one cluster does not
+authorize another. Local development clusters are exempt from the host check but
+still need a valid license.</p>
+</blockquote>
+<h2 id="undeploy">Undeploy</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-18-24.png" alt="" /></p>
+<p><strong>UNDEPLOY</strong> is the counterpart of Publish: it removes the application’s deployed
+actions and packages from the cluster, taking it out of production.</p>
+<p>It is deliberately narrow. Your code, your local repository, your configuration and
+the application’s entry in this list are all untouched — only the running
+deployment goes away, and you can publish again at any time. Because of that
+narrowness it needs no license.</p>
+<p>A confirmation modal asks <em>“Undeploy <code>&lt;name&gt;</code>? This removes its deployed actions
+and packages.”</em> before anything happens, and the command output is shown when it
+finishes.</p>
+<blockquote>
+<p>Undeploy runs inside the application’s checked-out copy using cluster
+credentials, so an application that has never been opened has nothing to undeploy
+from: Trustable replies <em>“workbench not found — launch the app first.”</em></p>
+</blockquote>
+<h2 id="delete">Delete</h2>
+<p><img src="https://trustable.it/documentation/list/images/2026-08-19-12-18-46.png" alt="" /></p>
+<p><strong>DELETE</strong> removes the application from Trustable — its entry, its local repository
+and its checkout. It is styled in red because it is the only genuinely destructive
+action on this page and, unlike Undeploy, it does not leave the source behind.</p>
+<p>Anything you have pushed to GitHub survives, since Delete acts on Trustable’s copy
+rather than on the remote repository. Anything you have <strong>not</strong> pushed is gone. If
+the work matters, Git Push before you delete.</p>
+<h2 id="next">Next</h2>
+<ul>
+<li><a href="https://trustable.it/documentation/edit/">Editing</a> — what the <strong>EDIT</strong> button opens.</li>
+<li><a href="https://trustable.it/documentation/config/">Configuration</a> — what <strong>CONFIGURE</strong> opens.</li>
+</ul>
+
+
+      </article>
+    </main>
+
+    <script>
+      // Markdown tables arrive unwrapped; give each one its own scroll box so a
+      // wide table never widens the page.
+      document.querySelectorAll(".prose table").forEach(function (table) {
+        var box = document.createElement("div");
+        box.className = "table-scroll";
+        table.parentNode.insertBefore(box, table);
+        box.appendChild(table);
+      });
+    </script>
+
+
+    
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <a class="footer-logo-link" href="https://nuvolaris.io">
+          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
+        </a>
+        
+        <nav class="footer-nav" aria-label="Documentation">
+          
+          
+          <a href="https://trustable.it/documentation/">Documentation</a>
+          
+          
+          <a href="https://trustable.it/apps/">Apps</a>
+          
+          
+          <a href="https://trustable.it/architecture/">Architecture</a>
+          
+        </nav>
+        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>
