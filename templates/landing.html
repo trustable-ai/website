@@ -69,7 +69,7 @@
        * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
        * Bold is the closest web font, so "It is …" reads as part of the mark
        * rather than as page copy set next to it. The words are set as written
-       * — sentence case, not shouted — so the lockup reads "It is Trustable".
+       * — so the lockup reads "IT is Trustable".
        */
       .hero-title {
         display: flex;
@@ -91,21 +91,31 @@
       }
 
       /*
-       * "is" is the small connective part of "It is Trustable": two thirds the
-       * size of the words around it, and set on the wordmark's own optical
-       * centre rather than on the baseline of a word half again its height.
+       * "is" is the small connective part of "IT is Trustable", set reversed
+       * inside a solid dot: white letters on a black disc, so the connective
+       * reads as a mark between the two words rather than as a third word.
        *
-       * The nudge is needed because the logo file carries vertical padding, so
-       * flex-centring on the image box leaves the words visibly high against
-       * the letterforms actually drawn inside it.
+       * The dot is a circle by construction — a fixed em-based diameter with
+       * the text centred in it — and sits on the wordmark's own optical centre
+       * rather than on the baseline of a word half again its height, because
+       * the logo file carries vertical padding.
        */
       .hero-small {
         align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 1.15em;
+        height: 1.15em;
+        padding-bottom: 0.04em;
+        border-radius: 50%;
+        background: #000;
+        color: #fff;
         font-size: 0.66em;
         line-height: 1;
         translate: 0 0.08em;
-        letter-spacing: 0.02em;
-        color: var(--muted);
+        letter-spacing: 0;
       }
 
       /*
@@ -322,6 +332,31 @@
       .cta-row {
         margin-top: 1.75rem;
         text-align: center;
+      }
+
+      /*
+       * The pair above the video is the page's primary call: Download leads,
+       * Documentation follows in the same pill shape but outlined, so the two
+       * read as one choice with a clear first option rather than as two equal
+       * buttons competing at the top of the panel.
+       */
+      .cta-row-hero {
+        margin: 0 0 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+      }
+
+      .cta-quiet {
+        background: transparent;
+        color: var(--blue);
+        box-shadow: inset 0 0 0 1px var(--blue);
+      }
+
+      .cta-quiet:hover {
+        background: var(--blue);
+        color: #fff;
       }
 
       .cta {
@@ -647,7 +682,7 @@
     <header class="masthead">
       <div class="wrap">
         <h1 class="hero-title">
-          <span class="hero-word">It</span>
+          <span class="hero-word">IT</span>
           <span class="hero-word hero-small">is</span>
           <img
             class="hero-logo"
@@ -668,6 +703,7 @@
             <li>Keep your code and data under your control</li>
             <li>Enjoy a Lovable-like experience for Private AI</li>
             <li>Deploy in your Server, Data Center or Sovereign Cloud</li>
+            <li>Yoda says: Trustable, (is) it</li>
           </ul>
         </div>
       </div>
@@ -715,6 +751,13 @@
             </p>
           </div>
 
+          <p class="cta-row cta-row-hero">
+            <a class="cta" href="https://download.trustable.it">Download</a>
+            <a class="cta cta-quiet" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
+              >Documentation</a
+            >
+          </p>
+
           <figure class="anim">
             <video
               class="anim-video"
@@ -750,12 +793,6 @@
               infrastructure.
             </figcaption>
           </figure>
-
-          <p class="cta-row">
-            <a class="cta" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
-              >Read the documentation</a
-            >
-          </p>
         </div>
       </section>
 
@@ -802,6 +839,12 @@
             </p>
           </div>
 
+          <p class="cta-row cta-row-hero">
+            <a class="cta" href="{{ get_url(path='@/architecture/_index.md') | safe }}"
+              >Read the architecture</a
+            >
+          </p>
+
           <div class="duo">
             <div class="duo-figure">
               <img
@@ -826,12 +869,6 @@
             recovery — Kubernetes, S3, PostgreSQL, Redis, Prometheus and Velero,
             ready to use, integrated and running on your infrastructure.
           </p>
-
-          <p class="cta-row">
-            <a class="cta" href="{{ get_url(path='@/architecture/_index.md') | safe }}"
-              >Read the architecture</a
-            >
-          </p>
         </div>
       </section>
 
@@ -841,10 +878,14 @@
           <div class="panel-head">
             <h2>Scale Everywhere</h2>
             <p class="lede">
-              Scale from your Local AI to an organization Private AI, and to a
-              Sovereign AI provider.
+              We can help scaling your AI Application built with Trustable to
+              Local AI, Private organizational AI and Sovereign AI data center.
             </p>
           </div>
+
+          <p class="cta-row cta-row-hero">
+            <a class="cta" href="https://nuvolaris.io">Contact Us</a>
+          </p>
 
           <div class="flow">
             <div class="flow-item">
