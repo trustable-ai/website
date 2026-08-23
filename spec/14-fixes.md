@@ -47,3 +47,13 @@ The Scale lede becomes "We can help scaling your AI Application built with
 Trustable to Local AI, Private organizational AI and Sovereign AI data center."
 and a **Contact Us** button (`https://nuvolaris.io`) sits under it in a
 `.cta-row-hero`, above the three-tier flow.
+
+## Footer and new windows
+
+- The footer nav in `templates/base.html` gains **Download**
+  (`https://download.trustable.it`) and **Contact Us**
+  (`https://nuvolaris.io/#/contact`) after the section links.
+- Both the footer links and the two page buttons carry
+  `target="_blank" rel="noopener"`: they leave the site, so they open in a new
+  window and keep the visitor's place. The Scale panel's Contact Us button now
+  points at `https://nuvolaris.io/#/contact` rather than the site root.

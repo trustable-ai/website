@@ -1,12 +1,12 @@
 +++
 title = "Nuvolaris Components"
-description = "The Kubernetes operator, the CLI, the Console and MastroGPT — the management stack around OpenWhisk."
+description = "The Kubernetes operator, the CLI, the Console and Trustable — the management stack around OpenWhisk."
 weight = 30
 +++
 
-Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its services on Kubernetes, composed of a Kubernetes operator, a CLI, and a console for function development and management. Figure 3 depicts how each component contributes to seamless deployment, configuration, and operation.
+Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its services on Kubernetes, composed of a Kubernetes operator, a CLI, a console for function development and management, and the Trustable workbench. Figure 3 depicts how each component contributes to seamless deployment, configuration, and operation: the operator drives monitoring and backup and is steered from the admin console and the CLI, while the Web IDE opens into Trustable.
 
-![The Nuvolaris management components around OpenWhisk](_page_8_Picture_1.jpeg)
+![Nuvolaris Admin, the Web IDE and Trustable above the operator, which drives monitoring and backup, with the Nuvolaris CLI below](_page_8_Picture_1.jpeg)
 
 **Figure 3**
 
@@ -27,14 +27,14 @@ Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its 
 
 - The console offers a web-based platform for creating, managing, and deploying serverless functions, as well as launching development environments for rapid prototyping.
 - Within the console, developers can write, edit, and test serverless functions, with syntax highlighting for languages like JavaScript, Python, and Go.
-- The console's integrated launcher for **Web IDE** allows users to launch starter projects or templates for common serverless applications, with pre-configured boilerplate code to build LLM based applications. This supports fast setup and enables new developers to get up and running quickly.
+- The console's integrated launcher for **Web IDE** allows users to launch starter projects or templates for common serverless applications, with pre-configured boilerplate code to build LLM based applications. This supports fast setup and enables new developers to get up and running quickly, and it is the entry point into Trustable, described next.
 
-## 4. MastroGPT
+## 4. Trustable
 
-- MastroGPT is the AI development platform within Nuvolaris, designed to streamline the creation of AI applications.
-- With MastroGPT, developers can start quickly using ready-made templates (or "starters") that cover popular AI use cases, helping teams launch projects rapidly.
-- Applications built on MastroGPT can be deployed seamlessly across various environments, from private clouds to on-premises setups or even public clouds.
+- [Trustable](@/documentation/_index.md) is the Private AI workbench within Nuvolaris: a Lovable-like experience where you describe the application you want, an AI coding assistant writes it, and the result runs on your own infrastructure — your models, your data, your cluster.
+- Developers start from ready-made starters and from a catalog of templates — reusable multi-step prompts covering common AI use cases — so a project goes from an empty repository to a running application in minutes.
+- Each application lives in its own repository and moves between two states, development and production, so applications built with Trustable can be published across environments, from private clouds to on-premises setups or even public clouds.
 
-Together, the Kubernetes operator, CLI, the Console and MastroGPT offer a full-featured, integrated system for managing OpenWhisk. This combination provides flexibility for developers, operational control for administrators, and visibility into system performance, ensuring a smooth, efficient, and secure serverless environment.
+Together, the Kubernetes operator, CLI, the Console and Trustable offer a full-featured, integrated system for managing OpenWhisk. This combination provides flexibility for developers, operational control for administrators, and visibility into system performance, ensuring a smooth, efficient, and secure serverless environment.
 
 Next: [Integrated Services](@/architecture/integrated-services/index.md).
