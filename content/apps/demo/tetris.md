@@ -61,12 +61,3 @@ grid of coloured cells — no canvas, no game engine, no external assets. The
 board, collision detection, rotation, line clearing and scoring are plain
 functions; the game loop is a single interval whose delay is the current drop
 speed. It runs entirely in the browser with no backend.
-
-## Getting started
-
-```bash
-npm install
-npm run dev
-```
-
-Open the page, press Play Tetris, and use the arrow keys.

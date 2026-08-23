@@ -15,8 +15,8 @@ It does three things:
    application starter is a public repository whose description begins with
    "Trustable:", carrying <key>=<value> parameters (currently only templates=)
    which are stripped from the human-readable text. Applications are read from
-   the _index.md of the templates repository and grouped by its first "# "
-   heading.
+   the _index.md of the templates repository, each line linking the
+   application's own repository, and grouped by its first "# " heading.
 2. **Downloads every image** the site shows into static/images/, named after
    the repository it came from, so the published site reaches nothing but its
    own origin.
@@ -34,7 +34,6 @@ Usage:
 
 import argparse
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -80,9 +79,10 @@ APPLICATION_INDEX = "_index.md"
 # own image and the templates repository holds none.
 APPLICATION_SCREENSHOT = "screenshot.png"
 
-# An application's own repository, named by the template linked in _index.md:
-# "- [Tetris](tetris.md)" lives in https://github.com/trustable-ai/tetris.
-REPO_BASE = "https://github.com/{org}/{template}"
+# An application's own repository, taken from what its _index.md line links to:
+# a full https://github.com/<owner>/<name> URL, a bare <owner>/<name> slug, or
+# the legacy "<name>.md" resolved against ORG. See parse_repo.
+GITHUB_URL = "https://github.com/"
 
 # Convention for a marked repository that carries no templates=: its
 # applications live in a sibling repository with this suffix.
@@ -96,9 +96,12 @@ KEY_VALUE = re.compile(r"""\b([A-Za-z][A-Za-z0-9_-]*)=(?:"([^"]*)"|(\S+))""")
 # Same shape trustable-app accepts for notebook.repository: owner/repository.
 REPO_SEGMENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
-# One application per line: "- [<name>](<file>.md) <description>". The
-# description is optional; anything else in the file is ignored.
-APPLICATION_LINE = re.compile(r"^\s*[-*]\s*\[([^\]]+)\]\(([^)\s]+\.md)\)\s*(.*)$")
+# One application per line: "- [<title>](<target>) <description>", where
+# <target> names the repository — see parse_repo. A numbered list is a list
+# too, so "1." introduces an entry as well as "-". The description is optional;
+# anything else in the file is ignored.
+APPLICATION_LINE = re.compile(
+    r"^\s*(?:[-*]|\d+[.)])\s*\[([^\]]+)\]\(([^)\s]+)\)\s*(.*)$")
 
 # The group name is the first top-level "# " heading of an _index.md.
 GROUP_HEADING = re.compile(r"^#\s+(.*\S)\s*$")
@@ -208,19 +211,64 @@ def repo_exists(repo):
     return None
 
 
-def parse_applications(text):
+def parse_repo(target):
+    """Resolve an _index.md link target to the owner/name it points at.
+
+    The link is the application's repository, given either way round:
+
+    - "https://github.com/trustable-ai/tetris" — a full URL, so an application
+      may live under any owner and need not be named after its link.
+    - "trustable-ai/tetris" — the same thing as a bare slug.
+    - "tetris.md" or "tetris" — the older convention, where the link named a
+      markdown file beside the _index.md and the repository was assumed to be
+      ORG/<stem>. Still resolved that way, so existing files keep working.
+
+    A trailing "/" or ".git" is dropped. Returns None for anything else — an
+    off-GitHub URL, a path with directories, a segment GitHub would not accept —
+    so the caller can skip the line and say why.
+    """
+    value = (target or "").strip()
+    if not value:
+        return None
+    lowered = value.lower()
+    for prefix in ("https://github.com/", "http://github.com/"):
+        if lowered.startswith(prefix):
+            value = value[len(prefix):]
+            break
+    else:
+        if "://" in value:
+            return None
+    value = value.strip("/")
+    if value.endswith(".git"):
+        value = value[: -len(".git")]
+    parts = value.split("/")
+    if len(parts) == 1:
+        # The legacy form: a markdown file beside the _index.md naming a repo
+        # in our own organization.
+        parts = [ORG, parts[0][: -len(".md")] if parts[0].endswith(".md")
+                 else parts[0]]
+    if len(parts) != 2 or not all(REPO_SEGMENT.match(part) for part in parts):
+        return None
+    return f"{parts[0]}/{parts[1]}"
+
+
+def parse_applications(text, source=None):
     """Parse a templates _index.md into (group, applications).
 
     The group is the first "# " heading with the marker removed; it is None
     when the file has none.
 
-    A line "- [<title>](<template>.md) <description>" yields all three fields:
-    <template> is the application's identity — it names both "name" and the
-    repository https://github.com/<ORG>/<template> — while the link text is the
-    human-readable "title" and the trailing prose the "description". The icon is
-    the screenshot.png published by that same application repository, which is
-    what ./screenshot.sh stages, so an application carries its own image
-    instead of the templates repository holding one per entry.
+    A line "- [<title>](<target>) <description>" yields all three fields: the
+    link target names the application's repository — see parse_repo — the link
+    text is the human-readable "title" and the trailing prose the
+    "description". "name" is the repository's own name, which is the page's
+    filename and its sort key. The icon is the screenshot.png published by that
+    same repository, which is what ./screenshot.sh stages, so an application
+    carries its own image instead of the templates repository holding one per
+    entry.
+
+    `source` is the repository the listing came from, used only to say which
+    file a skipped line was in.
     """
     group = None
     applications = []
@@ -232,13 +280,18 @@ def parse_applications(text):
         match = APPLICATION_LINE.match(line)
         if not match:
             continue
-        title, path, description = match.groups()
-        template = os.path.basename(path)[: -len(".md")]
+        title, target, description = match.groups()
+        repo = parse_repo(target)
+        if repo is None:
+            where = f"{source}/{APPLICATION_INDEX}" if source else APPLICATION_INDEX
+            print(f"   ! {where}: skipping {title.strip()} — "
+                  f"{target} is not a repository", file=sys.stderr)
+            continue
         applications.append({
-            "name": template,
+            "name": repo.split("/")[1],
             "title": " ".join(title.split()),
-            "repo": REPO_BASE.format(org=ORG, template=template),
-            "icon": raw_url(f"{ORG}/{template}", APPLICATION_SCREENSHOT),
+            "repo": GITHUB_URL + repo,
+            "icon": raw_url(repo, APPLICATION_SCREENSHOT),
             "description": " ".join(description.split()),
         })
     return group, applications
@@ -331,7 +384,7 @@ def build_starters(repositories):
         if listing is None:
             print(f"   {source}: no {APPLICATION_INDEX}", file=sys.stderr)
             continue
-        group, entries = parse_applications(listing)
+        group, entries = parse_applications(listing, source)
         if entries and group is None:
             group = name
             print(f"   {source}: no '# ' heading, grouping under {group}",

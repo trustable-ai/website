@@ -68,13 +68,3 @@ the `todos` and `contacts` tables if they don't exist — safe to run repeatedly
 
 The pomodoro timer and the unit converter need no backend at all; they run
 entirely in the browser.
-
-## Getting started
-
-```bash
-npm install
-npm run dev
-```
-
-The todo list and address book need PostgreSQL configured; run the setup action
-once to create the tables. The timer and converter work immediately.
