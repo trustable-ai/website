@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-23T12:22:38Z",
+  "generated": "2026-08-23T12:26:48Z",
   "starters": [
     {
       "name": "truchat",
@@ -21,36 +21,6 @@
     }
   ],
   "applications": {
-    "Chat": [
-      {
-        "name": "truaicrm",
-        "title": "AI CRM",
-        "repo": "https://github.com/trustable-ai/truaicrm",
-        "icon": "https://trustable.it/images/trustable-ai-truaicrm.png",
-        "description": "AI CRM"
-      },
-      {
-        "name": "dbmanagerai",
-        "title": "AI Database Manager",
-        "repo": "https://github.com/trustable-ai/dbmanagerai",
-        "icon": "https://trustable.it/images/trustable-ai-dbmanagerai.png",
-        "description": "Manage Databases with AI"
-      },
-      {
-        "name": "documentchatai",
-        "title": "AI Document Manager",
-        "repo": "https://github.com/trustable-ai/documentchatai",
-        "icon": "https://trustable.it/images/trustable-ai-documentchatai.png",
-        "description": "Manage Documents with AI"
-      },
-      {
-        "name": "emailmanagerai",
-        "title": "AI Email Manager",
-        "repo": "https://github.com/trustable-ai/emailmanagerai",
-        "icon": "https://trustable.it/images/trustable-ai-emailmanagerai.png",
-        "description": "Manager Email with AI"
-      }
-    ],
     "Demo": [
       {
         "name": "truk8s",

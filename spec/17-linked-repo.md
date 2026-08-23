@@ -26,7 +26,9 @@ convention (`REPO_BASE.format(org=ORG, template=...)`). Two consequences:
 Make the link target the repository itself, and keep the old form working.
 
 1. Widen `APPLICATION_LINE` so the link target is any non-space text, not just
-   `<file>.md`.
+   `<file>.md`. The bullet stays `-`/`*` only: an ordered list is *not* a list
+   here, because renumbering entries to `1.` is how a templates repository
+   takes them out of the catalog without deleting them.
 2. Add `parse_repo(target)` resolving a link target to `owner/name`:
    - `https://github.com/<owner>/<name>` (optional trailing `/` or `.git`) —
      used directly, so the repository is whatever the line links to.
@@ -47,9 +49,18 @@ Make the link target the repository itself, and keep the old form working.
 Nothing downstream changes: `app_repo()` already recovers `<owner>/<name>` from
 `repo`, and cloning, image download and page generation all go through it.
 
+## Disabling entries
+
+`truchat-templates` has been renumbered to `1.`, which is how its maintainer
+disabled the group. Those four lines therefore match nothing, the Chat group
+disappears from the catalog, and the site publishes 11 applications. Switching
+a line back to `-` re-enables it.
+
 ## Verification
 
-- `./generator.py --offline` regenerates without error.
+- `./generator.py` regenerates without error (`--offline` reuses the previous
+  `static/index.json` and does not exercise the parse).
 - The applications linked by URL in `trudemo/trureact/trutil-templates` appear
   in `static/index.json`, each with the `repo` its line links to.
-- `truchat-templates`, which mixes `.md` links and one URL, yields all four.
+- `truchat-templates`, being an ordered list, yields nothing: no Chat group,
+  and `content/apps/chat/` is removed.

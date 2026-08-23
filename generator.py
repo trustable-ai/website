@@ -97,11 +97,14 @@ KEY_VALUE = re.compile(r"""\b([A-Za-z][A-Za-z0-9_-]*)=(?:"([^"]*)"|(\S+))""")
 REPO_SEGMENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
 # One application per line: "- [<title>](<target>) <description>", where
-# <target> names the repository — see parse_repo. A numbered list is a list
-# too, so "1." introduces an entry as well as "-". The description is optional;
+# <target> names the repository — see parse_repo. The description is optional;
 # anything else in the file is ignored.
-APPLICATION_LINE = re.compile(
-    r"^\s*(?:[-*]|\d+[.)])\s*\[([^\]]+)\]\(([^)\s]+)\)\s*(.*)$")
+#
+# Only a "-" or "*" bullet counts. An ordered list is deliberately not a list
+# here: renumbering a group's entries to "1." is how a templates repository
+# takes them out of the catalog without deleting them, so widening this to
+# accept "1." would silently republish every disabled entry.
+APPLICATION_LINE = re.compile(r"^\s*[-*]\s*\[([^\]]+)\]\(([^)\s]+)\)\s*(.*)$")
 
 # The group name is the first top-level "# " heading of an _index.md.
 GROUP_HEADING = re.compile(r"^#\s+(.*\S)\s*$")
