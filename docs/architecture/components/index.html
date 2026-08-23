@@ -6,7 +6,7 @@
     <title>Nuvolaris Components — Trustable</title>
     <meta
       name="description"
-      content="The Kubernetes operator, the CLI, the Console and MastroGPT — the management stack around OpenWhisk."
+      content="The Kubernetes operator, the CLI, the Console and Trustable — the management stack around OpenWhisk."
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -769,8 +769,8 @@
         <h1>Nuvolaris Components</h1>
         
         
-        <p>Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its services on Kubernetes, composed of a Kubernetes operator, a CLI, and a console for function development and management. Figure 3 depicts how each component contributes to seamless deployment, configuration, and operation.</p>
-<p><img src="https://trustable.it/architecture/components/_page_8_Picture_1.jpeg" alt="The Nuvolaris management components around OpenWhisk" /></p>
+        <p>Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its services on Kubernetes, composed of a Kubernetes operator, a CLI, a console for function development and management, and the Trustable workbench. Figure 3 depicts how each component contributes to seamless deployment, configuration, and operation: the operator drives monitoring and backup and is steered from the admin console and the CLI, while the Web IDE opens into Trustable.</p>
+<p><img src="https://trustable.it/architecture/components/_page_8_Picture_1.jpeg" alt="Nuvolaris Admin, the Web IDE and Trustable above the operator, which drives monitoring and backup, with the Nuvolaris CLI below" /></p>
 <p><strong>Figure 3</strong></p>
 <h2 id="1-kubernetes-operator">1. Kubernetes Operator</h2>
 <ul>
@@ -789,15 +789,15 @@
 <ul>
 <li>The console offers a web-based platform for creating, managing, and deploying serverless functions, as well as launching development environments for rapid prototyping.</li>
 <li>Within the console, developers can write, edit, and test serverless functions, with syntax highlighting for languages like JavaScript, Python, and Go.</li>
-<li>The console’s integrated launcher for <strong>Web IDE</strong> allows users to launch starter projects or templates for common serverless applications, with pre-configured boilerplate code to build LLM based applications. This supports fast setup and enables new developers to get up and running quickly.</li>
+<li>The console’s integrated launcher for <strong>Web IDE</strong> allows users to launch starter projects or templates for common serverless applications, with pre-configured boilerplate code to build LLM based applications. This supports fast setup and enables new developers to get up and running quickly, and it is the entry point into Trustable, described next.</li>
 </ul>
-<h2 id="4-mastrogpt">4. MastroGPT</h2>
+<h2 id="4-trustable">4. Trustable</h2>
 <ul>
-<li>MastroGPT is the AI development platform within Nuvolaris, designed to streamline the creation of AI applications.</li>
-<li>With MastroGPT, developers can start quickly using ready-made templates (or “starters”) that cover popular AI use cases, helping teams launch projects rapidly.</li>
-<li>Applications built on MastroGPT can be deployed seamlessly across various environments, from private clouds to on-premises setups or even public clouds.</li>
+<li><a href="https://trustable.it/documentation/">Trustable</a> is the Private AI workbench within Nuvolaris: a Lovable-like experience where you describe the application you want, an AI coding assistant writes it, and the result runs on your own infrastructure — your models, your data, your cluster.</li>
+<li>Developers start from ready-made starters and from a catalog of templates — reusable multi-step prompts covering common AI use cases — so a project goes from an empty repository to a running application in minutes.</li>
+<li>Each application lives in its own repository and moves between two states, development and production, so applications built with Trustable can be published across environments, from private clouds to on-premises setups or even public clouds.</li>
 </ul>
-<p>Together, the Kubernetes operator, CLI, the Console and MastroGPT offer a full-featured, integrated system for managing OpenWhisk. This combination provides flexibility for developers, operational control for administrators, and visibility into system performance, ensuring a smooth, efficient, and secure serverless environment.</p>
+<p>Together, the Kubernetes operator, CLI, the Console and Trustable offer a full-featured, integrated system for managing OpenWhisk. This combination provides flexibility for developers, operational control for administrators, and visibility into system performance, ensuring a smooth, efficient, and secure serverless environment.</p>
 <p>Next: <a href="https://trustable.it/architecture/integrated-services/">Integrated Services</a>.</p>
 
 

@@ -6,7 +6,7 @@
     <title>Integrated Services — Trustable</title>
     <meta
       name="description"
-      content="Redis cache, MinIO or Ceph object storage, PostgreSQL and FerretDB, Prometheus monitoring and Velero backup."
+      content="Redis cache, SeaweedFS object storage, PostgreSQL and FerretDB, Milvus vector database, Prometheus monitoring and Velero backup."
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -769,27 +769,32 @@
         <h1>Integrated Services</h1>
         
         
-        <p>Nuvolaris includes a number of integrated services as shown in Figure 4.</p>
-<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_3.jpeg" alt="Integrated services: cache and object storage" /></p>
-<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_4.jpeg" alt="Integrated services: databases" /></p>
-<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_5.jpeg" alt="Integrated services: monitoring and backup" /></p>
+        <p>Nuvolaris includes a number of integrated services as shown in Figure 4: the
+data services that applications use directly, and the operational services that
+keep the platform healthy.</p>
+<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_3.jpeg" alt="Data services: Redis, Milvus, SeaweedFS and PostgreSQL" /></p>
+<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_4.jpeg" alt="Prometheus monitoring" /></p>
+<p><img src="https://trustable.it/architecture/integrated-services/_page_11_Picture_5.jpeg" alt="Velero backup" /></p>
 <p><strong>Figure 4</strong></p>
 <h2 id="1-redis-cache">1. Redis Cache</h2>
 <p>Redis (Remote Dictionary Server) is an open-source, in-memory data structure store primarily used as a cache and message broker. Redis is particularly well-suited for caching due to its low latency and high throughput, as it stores data directly in memory, unlike traditional databases that rely on disk storage.</p>
 <p>In a serverless platform like Nuvolaris, Redis acts as a high-performance layer to cache dynamic content, optimises response times and improves overall application speed.</p>
-<h2 id="2-minio-or-ceph-object-storage">2. MinIO or Ceph Object Storage</h2>
-<p>We include an S3 storage using either MinIO or Ceph.</p>
-<p>MinIO is an AGPL licensed open-source, Amazon S3-compatible object storage system designed for large-scale data infrastructure. It allows you to store unstructured data like photos, videos, backups, and log files in a highly scalable manner.</p>
-<p>Ceph is a LGPL licensed open-source Amazon S3-compatible object storage, and can be used as an on-premise S3-compatible storage solution, ideal for private cloud environments or hybrid deployments.</p>
-<p>In the Nuvolaris ecosystem, MinIO or Ceph provides a robust object storage solution that can be used to store application data, backups, and even static content, ensuring that data is both secure and accessible.</p>
-<h2 id="3-postgresql-and-ferretdb-database">3. PostgreSQL and FerretDB Database</h2>
+<h2 id="2-milvus-vector-database">2. Milvus Vector Database</h2>
+<p>Milvus is an open-source vector database built for storing, indexing and searching the high-dimensional embeddings produced by AI models. Instead of matching exact values, it answers similarity queries — “which stored vectors are closest to this one” — over billions of entries, using indexes such as HNSW and IVF, and combines them with ordinary metadata filtering.</p>
+<p>In Nuvolaris, Milvus is the retrieval layer for AI workloads: it holds the embeddings of documents, images and other content so that applications built with <a href="https://trustable.it/documentation/">Trustable</a> can implement retrieval-augmented generation, semantic search and recommendation entirely on your own infrastructure, with no data leaving the cluster.</p>
+<h2 id="3-seaweedfs-object-storage">3. SeaweedFS Object Storage</h2>
+<p>We include an S3 storage using SeaweedFS.</p>
+<p>SeaweedFS is an Apache 2.0 licensed open-source, Amazon S3-compatible distributed object store. It is designed around fast key-to-file lookups, which makes it particularly efficient at handling very large numbers of small objects, and it scales out by simply adding volume servers. Optional replication and erasure coding let you trade storage cost against durability without changing the S3 API your applications use.</p>
+<p>Being S3-compatible, it is an ideal on-premise storage solution for private cloud environments or hybrid deployments: applications talk to it with the ordinary S3 API, so anything written against S3 works unchanged.</p>
+<p>In the Nuvolaris ecosystem, SeaweedFS provides a robust object storage solution that can be used to store application data, backups, and even static content, ensuring that data is both secure and accessible.</p>
+<h2 id="4-postgresql-and-ferretdb-database">4. PostgreSQL and FerretDB Database</h2>
 <p>PostgreSQL, often referred to as Postgres, is an open-source relational database known for its extensibility, reliability, and SQL compliance. It is widely regarded as one of the most advanced databases available, especially within cloud-native ecosystems.</p>
-<p>FerretDB is an open-source database that acts as a drop-in replacement for MongoDB, designed to work with PostgreSQL as its storage backend. It is ideal for users who want MongoDB-like functionality without the restrictions and licensing constraints of MongoDB, especially as MongoDB’s licensing changes have impacted its use in certain environments.</p>
+<p>FerretDB is an optional layer on top of that same PostgreSQL instance — which is why the figure shows only PostgreSQL. It is an open-source database that acts as a drop-in replacement for MongoDB, using PostgreSQL as its storage backend. It is ideal for users who want MongoDB-like functionality without the restrictions and licensing constraints of MongoDB, especially as MongoDB’s licensing changes have impacted its use in certain environments.</p>
 <p>In a Nuvolaris setup, PostgreSQL and FerretDB provides robust database services for handling application data that requires relational structure and advanced querying capabilities, which is particularly valuable for data-driven application.</p>
-<h2 id="4-prometheus-monitoring">4. Prometheus Monitoring</h2>
+<h2 id="5-prometheus-monitoring">5. Prometheus Monitoring</h2>
 <p>Prometheus is an open-source monitoring and alerting toolkit designed specifically for reliability and scalability in cloud-native environments. It collects and stores metrics data, offering visibility into system health and performance.</p>
 <p>In Nuvolaris, Prometheus is essential for monitoring the health of services and infrastructure, enabling proactive incident response and resource optimization in a scalable, serverless environment.</p>
-<h2 id="5-velero-backup">5. Velero Backup</h2>
+<h2 id="6-velero-backup">6. Velero Backup</h2>
 <p>Velero is an open-source tool for managing Kubernetes backups, disaster recovery, and migration. It’s designed specifically for Kubernetes clusters and provides reliable backup, restore, and migration of cluster resources and persistent volumes.</p>
 <p>For Nuvolaris, Velero is vital in ensuring business continuity, providing peace of mind with automated backups and quick recovery options, reducing data loss risk and maintaining application availability in the case of accidental deletion, corruption, or failure.</p>
 <p>Next: <a href="https://trustable.it/architecture/supported-clouds/">Supported Clouds</a>.</p>
