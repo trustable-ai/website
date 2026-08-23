@@ -1,7 +1,7 @@
 +++
 title = "Utilities"
 description = "Utilities you can start from, ready to run on your own infrastructure."
-weight = 40
+weight = 30
 sort_by = "weight"
 template = "section.html"
 page_template = "page.html"

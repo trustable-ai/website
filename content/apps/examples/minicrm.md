@@ -73,12 +73,3 @@ Data lives in an in-memory store seeded with a handful of example customers and
 activities. Everything you add or change is real for as long as the tab is open
 and resets when you reload — the store is deliberately kept behind simple
 functions so it can be swapped for a real API without touching the interface.
-
-## Getting started
-
-```bash
-npm install
-npm run dev
-```
-
-The app opens on the dashboard with the sample data loaded.
