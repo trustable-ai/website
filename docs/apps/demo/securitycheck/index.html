@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI CRM — Trustable</title>
+    <title>Security Check — Trustable</title>
     <meta
       name="description"
-      content="AI CRM"
+      content="Security Checker"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -716,18 +716,18 @@
             
             <li>
               <a
-                href="https://trustable.it/apps/demo/truaicrm/"
-                aria-current="page"
-                >AI CRM</a
+                href="https://trustable.it/apps/demo/truk8s/"
+                
+                >Kubernetes Manager</a
               >
             </li>
             
             
             <li>
               <a
-                href="https://trustable.it/apps/demo/truk8s/"
-                
-                >Kubernetes Manager</a
+                href="https://trustable.it/apps/demo/securitycheck/"
+                aria-current="page"
+                >Security Check</a
               >
             </li>
             
@@ -748,78 +748,96 @@
 
       <article class="prose">
         
-        <h1>AI CRM</h1>
+        <h1>Security Check</h1>
         
         
-        <img
-          class="page-hero"
-          src="/images/trustable-ai-truaicrm.png"
-          alt="AI CRM"
-        />
-        
-        <h1 id="trustable-crm">Trustable CRM</h1>
-<p>A demo CRM: customer contacts on one side, support tickets on the other, and a
-chat window where you can ask about either in plain language.</p>
-<p>It’s a showcase for the Trustable platform, so it runs entirely on generated
-demo data — no external systems are connected, and nothing you change survives a
-redeployment.</p>
-<h2 id="dashboard">Dashboard</h2>
-<p>Six counters open the app: total contacts, active contacts, open tickets,
-in-progress, closed, and high-priority. Below them, quick links into Contacts,
-Tickets and the chat.</p>
-<h2 id="contacts">Contacts</h2>
-<p>The full contact list, each with name, email, company, phone and an active or
-inactive badge. Search by name, email or company — it filters as you type — and
-narrow by status. Results are paginated.</p>
-<p>Opening a contact shows their details in full. The activity area on that page is
-still a placeholder: it says as much, and the Send Email, Call and Add Note
-buttons beside it are not wired up yet.</p>
-<h2 id="tickets">Tickets</h2>
-<p>Every support ticket, newest activity first, filterable by <strong>status</strong> (open,
-in-progress, closed), <strong>priority</strong> (low, medium, high, critical) and <strong>type</strong>
-(support, billing, technical, feature request, complaint), with paging.</p>
-<p>Select a ticket to see it in detail: its title and description, the contact who
-raised it, its badges, and a <strong>timeline</strong> of everything that has happened to it —
-creation, status changes, notes. Change the status from the same panel and the
-timeline records the transition, the ticket’s updated time moves, and the
-dashboard counters recalculate.</p>
-<h2 id="chat">Chat</h2>
-<p>A conversation window over the same data, with quick-prompt buttons to get you
-started. It understands a handful of intents — in Italian, matching the rest of
-the interface:</p>
-<table><thead><tr><th>Ask</th><th>And it</th></tr></thead><tbody>
-<tr><td>“quanti contatti”</td><td>answers with the contact count</td></tr>
-<tr><td>“mostra ticket aperti”</td><td>opens the open tickets</td></tr>
-<tr><td>“ultimi ticket”</td><td>shows the most recent tickets</td></tr>
-<tr><td>“chiudi ticket #42”</td><td>closes that ticket and logs it on its timeline</td></tr>
-<tr><td>“cerca Mario”</td><td>searches contacts by name</td></tr>
-</tbody></table>
-<p>Some replies come back with an action attached, which navigates the app to the
-matching list. Anything it doesn’t recognise gets a prompt suggesting what it can
-do. This is keyword and pattern matching, not a language model — the phrasings
-above are close to what it expects.</p>
-<h2 id="how-it-is-put-together">How it is put together</h2>
-<p>A React and TypeScript single-page app (Vite, Tailwind CSS, shadcn/ui, TanStack
-Query), in Italian, talking to Python actions on Apache OpenServerless:</p>
-<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
-<tr><td><code>GET /api/my/v1/dashboard-stats</code></td><td>the six dashboard counters</td></tr>
-<tr><td><code>GET /api/my/v1/contacts-list</code></td><td>contacts, with search, status filter and paging</td></tr>
-<tr><td><code>GET /api/my/v1/tickets-list</code></td><td>tickets, with status, priority and type filters</td></tr>
-<tr><td><code>POST /api/my/v1/tickets-update</code></td><td>change status or priority, append a note</td></tr>
-<tr><td><code>POST /api/my/v1/chat-query</code></td><td>interpret a chat message, return a reply and optional action</td></tr>
-</tbody></table>
-<p><strong>Redis</strong> is the whole data layer — contacts and tickets are stored as keyed JSON
-documents, and the dashboard statistics are cached for five minutes and
-invalidated whenever a ticket changes.</p>
-<p>A private action, <code>init/load-demo-data</code>, generates the demo world: 30 contacts
-across eight companies and 50 tickets spread over the statuses, each with a
-timeline of events. It refuses to run twice, so re-invoking it is safe.</p>
-<h2 id="getting-started">Getting started</h2>
-<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
-</span><span style="color:#bf616a;">npm</span><span> run dev
+        <p>Web application per l’<strong>analisi automatica della sicurezza del codice sorgente</strong> con tre
+modelli AI eseguiti in parallelo tramite <a href="https://ollama.com">Ollama</a>.</p>
+<p>Frontend in React + TypeScript, backend serverless su <strong>Apache OpenWhisk / Nuvolaris</strong>
+(action <code>v1/analyze</code>).</p>
+<h2 id="come-funziona">Come funziona</h2>
+<ol>
+<li>L’utente sceglie una modalità: <strong>URL di un file</strong> (Raw GitHub / Gist) oppure
+<strong>incolla il codice</strong> in un’area di testo.</li>
+<li>Se viene fornito un URL, il backend scarica e valida il contenuto; se viene
+incollato il codice, viene usato direttamente.</li>
+<li>Il codice è inviato <strong>in parallelo</strong> a tre modelli Ollama:
+<ul>
+<li><a href="https://ollama.com/library/glm-5.2">GLM 5.2</a></li>
+<li><a href="https://ollama.com/library/kimi-k2.7-code">Kimi K2.7 Code</a></li>
+<li><a href="https://ollama.com/library/deepseek-v4-pro">DeepSeek V4 Pro</a></li>
+</ul>
+</li>
+<li>Ogni modello restituisce un report strutturato con vulnerabilità, severità,
+descrizione e raccomandazione.</li>
+<li>L’app mostra i <strong>report separati per modello</strong> e un <strong>confronto finale</strong> che
+evidenzia:
+<ul>
+<li>vulnerabilità <strong>comuni</strong> (concordanti tra più modelli),</li>
+<li>vulnerabilità <strong>segnalate da un solo modello</strong>,</li>
+<li><strong>livello di rischio complessivo</strong> e riepilogo conclusivo.</li>
+</ul>
+</li>
+</ol>
+<h2 id="configurazione-di-ollama">Configurazione di Ollama</h2>
+<p>Nel file <code>.env</code> sono presenti le variabili per Ollama:</p>
+<pre data-lang="env" style="background-color:#eff1f5;color:#4f5b66;" class="language-env "><code class="language-env" data-lang="env"><span># Base URL dell&#39;istanza Ollama
+</span><span>#  - locale:   http://localhost:11434
+</span><span>#  - cloud:    https://ollama.com  (richiede AI_API_KEY)
+</span><span>AI_API_HOST=
+</span><span>
+</span><span># Obbligatoria solo per Ollama Cloud (https://ollama.com)
+</span><span># lascia vuota se usi un&#39;istanza locale senza autenticazione
+</span><span>AI_API_KEY=
 </span></code></pre>
-<p>The backend needs Redis configured. Invoke <code>init/load-demo-data</code> once to
-populate the CRM, then open the dashboard.</p>
+<p>Per attivare l’analisi:</p>
+<ol>
+<li>Avvia Ollama (<code>ollama serve</code>) oppure usa Ollama Cloud.</li>
+<li>Assicurati che i modelli richiesti siano disponibili:
+<ul>
+<li><code>glm-5.2</code></li>
+<li><code>kimi-k2.7-code</code></li>
+<li><code>deepseek-v4-pro</code>
+(con Ollama locale: <code>ollama pull glm-5.2</code> ecc.)</li>
+</ul>
+</li>
+<li>Imposta <code>AI_API_HOST</code> (e <code>AI_API_KEY</code> per il cloud) nel file <code>.env</code>.</li>
+<li>Ridistribuisci:<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">timeout</span><span> 120 ops ide deploy
+</span></code></pre>
+</li>
+</ol>
+<p>Se <code>AI_API_HOST</code> (o <code>AI_API_KEY</code> per il cloud) resta vuoto, l’action
+fallisce in modo controllato segnalando “Required secret … is not configured”.</p>
+<h2 id="architettura-del-backend">Architettura del backend</h2>
+<ul>
+<li><code>v1/analyze</code> (GET): endpoint informativo (elenca i modelli disponibili).</li>
+<li><code>v1/analyze-model</code> (POST): analizza il sorgente con <strong>un solo modello</strong>.
+Il frontend la chiama <strong>una volta per modello, sequenzialmente</strong> (uno dopo
+l’altro), così Ollama non va in contenzione e ogni modello ha a disposizione
+tutto il tempo necessario (timeout action di 5 minuti per ciascun modello).
+L’action ritenta automaticamente sugli errori transienti <code>503 / 429 / "response not yet ready"</code> con backoff, per tollerare il caricamento dei modelli.</li>
+</ul>
+<h2 id="sviluppo">Sviluppo</h2>
+<ul>
+<li>
+<p>Frontend: <code>src/</code> (React + Tailwind). Pagina principale: <code>src/pages/Index.tsx</code>.</p>
+</li>
+<li>
+<p>Client API: <code>src/lib/security.ts</code>, aggregazione confronto: <code>src/lib/compare.ts</code>.</p>
+</li>
+<li>
+<p>Backend: <code>packages/v1/analyze/analyze.py</code> (info, modificabile) e
+<code>packages/v1/analyze-model/analyze_model.py</code> (analisi singolo modello,
+modificabile). I <code>__main__.py</code> sono wrapper generati, non modificare.</p>
+</li>
+<li>
+<p>Endpoint: <code>GET /api/my/v1/analyze</code> (info) e
+<code>POST /api/my/v1/analyze-model</code> con body <code>{ url | code, model, filename?, language? }</code>.</p>
+</li>
+<li>
+<p><a href="https://trustable.it/apps/demo/securitycheck/code-security-checker.md">Code Security Checker</a></p>
+</li>
+</ul>
 
 
       </article>

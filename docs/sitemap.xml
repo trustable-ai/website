@@ -10,25 +10,13 @@
         <loc>https://trustable.it/apps/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/apps/chat/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/apps/chat/dbmanagerai/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/apps/chat/documentchatai/</loc>
-    </url>
-    <url>
-        <loc>https://trustable.it/apps/chat/emailmanagerai/</loc>
-    </url>
-    <url>
         <loc>https://trustable.it/apps/demo/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/apps/demo/tetris/</loc>
+        <loc>https://trustable.it/apps/demo/securitycheck/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/apps/demo/truaicrm/</loc>
+        <loc>https://trustable.it/apps/demo/tetris/</loc>
     </url>
     <url>
         <loc>https://trustable.it/apps/demo/truk8s/</loc>

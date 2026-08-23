@@ -828,13 +828,6 @@ can’t be written, the live status still stands.</p>
 <p>Two idempotent setup actions prepare the stores — <code>setup/database</code> creates the
 <code>monitors</code> table, <code>setup/history</code> creates the index on the <code>check_history</code>
 collection that makes per-monitor and recent-failure lookups fast.</p>
-<h2 id="getting-started">Getting started</h2>
-<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
-</span><span style="color:#bf616a;">npm</span><span> run dev
-</span></code></pre>
-<p>The backend needs PostgreSQL, Redis and MongoDB configured; run the two setup
-actions once before the first check. Then create a monitor, press Check Now, and
-watch its history build up.</p>
 
 
       </article>

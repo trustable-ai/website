@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-23T11:11:27Z",
+  "generated": "2026-08-23T12:48:51Z",
   "starters": [
     {
       "name": "truchat",
@@ -21,43 +21,19 @@
     }
   ],
   "applications": {
-    "Chat": [
-      {
-        "name": "dbmanagerai",
-        "title": "AI Database Manager",
-        "repo": "https://github.com/trustable-ai/dbmanagerai",
-        "icon": "https://trustable.it/images/trustable-ai-dbmanagerai.png",
-        "description": "Manage Databases with AI"
-      },
-      {
-        "name": "documentchatai",
-        "title": "AI Document Manager",
-        "repo": "https://github.com/trustable-ai/documentchatai",
-        "icon": "https://trustable.it/images/trustable-ai-documentchatai.png",
-        "description": "Manage Documents with AI"
-      },
-      {
-        "name": "emailmanagerai",
-        "title": "AI Email Manager",
-        "repo": "https://github.com/trustable-ai/emailmanagerai",
-        "icon": "https://trustable.it/images/trustable-ai-emailmanagerai.png",
-        "description": "Manager Email with AI"
-      }
-    ],
     "Demo": [
-      {
-        "name": "truaicrm",
-        "title": "AI CRM",
-        "repo": "https://github.com/trustable-ai/truaicrm",
-        "icon": "https://trustable.it/images/trustable-ai-truaicrm.png",
-        "description": "AI CRM"
-      },
       {
         "name": "truk8s",
         "title": "Kubernetes Manager",
         "repo": "https://github.com/trustable-ai/truk8s",
         "icon": "https://trustable.it/images/trustable-ai-truk8s.png",
         "description": "Kubernetes Manager"
+      },
+      {
+        "name": "securitycheck",
+        "title": "Security Check",
+        "repo": "https://github.com/trustable-ai/securitycheck",
+        "description": "Security Checker"
       },
       {
         "name": "tetris",
