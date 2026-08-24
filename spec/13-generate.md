@@ -248,6 +248,11 @@ new directory and not the existing `static/` root.
   someone ran it — which is the staleness the rest of this spec exists to
   prevent.
 
+> **Extended by spec/19-build-push.md.** A third mode, `./build.sh push`, was
+> added: it is `build` plus a `main`-branch precondition and a `git push` at the
+> end, so publishing is one command. `serve` and `build` are unchanged, and
+> `build` still never pushes.
+
 ### 5. The `support` submodule
 
 Building the site no longer reads it, so:
