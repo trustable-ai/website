@@ -5,14 +5,16 @@
 #   ./build.sh          regenerate the catalog and gallery, then serve a preview
 #   ./build.sh serve    the same, said explicitly
 #   ./build.sh build    regenerate, write docs/, and commit the result
+#   ./build.sh push     the same, from main, then push to publish the site
 #   ./build.sh [...] --fast   reuse the last catalog and images, skipping GitHub
 #
 # generator.py regenerates the catalog from the live GitHub API into
 # static/index.json on every run, so the site can never be generated from a
 # stale one. --fast trades that guarantee for speed while iterating locally: it
 # reuses what the last full run left behind and needs neither the network nor
-# `gh`. Never pushes: what `./build.sh build` commits is published by the
-# PR-and-merge process in CLAUDE.md.
+# `gh`. Only `push` pushes: what `./build.sh build` commits is published by the
+# PR-and-merge process in CLAUDE.md, of which `./build.sh push` is the final
+# step — it builds and commits on main, then pushes.
 # NO_COMMIT=1 builds without committing.
 set -e
 
@@ -75,14 +77,37 @@ MODE="serve"
 FAST=""
 for arg in "$@"; do
   case "$arg" in
-  serve | build) MODE="$arg" ;;
+  serve | build | push) MODE="$arg" ;;
   --fast) FAST=1 ;;
   *)
-    echo "usage: $0 [serve|build] [--fast]" >&2
+    echo "usage: $0 [serve|build|push] [--fast]" >&2
     exit 1
     ;;
   esac
 done
+
+# `push` is `build` plus a precondition and a follow-up: it falls through the
+# same generation, zola and commit steps below, then pushes. The precondition is
+# checked here, before any of that work, so a wrong-branch run fails in a second
+# rather than after a full catalog fetch.
+if [ "$MODE" = "push" ]; then
+  # A build committed on a feature branch never reaches the site, and the
+  # working tree looks identical either way — so refuse rather than publish
+  # from the wrong place. No checkout is attempted: it can fail on a dirty tree
+  # and switching branches under the caller is the caller's call.
+  BRANCH="$(git symbolic-ref --quiet --short HEAD || true)"
+  if [ "$BRANCH" != "main" ]; then
+    echo "error: push builds from main; you are on ${BRANCH:-a detached HEAD}" >&2
+    echo "       run: git checkout main" >&2
+    exit 1
+  fi
+
+  # Nothing would be committed, so there would be nothing to publish.
+  if [ -n "${NO_COMMIT:-}" ]; then
+    echo "error: NO_COMMIT is incompatible with push" >&2
+    exit 1
+  fi
+fi
 
 # --fast reuses the catalog and images from the last full run instead of asking
 # GitHub for them again: generator.py --offline reads static/index.json back and
@@ -132,8 +157,8 @@ echo ">> built $(find docs -name '*.html' | wc -l | tr -d ' ') pages into docs/"
 
 # Commit what the build owns. Confined to these paths so an unrelated edit
 # sitting in the working tree is never swept into the build's commit, and
-# skipped entirely when they come back unchanged. Never pushes: publishing
-# stays a separate, deliberate step.
+# skipped entirely when they come back unchanged. Only `push` goes on to
+# publish; for `build`, publishing stays a separate, deliberate step.
 if [ -n "${NO_COMMIT:-}" ]; then
   echo ">> NO_COMMIT set, leaving changes in the working tree"
   exit 0
@@ -154,16 +179,34 @@ BUILD_PATHS=(content/apps static/index.json static/images docs)
 # index, so a caller who had something else staged still has it staged if
 # there turns out to be nothing to do.
 if [ -z "$(git status --porcelain -- "${BUILD_PATHS[@]}")" ]; then
+  # Not an error: the site may already be up to date and there can still be
+  # earlier local commits for `push` to publish.
   echo ">> no changes to commit"
+else
+  # `commit --only <paths>` commits exactly these paths and leaves anything else
+  # staged untouched, but it will not pick up untracked files, so add first.
+  # The -m flags must precede `--`; everything after it is taken as a pathspec.
+  git add -- "${BUILD_PATHS[@]}"
+  git commit --quiet --only \
+    -m "Rebuild the site" \
+    -m "Regenerated the catalog into static/index.json, downloaded the application images into static/images/, regenerated the Apps gallery and rebuilt docs/ with zola. Committed by build.sh." \
+    -- "${BUILD_PATHS[@]}"
+  echo ">> committed $(git rev-parse --short HEAD)"
+fi
+
+if [ "$MODE" != "push" ]; then
   exit 0
 fi
 
-# `commit --only <paths>` commits exactly these paths and leaves anything else
-# staged untouched, but it will not pick up untracked files, so add first.
-# The -m flags must precede `--`; everything after it is taken as a pathspec.
-git add -- "${BUILD_PATHS[@]}"
-git commit --quiet --only \
-  -m "Rebuild the site" \
-  -m "Regenerated the catalog into static/index.json, downloaded the application images into static/images/, regenerated the Apps gallery and rebuilt docs/ with zola. Committed by build.sh." \
-  -- "${BUILD_PATHS[@]}"
-echo ">> committed $(git rev-parse --short HEAD)"
+# Publishing: the docs commit is already made, so this is what puts the rebuilt
+# site on GitHub Pages. A rejected push means origin/main has moved ahead —
+# report it and stop rather than force-pushing or rebasing behind the user's
+# back, which is theirs to resolve.
+echo ">> pushing main to origin"
+if ! git push origin main; then
+  echo "error: push rejected — origin/main has moved ahead" >&2
+  echo "       reconcile it yourself (e.g. git pull --rebase), then re-run" >&2
+  exit 1
+fi
+echo ">> pushed $(git rev-parse --short HEAD)"
+

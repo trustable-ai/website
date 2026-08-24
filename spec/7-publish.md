@@ -14,7 +14,8 @@ pushes the result out — first the catalog in `support/`, then the site itself.
 
 > **Superseded in part.** This was first implemented as a `publish.sh` script.
 > That script has since been removed: publishing is the PR-and-merge process in
-> CLAUDE.md, done by hand. Everything below about `build.sh`, `generator.py` and
+> CLAUDE.md, done by hand — whose final step is now `./build.sh push`, which
+> builds, commits and pushes from `main` (see spec/19-build-push.md). Everything below about `build.sh`, `generator.py` and
 > the catalog still holds; only the publishing *mechanism* changed. The
 > ordering constraint it existed to enforce did not go away — see
 > "Publishing by hand" at the end.
