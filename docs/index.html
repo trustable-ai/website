@@ -1337,10 +1337,12 @@
           <span class="gallery-name">Security Check</span>
           <span class="gallery-box">
             
-            
-            <span class="gallery-icon gallery-initial" aria-hidden="true"
-              >S</span
-            >
+            <img
+              class="gallery-icon"
+              src="/images/trustable-ai-securitycheck.png"
+              alt=""
+              loading="lazy"
+            />
             
             
             <span class="gallery-note" aria-hidden="true">Security Checker</span>
@@ -1752,14 +1754,10 @@
 <script>
       (function () {
         var ORDER = ["build", "start", "deploy", "scale"];
-        var HOLD = 7000;
 
         var root = document.documentElement;
         var panels = {};
         var links = {};
-        var index = 0;
-        var timer = null;
-        var stopped = false;
 
         ORDER.forEach(function (name) {
           panels[name] = document.querySelector('[data-panel="' + name + '"]');
@@ -1770,7 +1768,6 @@
         root.classList.add("js");
 
         function show(name) {
-          index = ORDER.indexOf(name);
           ORDER.forEach(function (other) {
             var isActive = other === name;
             panels[other].classList.toggle("is-active", isActive);
@@ -1782,42 +1779,15 @@
           });
         }
 
-        function advance() {
-          show(ORDER[(index + 1) % ORDER.length]);
-        }
-
-        function play() {
-          if (stopped || timer !== null) return;
-          timer = setInterval(advance, HOLD);
-        }
-
-        function pause() {
-          if (timer === null) return;
-          clearInterval(timer);
-          timer = null;
-        }
-
-        // A nav click hands control to the visitor: stop the loop for good.
+        // The steps change only when the visitor picks one.
         ORDER.forEach(function (name) {
           links[name].addEventListener("click", function (event) {
             event.preventDefault();
-            stopped = true;
-            pause();
             show(name);
           });
         });
 
-        // Don't race through the steps in a backgrounded tab.
-        document.addEventListener("visibilitychange", function () {
-          if (document.hidden) pause();
-          else play();
-        });
-
         show(ORDER[0]);
-
-        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (reduced.matches) stopped = true;
-        else play();
       })();
 
       /*

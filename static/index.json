@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-23T12:48:51Z",
+  "generated": "2026-08-24T14:36:51Z",
   "starters": [
     {
       "name": "truchat",
@@ -33,6 +33,7 @@
         "name": "securitycheck",
         "title": "Security Check",
         "repo": "https://github.com/trustable-ai/securitycheck",
+        "icon": "https://trustable.it/images/trustable-ai-securitycheck.png",
         "description": "Security Checker"
       },
       {

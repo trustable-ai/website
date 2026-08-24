@@ -751,88 +751,111 @@
         <h1>Security Check</h1>
         
         
-        <p>Web application per l’<strong>analisi automatica della sicurezza del codice sorgente</strong> con tre
-modelli AI eseguiti in parallelo tramite <a href="https://ollama.com">Ollama</a>.</p>
-<p>Frontend in React + TypeScript, backend serverless su <strong>Apache OpenWhisk / Nuvolaris</strong>
-(action <code>v1/analyze</code>).</p>
-<h2 id="come-funziona">Come funziona</h2>
+        <img
+          class="page-hero"
+          src="/images/trustable-ai-securitycheck.png"
+          alt="Security Check"
+        />
+        
+        <p>Web application for <strong>automated source code security analysis</strong>. The user picks
+<strong>one AI model at a time</strong> from a catalog discovered at runtime from the
+configured provider, and gets back a structured vulnerability report.</p>
+<p>React + TypeScript frontend, serverless backend on <strong>Apache OpenWhisk /
+Nuvolaris</strong> (<code>v1/models</code> + <code>v1/analyze-model</code>).</p>
+<p>The app is <strong>provider-agnostic</strong>: no model list is hardcoded. Point it at any
+endpoint that speaks one of four protocols and it discovers what is there.</p>
+<h2 id="how-it-works">How it works</h2>
 <ol>
-<li>L’utente sceglie una modalità: <strong>URL di un file</strong> (Raw GitHub / Gist) oppure
-<strong>incolla il codice</strong> in un’area di testo.</li>
-<li>Se viene fornito un URL, il backend scarica e valida il contenuto; se viene
-incollato il codice, viene usato direttamente.</li>
-<li>Il codice è inviato <strong>in parallelo</strong> a tre modelli Ollama:
-<ul>
-<li><a href="https://ollama.com/library/glm-5.2">GLM 5.2</a></li>
-<li><a href="https://ollama.com/library/kimi-k2.7-code">Kimi K2.7 Code</a></li>
-<li><a href="https://ollama.com/library/deepseek-v4-pro">DeepSeek V4 Pro</a></li>
-</ul>
-</li>
-<li>Ogni modello restituisce un report strutturato con vulnerabilità, severità,
-descrizione e raccomandazione.</li>
-<li>L’app mostra i <strong>report separati per modello</strong> e un <strong>confronto finale</strong> che
-evidenzia:
-<ul>
-<li>vulnerabilità <strong>comuni</strong> (concordanti tra più modelli),</li>
-<li>vulnerabilità <strong>segnalate da un solo modello</strong>,</li>
-<li><strong>livello di rischio complessivo</strong> e riepilogo conclusivo.</li>
-</ul>
-</li>
+<li>On load the frontend calls <code>GET /api/my/v1/models</code>. The backend probes the
+configured <code>AI_BASE_URL</code> with read-only requests, detects the provider
+protocol, and returns the catalog of text/code-generation models plus a
+suggested default. <strong>The API key never reaches the browser</strong> — only the
+action sees it.</li>
+<li>The user selects a model from the dropdown.</li>
+<li>The user picks an input mode: <strong>file URL</strong> (Raw GitHub / Gist) or <strong>paste the
+code</strong> into a text area.</li>
+<li>On submit the frontend <code>POST</code>s <code>/api/my/v1/analyze-model</code> with the selected
+model id. If a URL was given, the backend downloads and validates the
+content; pasted code is used directly.</li>
+<li>The backend routes one inference call to the detected protocol and returns a
+structured report: overall risk level, summary, and a list of findings with
+title, severity, category, line, description and recommendation.</li>
+<li>The UI streams the report in and reveals the findings one by one.</li>
 </ol>
-<h2 id="configurazione-di-ollama">Configurazione di Ollama</h2>
-<p>Nel file <code>.env</code> sono presenti le variabili per Ollama:</p>
-<pre data-lang="env" style="background-color:#eff1f5;color:#4f5b66;" class="language-env "><code class="language-env" data-lang="env"><span># Base URL dell&#39;istanza Ollama
-</span><span>#  - locale:   http://localhost:11434
-</span><span>#  - cloud:    https://ollama.com  (richiede AI_API_KEY)
-</span><span>AI_API_HOST=
+<p>Only one model runs per analysis. To compare models, run the analysis again
+with a different one selected.</p>
+<h3 id="supported-protocols">Supported protocols</h3>
+<p>The protocol is auto-detected — the hostname only chooses the probe <em>order</em>, the
+response shape decides. Unknown hosts are probed safely with read-only <code>GET</code>s.</p>
+<table><thead><tr><th>Protocol</th><th>Discovery</th><th>Inference</th><th>Auth</th></tr></thead><tbody>
+<tr><td>OpenAI-compatible</td><td><code>GET {base}/models</code></td><td><code>POST {base}/chat/completions</code></td><td><code>Bearer</code></td></tr>
+<tr><td>Anthropic</td><td><code>GET {base}/models</code></td><td><code>POST {base}/messages</code></td><td><code>x-api-key</code></td></tr>
+<tr><td>Google Gemini</td><td><code>GET {base}/models</code></td><td><code>POST {base}/models/{model}:generateContent</code></td><td><code>?key=</code></td></tr>
+<tr><td>Ollama</td><td><code>GET {base}/api/tags</code></td><td><code>POST {base}/api/chat</code></td><td><code>Bearer</code> (optional)</td></tr>
+</tbody></table>
+<p>Model ids are used <strong>verbatim</strong> as the provider returns them; they are never
+rewritten.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Two variables in <code>.env</code>:</p>
+<pre data-lang="env" style="background-color:#eff1f5;color:#4f5b66;" class="language-env "><code class="language-env" data-lang="env"><span># Base URL of the AI provider. Examples:
+</span><span>#  - local Ollama:      http://localhost:11434
+</span><span>#  - Ollama Cloud:      https://ollama.com          (requires AI_API_KEY)
+</span><span>#  - OpenAI-compatible: https://api.openai.com/v1   (requires AI_API_KEY)
+</span><span>AI_BASE_URL=
 </span><span>
-</span><span># Obbligatoria solo per Ollama Cloud (https://ollama.com)
-</span><span># lascia vuota se usi un&#39;istanza locale senza autenticazione
+</span><span># Required by providers that authenticate requests.
+</span><span># Leave empty for a local instance without authentication.
 </span><span>AI_API_KEY=
 </span></code></pre>
-<p>Per attivare l’analisi:</p>
-<ol>
-<li>Avvia Ollama (<code>ollama serve</code>) oppure usa Ollama Cloud.</li>
-<li>Assicurati che i modelli richiesti siano disponibili:
-<ul>
-<li><code>glm-5.2</code></li>
-<li><code>kimi-k2.7-code</code></li>
-<li><code>deepseek-v4-pro</code>
-(con Ollama locale: <code>ollama pull glm-5.2</code> ecc.)</li>
-</ul>
-</li>
-<li>Imposta <code>AI_API_HOST</code> (e <code>AI_API_KEY</code> per il cloud) nel file <code>.env</code>.</li>
-<li>Ridistribuisci:<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">timeout</span><span> 120 ops ide deploy
+<p>Then redeploy:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">timeout</span><span> 120 ops ide deploy
 </span></code></pre>
-</li>
-</ol>
-<p>Se <code>AI_API_HOST</code> (o <code>AI_API_KEY</code> per il cloud) resta vuoto, l’action
-fallisce in modo controllato segnalando “Required secret … is not configured”.</p>
-<h2 id="architettura-del-backend">Architettura del backend</h2>
+<p>With a local Ollama, start it (<code>ollama serve</code>) and pull at least one model
+(<code>ollama pull &lt;model&gt;</code>) — the dropdown lists whatever <code>ollama list</code> reports.</p>
+<p>If <code>AI_BASE_URL</code> is empty, both actions fail gracefully with
+“Provider AI non configurato. Imposta AI_BASE_URL nel file <code>.env</code> e ridistribuisci.”
+<code>AI_API_KEY</code> may stay empty: it is required by the provider, not by the actions.
+The key is never included in any response, log, error message, or reported
+endpoint.</p>
+<h2 id="backend-architecture">Backend architecture</h2>
 <ul>
-<li><code>v1/analyze</code> (GET): endpoint informativo (elenca i modelli disponibili).</li>
-<li><code>v1/analyze-model</code> (POST): analizza il sorgente con <strong>un solo modello</strong>.
-Il frontend la chiama <strong>una volta per modello, sequenzialmente</strong> (uno dopo
-l’altro), così Ollama non va in contenzione e ogni modello ha a disposizione
-tutto il tempo necessario (timeout action di 5 minuti per ciascun modello).
-L’action ritenta automaticamente sugli errori transienti <code>503 / 429 / "response not yet ready"</code> con backoff, per tollerare il caricamento dei modelli.</li>
+<li><strong><code>v1/models</code> (GET)</strong> — provider-agnostic model discovery. Probes the
+adapters in host-hinted order, normalizes the result, filters out non-chat
+models (embeddings, TTS, vision-only, …) and picks a default. Returns
+<code>{ok, models, default, provider, protocol, endpoint, count}</code>.</li>
+<li><strong><code>v1/analyze-model</code> (POST)</strong> — analyses the source with <strong>a single model</strong>.
+Body: <code>{ url | code, model, model_name?, protocol?, filename?, language? }</code>.
+The <code>protocol</code> hint comes from <code>v1/models</code>; without it the backend re-detects
+it. One inference attempt per invocation, bounded by a 180s timeout.</li>
+<li><strong><code>v1/analyze</code> (GET)</strong> — service descriptor only. It no longer performs any
+analysis and no longer hardcodes a model list; it just points at the two
+endpoints above.</li>
 </ul>
-<h2 id="sviluppo">Sviluppo</h2>
+<h3 id="retries-and-timeouts">Retries and timeouts</h3>
+<p>The retry loop lives in the <strong>frontend</strong>: 1 attempt + 4 retries with 3-second
+pauses (5 total), each bounded client-side by a 3-minute <code>AbortController</code> that
+matches the backend’s 180s timeout. After 5 failures the model section shows a
+“riprova” button. The backend classifies transient failures (<code>429</code>, <code>500</code>,
+<code>502</code>, <code>503</code>, <code>504</code>, and “loading model” / “not yet ready” / “busy” responses)
+so a model that is still warming up is retried rather than reported as broken.</p>
+<h3 id="input-limits">Input limits</h3>
+<ul>
+<li>Downloaded source: max 1 MB.</li>
+<li>Analysed source: max 512 KB.</li>
+</ul>
+<h2 id="development">Development</h2>
 <ul>
 <li>
-<p>Frontend: <code>src/</code> (React + Tailwind). Pagina principale: <code>src/pages/Index.tsx</code>.</p>
+<p>Frontend: <code>src/</code> (React + Tailwind). Main page: <code>src/pages/Index.tsx</code>.</p>
 </li>
 <li>
-<p>Client API: <code>src/lib/security.ts</code>, aggregazione confronto: <code>src/lib/compare.ts</code>.</p>
+<p>API client: <code>src/lib/security.ts</code>.</p>
 </li>
 <li>
-<p>Backend: <code>packages/v1/analyze/analyze.py</code> (info, modificabile) e
-<code>packages/v1/analyze-model/analyze_model.py</code> (analisi singolo modello,
-modificabile). I <code>__main__.py</code> sono wrapper generati, non modificare.</p>
-</li>
-<li>
-<p>Endpoint: <code>GET /api/my/v1/analyze</code> (info) e
-<code>POST /api/my/v1/analyze-model</code> con body <code>{ url | code, model, filename?, language? }</code>.</p>
+<p>Backend: <code>packages/v1/models/models.py</code> (discovery) and
+<code>packages/v1/analyze-model/analyze_model.py</code> (single-model analysis);
+<code>packages/v1/analyze/analyze.py</code> is the info endpoint. All three are editable.
+The <code>__main__.py</code> files are generated wrappers — do not edit them.</p>
 </li>
 <li>
 <p><a href="https://trustable.it/apps/demo/securitycheck/code-security-checker.md">Code Security Checker</a></p>
