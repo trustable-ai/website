@@ -88,3 +88,14 @@ CSS does. Without JS the strip stays inert as before.
 carry the same specificity, so `.cta`'s fill won on every element that had
 both and no outlined button ever rendered outlined. Moving `.cta-quiet` after
 `.cta` is what makes a row read as one primary button plus two quiet ones.
+
+## Motto
+
+Drop "Enjoy a Lovable-like experience for Private AI" from the rotating hero
+motto in `templates/landing.html`, leaving four lines. The site no longer
+pitches itself by comparison to another product in the first thing a visitor
+reads; the remaining lines say what Trustable does in its own terms.
+
+The phrase still appears in the page title and meta description, in
+`config.toml` and across `content/` — those are separate copy, out of scope
+here.
