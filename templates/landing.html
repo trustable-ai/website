@@ -335,10 +335,11 @@
       }
 
       /*
-       * The pair above the video is the page's primary call: Download leads,
-       * Documentation follows in the same pill shape but outlined, so the two
-       * read as one choice with a clear first option rather than as two equal
-       * buttons competing at the top of the panel.
+       * Every panel opens with the same row: one filled button for the step's
+       * own destination, then Register for a Demo and Contact us outlined in
+       * the same pill shape. One clear first option rather than three equal
+       * buttons competing at the top of the panel. It wraps, because the row
+       * is wider than a phone.
        */
       .cta-row-hero {
         margin: 0 0 2rem;
@@ -752,10 +753,11 @@
           </div>
 
           <p class="cta-row cta-row-hero">
-            <a class="cta" href="https://download.trustable.it" target="_blank" rel="noopener">Download</a>
-            <a class="cta cta-quiet" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
+            <a class="cta" href="{{ get_url(path='@/documentation/_index.md') | safe }}"
               >Documentation</a
             >
+            <a class="cta cta-quiet" href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Register for a Demo</a>
+            <a class="cta cta-quiet" href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact us</a>
           </p>
 
           <figure class="anim">
@@ -818,14 +820,20 @@
             </p>
           </div>
 
+          {#
+            The row sits above the tab strip: the tabs switch content in place
+            rather than leading anywhere, so the calls to action come first.
+          #}
+          <p class="cta-row cta-row-hero">
+            <a class="cta" href="{{ get_url(path='@/apps/_index.md') | safe }}"
+              >Browse Apps</a
+            >
+            <a class="cta cta-quiet" href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Register for a Demo</a>
+            <a class="cta cta-quiet" href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact us</a>
+          </p>
+
           {% set tabbed = true %}
           {% include "starter-cards.html" %}
-
-          <p class="cta-row">
-            <a class="cta" href="{{ get_url(path='@/apps/_index.md') | safe }}"
-              >Browse every App</a
-            >
-          </p>
         </div>
       </section>
 
@@ -841,8 +849,10 @@
 
           <p class="cta-row cta-row-hero">
             <a class="cta" href="{{ get_url(path='@/architecture/_index.md') | safe }}"
-              >Read the architecture</a
+              >Architecture</a
             >
+            <a class="cta cta-quiet" href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Register for a Demo</a>
+            <a class="cta cta-quiet" href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact us</a>
           </p>
 
           <div class="duo">
@@ -884,7 +894,8 @@
           </div>
 
           <p class="cta-row cta-row-hero">
-            <a class="cta" href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact Us</a>
+            <a class="cta" href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Register for a Demo</a>
+            <a class="cta cta-quiet" href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact us</a>
           </p>
 
           <div class="flow">

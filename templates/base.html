@@ -478,12 +478,14 @@
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}
           {#
-            Both leave the site — the download host and the Nuvolaris contact
-            form — so they open in a new window and keep the visitor's place
-            on the page. rel="noopener" because target="_blank" otherwise
-            hands the opened page a handle back to this one.
+            All three leave the site — the download host, the demo signup and
+            the Nuvolaris contact form — so they open in a new window and keep
+            the visitor's place on the page. rel="noopener" because
+            target="_blank" otherwise hands the opened page a handle back to
+            this one.
           #}
           <a href="https://download.trustable.it" target="_blank" rel="noopener">Download</a>
+          <a href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Demo</a>
           <a href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact Us</a>
         </nav>
         <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
