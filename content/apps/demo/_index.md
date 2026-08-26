@@ -1,7 +1,7 @@
 +++
 title = "Demo"
 description = "Demo you can start from, ready to run on your own infrastructure."
-weight = 10
+weight = 20
 sort_by = "weight"
 template = "section.html"
 page_template = "page.html"

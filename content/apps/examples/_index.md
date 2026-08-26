@@ -1,7 +1,7 @@
 +++
 title = "Examples"
 description = "Examples you can start from, ready to run on your own infrastructure."
-weight = 20
+weight = 30
 sort_by = "weight"
 template = "section.html"
 page_template = "page.html"
