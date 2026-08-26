@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>URL Metadata — Trustable</title>
+    <title>REDIS Console — Trustable</title>
     <meta
       name="description"
-      content="URL MetaData"
+      content="REDIS Console"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -996,7 +996,7 @@
             <li>
               <a
                 href="https://trustable.it/apps/utilities/redisconsole/"
-                
+                aria-current="page"
                 >REDIS Console</a
               >
             </li>
@@ -1005,7 +1005,7 @@
             <li>
               <a
                 href="https://trustable.it/apps/utilities/urlmetadata/"
-                aria-current="page"
+                
                 >URL Metadata</a
               >
             </li>
@@ -1021,76 +1021,144 @@
         
         
         <span class="eyebrow">Utilities</span>
-        <h1>URL Metadata</h1>
+        <h1>REDIS Console</h1>
         
         
         <img
           class="page-hero"
-          src="/images/trustable-ai-urlmetadata.png"
-          alt="URL Metadata"
+          src="/images/trustable-ai-redisconsole.png"
+          alt="REDIS Console"
         />
         
-        <h1 id="url-metadata-collector">URL Metadata Collector</h1>
-<p>Paste a link and get back what that page says about itself — its title,
-description, favicon and social preview image — then keep it in a growing
-gallery of everything you’ve collected.</p>
-<p>It’s the same information a chat app or social network shows when you share a
-link, extracted on demand and archived so you can come back to it.</p>
-<h2 id="collecting-a-link">Collecting a link</h2>
-<p>One field, one button. Paste a URL and press <strong>Analizza</strong>. You can leave the
-scheme off — <code>example.com/page</code> is completed to a full address — but anything
-that isn’t a real <code>http</code> or <code>https</code> URL is refused with an explanation rather
-than a silent failure.</p>
-<p>The page is fetched, parsed, and reduced to the fields that matter:</p>
+        <p>An interactive Redis console for <strong>learning, exploring, and testing</strong> Redis
+functionality, built with React + Tailwind on the frontend and Nuvolaris /
+Apache OpenServerless actions on the backend. All Redis operations go through a
+single public action, <code>v1/console</code>, that uses the generated Redis wiring
+(<code>ctx.REDIS</code> / <code>ctx.REDIS_PREFIX</code>).</p>
+<h2 id="architecture">Architecture</h2>
 <ul>
-<li><strong>Title</strong> — the Open Graph title if the page declares one, otherwise its
-<code>&lt;title&gt;</code>, falling back to the hostname</li>
-<li><strong>Description</strong> — the Open Graph description, otherwise the standard meta
-description</li>
-<li><strong>Favicon</strong> — the icon the page links to, resolved to an absolute address,
-falling back to <code>/favicon.ico</code> at the site root</li>
-<li><strong>Preview image</strong> — the Open Graph image, with relative paths resolved against
-the page</li>
-<li><strong>Site name</strong>, and the time it was extracted</li>
+<li><strong>Frontend</strong> (<code>src/</code>): React + TypeScript + Tailwind, HashRouter, shadcn/ui.
+<ul>
+<li><code>src/lib/api.ts</code> — fetch helper that unwraps the OpenServerless <code>{body}</code>
+envelope.</li>
+<li><code>src/lib/sections.tsx</code> — the sidebar section registry (add a section here +
+a page + a route + a dispatch handler to extend the console).</li>
+<li><code>src/components/</code> — <code>AppLayout</code>, <code>Sidebar</code>, <code>Header</code>, <code>ConnectionBadge</code>,
+<code>SectionShell</code> (shared command-area + output-panel layout), <code>OutputPanel</code>.</li>
+<li><code>src/pages/sections/</code> — one page per Redis feature area.</li>
 </ul>
-<p>The input clears on success and keeps what you typed when something goes wrong,
-so a typo is easy to correct. Failures say what actually happened — a timeout, a
-refused connection, an HTTP error, a page that isn’t HTML, or one too large to
-parse.</p>
-<h2 id="the-gallery">The gallery</h2>
-<p>Everything you’ve collected appears below as social-preview style cards, newest
-first: preview image on top, favicon and title, the description, and the
-hostname as an outbound link. Cards with no image show a placeholder, broken
-images are hidden rather than left as broken icons, and pages with no
-description say so plainly. Clicking anywhere on a card opens the original page
-in a new tab.</p>
-<p>A link you’ve already analysed is served straight from the archive and marked
-with a <strong>cached</strong> badge, so re-analysing costs nothing and never re-fetches the
-site. Before you collect anything, an empty state invites you to paste your
-first link.</p>
-<h2 id="how-it-is-put-together">How it is put together</h2>
-<p>The interface is a React and TypeScript single-page app (Vite, Tailwind CSS,
-TanStack Query) — a single screen, in Italian.</p>
-<p>Behind it are two Python actions on Apache OpenServerless:</p>
-<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
-<tr><td><code>POST /api/my/v1/extract-metadata</code></td><td>fetch a URL, extract its metadata, archive it</td></tr>
-<tr><td><code>GET /api/my/v1/list-metadata</code></td><td>the 50 most recently collected links</td></tr>
-</tbody></table>
-<p>Extraction uses <code>requests</code> and BeautifulSoup, with a 12-second timeout, a
-declared User-Agent, and a 5 MB cap so an enormous page can’t be pulled in. The
-results are stored in <strong>MongoDB</strong>, which doubles as the cache: a lookup by URL
-comes first, and the page is only downloaded on a miss. If archiving fails, the
-extracted metadata is still returned, with a warning.</p>
-<p>A setup action, <code>setup/metadata-index</code>, creates the two indexes the collection
-needs — a unique index on <code>url</code> that makes cache lookups fast and keeps
-duplicates out, and a descending index on <code>inserted_at</code> for the newest-first
-listing. It is idempotent, so re-running it is safe.</p>
-<h2 id="getting-started">Getting started</h2>
-<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
-</span><span style="color:#bf616a;">npm</span><span> run dev
-</span></code></pre>
-<p>The backend needs MongoDB configured; run the setup action once to create the
-indexes. Then paste a link and watch the gallery fill up.</p>
+</li>
+<li><strong>Backend</strong> (<code>packages/v1/console/console.py</code>): a single dispatch action that
+routes on a <code>cmd</code> field to handlers grouped by Redis data structure. Every
+key is built from <code>ctx.REDIS_PREFIX</code>; the generated <code>__main__.py</code> wrapper is
+left untouched.</li>
+</ul>
+<h2 id="sections">Sections</h2>
+<p>Overview · Keys · Laboratories · Strings · Hashes · Lists · Sets · Sorted Sets ·
+Streams · Pub/Sub · TTL · Transactions · Console · Reference</p>
+<h3 id="overview-live-dashboard">Overview — Live Dashboard</h3>
+<p>The Overview section (<code>/overview</code>) is a read-only dashboard fed by Redis
+<code>INFO</code> and <code>DBSIZE</code> through the <code>v1/console</code> <code>status</code> action (<code>detail: true</code>).
+It surfaces: connection status, Redis version, uptime, connected clients, used
+memory (with peak), total keys (<code>DBSIZE</code>), current database (with keyspace
+breakdown), hit rate (from <code>keyspace_hits</code>/<code>keyspace_misses</code>), expired keys,
+and evicted keys. Hit rate is tone-coded (green ≥ 80%, amber ≥ 50%, red below).</p>
+<h3 id="reference-educational-command-reference">Reference — Educational Command Reference</h3>
+<p>The Reference section (<code>/reference</code>) is a static, frontend-only curated
+reference of common Redis commands (<code>src/lib/redis-commands.ts</code>). It never
+calls Redis. Users filter by category (Generic, String, Hash, List, Set,
+Sorted Set, Stream, Pub/Sub, Transactions, Server) and search by
+command/description/syntax. Each entry expands to show the syntax,
+argument explanations (with optional markers), and a worked example with its
+expected output. Commands are rendered with token-level syntax highlighting.</p>
+<h3 id="console-safe-raw-redis-terminal">Console — Safe Raw Redis Terminal</h3>
+<p>The Console section (<code>/raw</code>, labelled “Console” in the sidebar) is a
+terminal-like raw Redis console. The browser sends each typed command to the
+<code>v1/console</code> action with <code>cmd: "raw"</code>; the frontend never connects to Redis
+directly.</p>
+<p>Frontend behaviour:</p>
+<ul>
+<li>Command history persisted for the browser session (<code>localStorage</code>), with
+Up/Down arrow navigation.</li>
+<li>Enter executes the command.</li>
+<li>Multi-line, redis-cli-style output rendering (quoted strings, numbered
+array elements, <code>(nil)</code> for null).</li>
+<li>Execution duration shown per command (backend-measured <code>duration_ms</code>).</li>
+<li>Errors rendered in red.</li>
+<li>Clear-console button (and a separate clear-history button).</li>
+</ul>
+<p>Backend behaviour (<code>packages/v1/console/console.py</code>, <code>cmd_raw</code>):</p>
+<ul>
+<li>Commands are parsed with <code>shlex</code> so quoted arguments such as
+<code>SET message "hello world"</code> are handled correctly. No <code>eval</code> or shell
+execution is used.</li>
+<li>A backend-authoritative denylist blocks destructive / server-compromising
+commands: <code>FLUSHALL</code>, <code>FLUSHDB</code>, <code>SHUTDOWN</code>, <code>CONFIG</code>, <code>DEBUG</code>, <code>MODULE</code>,
+<code>SLAVEOF</code>, <code>REPLICAOF</code>, <code>MIGRATE</code>, <code>RESTORE</code>, <code>ACL</code>, <code>SCRIPT</code>, <code>FUNCTION</code>,
+and <code>KEYS</code> (use SCAN instead). The same denylist is enforced on the
+transactions endpoint.</li>
+<li>The denylist cannot be bypassed from the frontend: a browser-supplied
+<code>allow_dangerous</code> / <code>allow_meta</code> flag is ignored. An operator can explicitly
+enable the blocked commands only through backend configuration — the
+environment variable <code>REDIS_CONSOLE_ALLOW_DANGEROUS</code> or a bound action
+parameter <code>ALLOW_DANGEROUS</code> set to a truthy value.</li>
+<li>The first key argument is automatically namespaced with the app prefix; no
+meta/no-key commands receive a prefix.</li>
+<li>The Redis execution duration is measured and returned as <code>duration_ms</code>.</li>
+</ul>
+<h3 id="keys-visual-key-explorer">Keys — Visual Key Explorer</h3>
+<p>The Keys section is a visual browser, not a command form:</p>
+<ul>
+<li>Search/filter by a glob <code>pattern</code> with quick chips (<code>*</code>, <code>user:*</code>, <code>session:*</code>,
+<code>cache:*</code>), a refresh button, and a live key count (loaded so far + DB size).</li>
+<li>Keys are loaded with a cursor-based <code>SCAN</code> (never <code>KEYS *</code>), <code>count</code> per page,
+with a <strong>Load more</strong> button that continues the cursor. Each row shows the
+key name, Redis <code>TYPE</code>, and <code>TTL</code>.</li>
+<li>Selecting a key detects its type and opens a type-aware inspector with safe,
+bounded reads (never the whole huge structure at once):
+<ul>
+<li><strong>String</strong>: value, length, edit (<code>SET</code>).</li>
+<li><strong>Hash</strong>: fields via <code>HSCAN</code> (paginated), field count (<code>HLEN</code>), add/edit/remove
+field (<code>HSET</code>/<code>HDEL</code>).</li>
+<li><strong>List</strong>: index/value via <code>LRANGE</code> (pageable), length (<code>LLEN</code>), <code>LPUSH</code>/
+<code>RPUSH</code>/<code>LPOP</code>/<code>RPOP</code>.</li>
+<li><strong>Set</strong>: members via <code>SSCAN</code> (paginated), cardinality (<code>SCARD</code>), add/remove
+member (<code>SADD</code>/<code>SREM</code>).</li>
+<li><strong>Sorted Set</strong>: rank/member/score via <code>ZRANGE ... WITHSCORES</code> (pageable),
+cardinality (<code>ZCARD</code>), add/update (<code>ZADD</code>), remove (<code>ZREM</code>).</li>
+<li><strong>Stream</strong>: entry id/fields via <code>XRANGE</code> (count-bounded), length (<code>XLEN</code>),
+add entry (<code>XADD</code>).</li>
+</ul>
+</li>
+<li>Every visual operation displays the equivalent raw Redis command so the
+console doubles as a Redis learning tool.</li>
+<li>Deleting a key asks for confirmation and runs <code>DEL</code>.</li>
+</ul>
+<p>The backend gained three ops on <code>v1/console</code>: <code>keys.scan</code> accepts <code>withmeta</code>
+to return <code>{name,type,ttl}</code> per key, and <code>hashes.hscan</code> / <code>sets.sscan</code> provide
+cursor-based, bounded iteration over large hashes/sets instead of <code>HGETALL</code> /
+<code>SMEMBERS</code>.</p>
+<p>The UI is responsive (desktop sidebar, mobile drawer) and includes a Redis
+connection/status indicator, a command execution area, and an output/result
+panel for each section.</p>
+<h2 id="notes-limitations">Notes / limitations</h2>
+<ul>
+<li>All keys are automatically namespaced with the app’s Redis prefix
+(<code>redisconsole2:</code>).</li>
+<li>Pub/Sub <code>PUBLISH</code> may be restricted by the platform Redis ACL; <code>SUBSCRIBE</code>
+requires a long-lived connection that serverless actions cannot hold, so only
+publish + channel discovery are exposed. The Pub/Sub section explains this
+limitation in the UI rather than faking subscription behavior.</li>
+<li>Transactions (<code>/transactions</code>) demonstrate <code>MULTI</code>/<code>EXEC</code>, <code>MULTI</code>/<code>DISCARD</code>,
+and <code>WATCH</code>/<code>MULTI</code>/<code>EXEC</code>. Because OpenServerless requests may use separate
+Redis connections, the whole transaction runs in a single backend action on
+one redis-py pipeline / connection so the <code>WATCH</code> lock is held by the same
+client that issues <code>EXEC</code>. A built-in “interfere” toggle mutates the watched
+key between <code>WATCH</code> and <code>EXEC</code> on that same connection to deterministically
+demonstrate the optimistic-lock abort path.</li>
+<li>Application <code>.env</code> / <code>.env.production</code> are managed by Trustable, not by this
+code.</li>
+</ul>
 
 
       </article>

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>URL Metadata — Trustable</title>
+    <title>Document Ingest — Trustable</title>
     <meta
       name="description"
-      content="URL MetaData"
+      content="Document Ingestion"
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -963,12 +963,12 @@
         
       
       <aside class="sidebar">
-        <h2>Utilities</h2>
-        <nav aria-label="Utilities">
+        <h2>Chat</h2>
+        <nav aria-label="Chat">
           <ul>
             <li>
               <a
-                href="https://trustable.it/apps/utilities/"
+                href="https://trustable.it/apps/chat/"
                 
                 >Overview</a
               >
@@ -977,36 +977,9 @@
             
             <li>
               <a
-                href="https://trustable.it/apps/utilities/jsonformatter/"
-                
-                >JSON Formatter</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/postgresqlconsole/"
-                
-                >PostgreSQL Console</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/redisconsole/"
-                
-                >REDIS Console</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/urlmetadata/"
+                href="https://trustable.it/apps/chat/truingest/"
                 aria-current="page"
-                >URL Metadata</a
+                >Document Ingest</a
               >
             </li>
             
@@ -1020,77 +993,69 @@
         
         
         
-        <span class="eyebrow">Utilities</span>
-        <h1>URL Metadata</h1>
+        <span class="eyebrow">Chat</span>
+        <h1>Document Ingest</h1>
         
         
         <img
           class="page-hero"
-          src="/images/trustable-ai-urlmetadata.png"
-          alt="URL Metadata"
+          src="/images/trustable-ai-truingest.png"
+          alt="Document Ingest"
         />
         
-        <h1 id="url-metadata-collector">URL Metadata Collector</h1>
-<p>Paste a link and get back what that page says about itself — its title,
-description, favicon and social preview image — then keep it in a growing
-gallery of everything you’ve collected.</p>
-<p>It’s the same information a chat app or social network shows when you share a
-link, extracted on demand and archived so you can come back to it.</p>
-<h2 id="collecting-a-link">Collecting a link</h2>
-<p>One field, one button. Paste a URL and press <strong>Analizza</strong>. You can leave the
-scheme off — <code>example.com/page</code> is completed to a full address — but anything
-that isn’t a real <code>http</code> or <code>https</code> URL is refused with an explanation rather
-than a silent failure.</p>
-<p>The page is fetched, parsed, and reduced to the fields that matter:</p>
-<ul>
-<li><strong>Title</strong> — the Open Graph title if the page declares one, otherwise its
-<code>&lt;title&gt;</code>, falling back to the hostname</li>
-<li><strong>Description</strong> — the Open Graph description, otherwise the standard meta
-description</li>
-<li><strong>Favicon</strong> — the icon the page links to, resolved to an absolute address,
-falling back to <code>/favicon.ico</code> at the site root</li>
-<li><strong>Preview image</strong> — the Open Graph image, with relative paths resolved against
-the page</li>
-<li><strong>Site name</strong>, and the time it was extracted</li>
-</ul>
-<p>The input clears on success and keeps what you typed when something goes wrong,
-so a typo is easy to correct. Failures say what actually happened — a timeout, a
-refused connection, an HTTP error, a page that isn’t HTML, or one too large to
-parse.</p>
-<h2 id="the-gallery">The gallery</h2>
-<p>Everything you’ve collected appears below as social-preview style cards, newest
-first: preview image on top, favicon and title, the description, and the
-hostname as an outbound link. Cards with no image show a placeholder, broken
-images are hidden rather than left as broken icons, and pages with no
-description say so plainly. Clicking anywhere on a card opens the original page
-in a new tab.</p>
-<p>A link you’ve already analysed is served straight from the archive and marked
-with a <strong>cached</strong> badge, so re-analysing costs nothing and never re-fetches the
-site. Before you collect anything, an empty state invites you to paste your
-first link.</p>
+        <h1 id="truingest-document-ingestion-pipeline">TruIngest — Document Ingestion Pipeline</h1>
+<p>Turn a PDF into clean, chunked training data, one visible step at a time.</p>
+<p>Upload a document and walk it through extraction, cleaning, chunking and export.
+Each stage is an accordion section you can open to see exactly what came out of
+it before deciding to run the next one — nothing happens in a black box.</p>
+<h2 id="the-pipeline">The pipeline</h2>
+<p>Add a document, then work down the five steps.</p>
+<p><strong>Upload</strong> — pick a PDF. Anything else is refused. The file is previewed in place
+so you can confirm you grabbed the right one.</p>
+<p><strong>Extract</strong> — the PDF is sent through a Tika server, which pulls out its text.
+The extracted text appears in the accordion, and both the original PDF and the
+text are kept in object storage.</p>
+<p><strong>Clean</strong> — the extracted text is tidied up: page numbers (lines containing
+nothing but a number) are dropped, <code>Figure 12</code>-style caption lines are removed,
+table-of-contents lines trailing off into dot leaders and a page number are
+stripped, and stray non-printable characters go. Runs of blank lines collapse to
+one, so paragraph boundaries survive. Output is UTF-8, and shown in full.</p>
+<p><strong>Chunk</strong> — the cleaned text is split into chunks on blank lines, one chunk per
+paragraph. You see each chunk separately, and the count. The set is saved as a
+JSONL file.</p>
+<p><strong>Export</strong> — generates a download link for the result.</p>
+<p>Steps run in order, and each one needs the previous one’s output. Re-running an
+earlier step clears everything after it, so you never end up looking at chunks
+that belong to text you have since re-cleaned. Every step reports success or
+failure as it happens, with the reason when something goes wrong.</p>
 <h2 id="how-it-is-put-together">How it is put together</h2>
-<p>The interface is a React and TypeScript single-page app (Vite, Tailwind CSS,
-TanStack Query) — a single screen, in Italian.</p>
-<p>Behind it are two Python actions on Apache OpenServerless:</p>
+<p>A React and TypeScript single-page app (Vite, Tailwind CSS, shadcn/ui) over
+Python actions on Apache OpenServerless:</p>
 <table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
-<tr><td><code>POST /api/my/v1/extract-metadata</code></td><td>fetch a URL, extract its metadata, archive it</td></tr>
-<tr><td><code>GET /api/my/v1/list-metadata</code></td><td>the 50 most recently collected links</td></tr>
+<tr><td><code>POST /api/my/rag/ingest</code></td><td>store the PDF, extract its text with Tika, store the text</td></tr>
+<tr><td><code>POST /api/my/rag/clean</code></td><td>apply the cleaning rules, return UTF-8 text</td></tr>
+<tr><td><code>POST /api/my/rag/chunk</code></td><td>split on blank lines, save the chunks as JSONL</td></tr>
+<tr><td><code>POST /api/my/rag/download</code></td><td>produce a download URL for a stored file</td></tr>
 </tbody></table>
-<p>Extraction uses <code>requests</code> and BeautifulSoup, with a 12-second timeout, a
-declared User-Agent, and a 5 MB cap so an enormous page can’t be pulled in. The
-results are stored in <strong>MongoDB</strong>, which doubles as the cache: a lookup by URL
-comes first, and the page is only downloaded on a miss. If archiving fails, the
-extracted metadata is still returned, with a warning.</p>
-<p>A setup action, <code>setup/metadata-index</code>, creates the two indexes the collection
-needs — a unique index on <code>url</code> that makes cache lookups fast and keeps
-duplicates out, and a descending index on <code>inserted_at</code> for the newest-first
-listing. It is idempotent, so re-running it is safe.</p>
+<p><strong>S3</strong> holds everything the pipeline produces — the uploaded PDF, the extracted
+text, the chunk file and the exports. Download links are public URLs when a
+public S3 endpoint is configured, otherwise signed URLs valid for an hour. Text
+extraction talks to a <strong>Tika</strong> service running in the cluster.</p>
+<p>Two further actions go beyond what the interface currently calls: <code>rag/process</code>
+and <code>rag/export</code> send chunks to an OpenAI-compatible model (OpenAI or a local
+Ollama) and turn each one into a question-and-answer pair, producing a JSONL
+conversation file suitable for fine-tuning. The pipeline’s Export button uses the
+simpler download path today.</p>
+<p>The repository also carries the platform’s starter examples under
+<code>packages/hello/</code> (echo, SQL, Redis, S3, streaming, LLM, vector DB) and a chat
+action under <code>packages/v1/</code>. They are not part of the ingestion flow.</p>
 <h2 id="getting-started">Getting started</h2>
 <pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
 </span><span style="color:#bf616a;">npm</span><span> run dev
 </span></code></pre>
-<p>The backend needs MongoDB configured; run the setup action once to create the
-indexes. Then paste a link and watch the gallery fill up.</p>
+<p>The backend needs S3 configured and a reachable Tika service; the Q&amp;A actions
+additionally need an OpenAI-compatible endpoint. Add a document from the home
+page and start with Upload.</p>
 
 
       </article>

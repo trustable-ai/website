@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-26T15:09:58Z",
+  "generated": "2026-08-26T17:07:08Z",
   "starters": [
     {
       "name": "truchat",
@@ -21,6 +21,15 @@
     }
   ],
   "applications": {
+    "Chat": [
+      {
+        "name": "truingest",
+        "title": "Document Ingest",
+        "repo": "https://github.com/trustable-ai/truingest",
+        "icon": "https://trustable.it/images/trustable-ai-truingest.png",
+        "description": "Document Ingestion"
+      }
+    ],
     "Demo": [
       {
         "name": "truk8s",
@@ -67,6 +76,13 @@
         "description": "Mini Customer Relation Manager"
       },
       {
+        "name": "newsaggregator",
+        "title": "New Aggregator",
+        "repo": "https://github.com/trustable-ai/newsaggregator",
+        "icon": "https://trustable.it/images/trustable-ai-newsaggregator.png",
+        "description": "News Aggregator"
+      },
+      {
         "name": "projectdashboard",
         "title": "Project Dashboard",
         "repo": "https://github.com/trustable-ai/projectdashboard",
@@ -76,18 +92,25 @@
     ],
     "Utilities": [
       {
-        "name": "truingest",
-        "title": "Document Ingest",
-        "repo": "https://github.com/trustable-ai/truingest",
-        "icon": "https://trustable.it/images/trustable-ai-truingest.png",
-        "description": "Document Ingestion"
-      },
-      {
         "name": "jsonformatter",
         "title": "JSON Formatter",
         "repo": "https://github.com/trustable-ai/jsonformatter",
         "icon": "https://trustable.it/images/trustable-ai-jsonformatter.png",
         "description": "JSON Formatter"
+      },
+      {
+        "name": "postgresqlconsole",
+        "title": "PostgreSQL Console",
+        "repo": "https://github.com/trustable-ai/postgresqlconsole",
+        "icon": "https://trustable.it/images/trustable-ai-postgresqlconsole.png",
+        "description": "PostgreSQL Console"
+      },
+      {
+        "name": "redisconsole",
+        "title": "REDIS Console",
+        "repo": "https://github.com/trustable-ai/redisconsole",
+        "icon": "https://trustable.it/images/trustable-ai-redisconsole.png",
+        "description": "REDIS Console"
       },
       {
         "name": "urlmetadata",

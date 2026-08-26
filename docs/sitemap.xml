@@ -10,6 +10,12 @@
         <loc>https://trustable.it/apps/</loc>
     </url>
     <url>
+        <loc>https://trustable.it/apps/chat/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/apps/chat/truingest/</loc>
+    </url>
+    <url>
         <loc>https://trustable.it/apps/demo/</loc>
     </url>
     <url>
@@ -34,6 +40,9 @@
         <loc>https://trustable.it/apps/examples/minicrm/</loc>
     </url>
     <url>
+        <loc>https://trustable.it/apps/examples/newsaggregator/</loc>
+    </url>
+    <url>
         <loc>https://trustable.it/apps/examples/projectdashboard/</loc>
     </url>
     <url>
@@ -43,7 +52,10 @@
         <loc>https://trustable.it/apps/utilities/jsonformatter/</loc>
     </url>
     <url>
-        <loc>https://trustable.it/apps/utilities/truingest/</loc>
+        <loc>https://trustable.it/apps/utilities/postgresqlconsole/</loc>
+    </url>
+    <url>
+        <loc>https://trustable.it/apps/utilities/redisconsole/</loc>
     </url>
     <url>
         <loc>https://trustable.it/apps/utilities/urlmetadata/</loc>

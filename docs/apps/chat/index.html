@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>URL Metadata — Trustable</title>
+    <title>Chat — Trustable</title>
     <meta
       name="description"
-      content="URL MetaData"
+      content="Chat you can start from, ready to run on your own infrastructure."
     />
     <link rel="icon" href="/trustable-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -961,15 +961,16 @@
       
       
         
+        
       
       <aside class="sidebar">
-        <h2>Utilities</h2>
-        <nav aria-label="Utilities">
+        <h2>Chat</h2>
+        <nav aria-label="Chat">
           <ul>
             <li>
               <a
-                href="https://trustable.it/apps/utilities/"
-                
+                href="https://trustable.it/apps/chat/"
+                aria-current="page"
                 >Overview</a
               >
             </li>
@@ -977,36 +978,9 @@
             
             <li>
               <a
-                href="https://trustable.it/apps/utilities/jsonformatter/"
+                href="https://trustable.it/apps/chat/truingest/"
                 
-                >JSON Formatter</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/postgresqlconsole/"
-                
-                >PostgreSQL Console</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/redisconsole/"
-                
-                >REDIS Console</a
-              >
-            </li>
-            
-            
-            <li>
-              <a
-                href="https://trustable.it/apps/utilities/urlmetadata/"
-                aria-current="page"
-                >URL Metadata</a
+                >Document Ingest</a
               >
             </li>
             
@@ -1020,78 +994,69 @@
         
         
         
-        <span class="eyebrow">Utilities</span>
-        <h1>URL Metadata</h1>
+        
+        <span class="eyebrow">Apps</span>
+        
+        <h1>Chat</h1>
         
         
-        <img
-          class="page-hero"
-          src="/images/trustable-ai-urlmetadata.png"
-          alt="URL Metadata"
-        />
         
-        <h1 id="url-metadata-collector">URL Metadata Collector</h1>
-<p>Paste a link and get back what that page says about itself — its title,
-description, favicon and social preview image — then keep it in a growing
-gallery of everything you’ve collected.</p>
-<p>It’s the same information a chat app or social network shows when you share a
-link, extracted on demand and archived so you can come back to it.</p>
-<h2 id="collecting-a-link">Collecting a link</h2>
-<p>One field, one button. Paste a URL and press <strong>Analizza</strong>. You can leave the
-scheme off — <code>example.com/page</code> is completed to a full address — but anything
-that isn’t a real <code>http</code> or <code>https</code> URL is refused with an explanation rather
-than a silent failure.</p>
-<p>The page is fetched, parsed, and reduced to the fields that matter:</p>
-<ul>
-<li><strong>Title</strong> — the Open Graph title if the page declares one, otherwise its
-<code>&lt;title&gt;</code>, falling back to the hostname</li>
-<li><strong>Description</strong> — the Open Graph description, otherwise the standard meta
-description</li>
-<li><strong>Favicon</strong> — the icon the page links to, resolved to an absolute address,
-falling back to <code>/favicon.ico</code> at the site root</li>
-<li><strong>Preview image</strong> — the Open Graph image, with relative paths resolved against
-the page</li>
-<li><strong>Site name</strong>, and the time it was extracted</li>
-</ul>
-<p>The input clears on success and keeps what you typed when something goes wrong,
-so a typo is easy to correct. Failures say what actually happened — a timeout, a
-refused connection, an HTTP error, a page that isn’t HTML, or one too large to
-parse.</p>
-<h2 id="the-gallery">The gallery</h2>
-<p>Everything you’ve collected appears below as social-preview style cards, newest
-first: preview image on top, favicon and title, the description, and the
-hostname as an outbound link. Cards with no image show a placeholder, broken
-images are hidden rather than left as broken icons, and pages with no
-description say so plainly. Clicking anywhere on a card opens the original page
-in a new tab.</p>
-<p>A link you’ve already analysed is served straight from the archive and marked
-with a <strong>cached</strong> badge, so re-analysing costs nothing and never re-fetches the
-site. Before you collect anything, an empty state invites you to paste your
-first link.</p>
-<h2 id="how-it-is-put-together">How it is put together</h2>
-<p>The interface is a React and TypeScript single-page app (Vite, Tailwind CSS,
-TanStack Query) — a single screen, in Italian.</p>
-<p>Behind it are two Python actions on Apache OpenServerless:</p>
-<table><thead><tr><th>Endpoint</th><th>Does</th></tr></thead><tbody>
-<tr><td><code>POST /api/my/v1/extract-metadata</code></td><td>fetch a URL, extract its metadata, archive it</td></tr>
-<tr><td><code>GET /api/my/v1/list-metadata</code></td><td>the 50 most recently collected links</td></tr>
-</tbody></table>
-<p>Extraction uses <code>requests</code> and BeautifulSoup, with a 12-second timeout, a
-declared User-Agent, and a 5 MB cap so an enormous page can’t be pulled in. The
-results are stored in <strong>MongoDB</strong>, which doubles as the cache: a lookup by URL
-comes first, and the page is only downloaded on a miss. If archiving fails, the
-extracted metadata is still returned, with a warning.</p>
-<p>A setup action, <code>setup/metadata-index</code>, creates the two indexes the collection
-needs — a unique index on <code>url</code> that makes cache lookups fast and keeps
-duplicates out, and a descending index on <code>inserted_at</code> for the newest-first
-listing. It is idempotent, so re-running it is safe.</p>
-<h2 id="getting-started">Getting started</h2>
-<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
-</span><span style="color:#bf616a;">npm</span><span> run dev
-</span></code></pre>
-<p>The backend needs MongoDB configured; run the setup action once to create the
-indexes. Then paste a link and watch the gallery fill up.</p>
+        
+        
+        
+        
 
+
+  
+
+
+
+
+<div class="gallery">
+  
+  
+  
+  
+  <section
+    class="gallery-group"
+    
+    aria-label="Chat"
+    
+  >
+    
+    <ul class="gallery-grid">
+      
+      <li class="gallery-card">
+        
+        <a
+          href="https://trustable.it/apps/chat/truingest/"
+          aria-label="Document Ingest — Document Ingestion"
+        >
+          <span class="gallery-name">Document Ingest</span>
+          <span class="gallery-box">
+            
+            <img
+              class="gallery-icon"
+              src="/images/trustable-ai-truingest.png"
+              alt=""
+              loading="lazy"
+            />
+            
+            
+            <span class="gallery-note" aria-hidden="true">Document Ingestion</span>
+            
+          </span>
+        </a>
+      </li>
+      
+    </ul>
+  </section>
+  
+</div>
+
+
+
+        
 
       </article>
     </main>
