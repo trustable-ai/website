@@ -13,21 +13,60 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
     <style>
-      /* ---------- palette, lifted from the landing page ---------- */
+      /*
+       * ---------- palette ----------
+       *
+       * The Nuvolaris brand tokens, taken from the corporate site's design
+       * system (trusite/src/styles.css), whose own comment sets the rule:
+       * ink + paper, one restrained accent. See spec/22-align.md.
+       *
+       * The point of "one accent" is that --brand is the only colour on the
+       * page that isn't ink, paper or a grey between them, so it always means
+       * something when it appears. --signal is reserved and deliberately
+       * unused: the corporate site holds it back too.
+       */
       :root {
-        --navy: #0b1b3a;
-        --blue: #1e63d0;
-        --cyan: #22c1e8;
-        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
-        --logo-blue: #198cb3;
-        --bg: #f5f7fb;
+        --ink: #231f20;
+        --paper: #fafaf7;
+        --mute: #58595b;
+        --rule: #e9e9ea;
+        --brand: #1da1ce;
+        --brand-soft: #a0d8ea;
+        --signal: #ff7113;
+
+        /*
+         * The old names kept as aliases. Every rule in this file and in
+         * landing.html, docs.html, section.html and starter-cards.html was
+         * written against them, so aliasing is what lets the new palette come
+         * through everywhere at once instead of in a hundred edits. New rules
+         * should use the brand names above.
+         */
+        --navy: var(--ink);
+        --blue: var(--brand);
+        --cyan: var(--brand-soft);
+        --logo-blue: var(--brand);
+        --bg: var(--paper);
         --card: #ffffff;
-        --hairline: #dde3ee;
-        --muted: #55637d;
+        --hairline: var(--rule);
+        --muted: var(--mute);
+
+        /* Near-square, not pills: the corporate site sets 0.25rem. */
+        --radius: 2px;
         --fade: 400ms;
+
+        /*
+         * The ground the site used before spec 22. The landing page's video
+         * and machine strip were flattened against it — trustable-machines.png
+         * carries no alpha at all — so on the warm paper they would each sit
+         * in a visibly cooler rectangle. Anything still matted to the old
+         * colour is given it back explicitly, which hides the seam until the
+         * artwork itself is re-exported. Remove this and the rules using it
+         * once those files carry transparency.
+         */
+        --legacy-plate: #f5f7fb;
       }
 
       *,
@@ -63,13 +102,20 @@
 
       /* ---------- site header ---------- */
 
+      /*
+       * Translucent paper rather than the flat ground, so content dissolving
+       * under a sticky bar still reads as being behind it. The bottom rule is
+       * mixed from ink rather than being --rule: over scrolling content the
+       * bar is semi-transparent, and a flat hairline would show the page
+       * through it.
+       */
       .sitebar {
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(245, 247, 251, 0.92);
-        backdrop-filter: blur(8px);
-        border-bottom: 1px solid var(--hairline);
+        background: rgba(250, 250, 247, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
         padding: 0.85rem 0;
       }
 
@@ -100,50 +146,112 @@
         flex-wrap: wrap;
       }
 
+      /*
+       * Quiet sans links that darken on hover, not mono pills: the accent is
+       * spent on the one block at the end of the row rather than smeared
+       * across every item.
+       */
       .sitenav a {
-        font-family: "JetBrains Mono", ui-monospace, monospace;
-        font-size: 0.78rem;
+        font-size: 0.8125rem;
         font-weight: 500;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
         text-decoration: none;
-        color: var(--navy);
-        padding: 0.5rem 1.1rem;
-        border-radius: 999px;
-        transition:
-          background var(--fade) ease,
-          color var(--fade) ease;
+        color: var(--mute);
+        padding: 0.5rem 0.75rem;
+        transition: color var(--fade) ease;
       }
 
       .sitenav a:hover {
-        background: #e6ecf8;
+        color: var(--ink);
       }
 
       .sitenav a:focus-visible {
-        outline: 2px solid var(--blue);
+        outline: 2px solid var(--brand);
         outline-offset: 2px;
       }
 
+      /*
+       * The current page is marked by weight and ink rather than by a filled
+       * pill — with the links this quiet, going full-strength is already the
+       * loudest state in the row.
+       */
       .sitenav a[aria-current="page"] {
-        background: var(--blue);
-        color: #fff;
+        color: var(--ink);
+        font-weight: 600;
       }
 
-      /* ---------- footer ---------- */
+      /*
+       * The one call to action in the header, as a solid ink block. Hovering
+       * to brand rather than to a darker ink is the corporate site's move: the
+       * accent arrives only on intent.
+       */
+      .sitenav a.sitenav-cta {
+        background: var(--ink);
+        color: var(--paper);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding: 0.75rem 1.25rem;
+        border-radius: var(--radius);
+        transition: background var(--fade) ease;
+      }
 
+      .sitenav a.sitenav-cta:hover {
+        background: var(--brand);
+        color: var(--paper);
+      }
+
+      /*
+       * On a phone the brand and four nav items cannot share a line. Left to
+       * space-between they wrap unevenly and the wide tracked CTA block is the
+       * one pushed past the right edge, which scrolls the whole page sideways.
+       * Stacking the bar and centring the row keeps everything inside the
+       * viewport at any width.
+       */
+      @media (max-width: 640px) {
+        .sitebar-inner {
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .sitenav {
+          justify-content: center;
+          gap: 0.15rem;
+        }
+
+        .sitenav a {
+          padding: 0.4rem 0.5rem;
+        }
+
+        .sitenav a.sitenav-cta {
+          padding: 0.6rem 1rem;
+          letter-spacing: 0.12em;
+        }
+      }
+
+      /*
+       * ---------- footer ----------
+       *
+       * Paper, not a solid navy slab. The page ends on a hairline and keeps
+       * the same ground throughout, which is what makes the whole site read
+       * as one sheet rather than as a document sitting on a coloured base.
+       */
       .footer {
-        background: var(--navy);
-        color: #a9b7d2;
-        padding: 2.5rem 0;
+        border-top: 1px solid var(--rule);
+        padding: 4rem 0 2rem;
         margin-top: 4rem;
+        color: var(--mute);
       }
 
+      /*
+       * Brand block first, then the link columns. auto for the brand and
+       * even columns after it, so adding a column doesn't squeeze the
+       * positioning line underneath the wordmark.
+       */
       .footer-inner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+        gap: 2.5rem;
         font-size: 0.9rem;
       }
 
@@ -151,40 +259,117 @@
         margin: 0;
       }
 
+      /* On paper the wordmark is already black — nothing to invert. */
       .footer img {
         width: 150px;
-        filter: brightness(0) invert(1);
+      }
+
+      /*
+       * The copyright pairs the parent wordmark with the line. The mark is set
+       * small and dropped to ink so it reads at the weight of the text beside
+       * it rather than as a second logo competing with the Trustable mark
+       * above — the corporate blue at this size would be the loudest thing in
+       * the footer.
+       */
+      .footer-copyright {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .footer-copyright img {
+        width: 92px;
+        filter: brightness(0);
+        opacity: 0.55;
+        transition: opacity var(--fade) ease;
+      }
+
+      .footer-copyright a:hover img {
+        opacity: 0.8;
+      }
+
+      /*
+       * The positioning line under the mark, held narrow: it is a caption to
+       * the brand, not a paragraph competing with the link columns.
+       */
+      .footer-tagline {
+        margin-top: 1rem;
+        max-width: 26ch;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: var(--mute);
+      }
+
+      /* Mono, uppercase, muted — the same label voice as .eyebrow. */
+      .footer-heading {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mute);
       }
 
       .footer a {
-        color: #fff;
+        color: color-mix(in srgb, var(--ink) 80%, transparent);
         text-decoration: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+        transition: color var(--fade) ease;
       }
 
       .footer a:hover {
-        border-bottom-color: #fff;
+        color: var(--ink);
       }
 
       .footer-nav {
         display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
+        flex-direction: column;
+        gap: 0.625rem;
+        margin-top: 1rem;
+        font-size: 0.84375rem;
       }
 
       /*
-       * The .footer a underline is for the text links; on the logo it would
-       * draw a rule under the wordmark, so opt out and fade on hover instead.
+       * The bottom bar: copyright against the outbound links, divided from
+       * the columns by the same hairline that opened the footer.
        */
+      .footer-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--rule);
+        font-size: 0.75rem;
+      }
+
+      .footer-bottom-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+      }
+
       .footer-logo-link {
         display: inline-block;
-        border-bottom: 0;
         transition: opacity var(--fade) ease;
       }
 
-      .footer-logo-link:hover {
-        border-bottom: 0;
+      /*
+       * Scoped away from .footer-copyright: that mark fades on its own <img>,
+       * and fading the link as well would multiply the two opacities and make
+       * the logo darker on hover than at rest.
+       */
+      .footer-inner .footer-logo-link:hover {
         opacity: 0.75;
+      }
+
+      /* The columns stack before they get too narrow to hold a link. */
+      @media (max-width: 720px) {
+        .footer-inner {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -195,6 +380,46 @@
         :root {
           --fade: 0ms;
         }
+      }
+
+      /* ---------- shared type ---------- */
+
+      /*
+       * The section label that sits above a heading and names the kind of
+       * thing that follows — "Platform", "Integrated services". Mono and
+       * muted, so it reads as a tab on the section rather than as a smaller
+       * heading. Defined here because landing.html, docs.html and
+       * starter-cards.html all set them.
+       */
+      .eyebrow {
+        display: block;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+
+      /*
+       * A 64px hairline lattice at 6% ink, for the one or two surfaces that
+       * want texture behind them. Applied to a positioned ::before or to an
+       * absolutely-placed child rather than to the element itself, so the
+       * grid never lands on top of the content.
+       */
+      .grid-paper {
+        background-image:
+          linear-gradient(
+            to right,
+            color-mix(in srgb, var(--ink) 6%, transparent) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--ink) 6%, transparent) 1px,
+            transparent 1px
+          );
+        background-size: 64px 64px;
       }
 
       /* ---------- Apps gallery ---------- */
@@ -300,13 +525,17 @@
         color: var(--muted);
       }
 
-      .gallery-title a {
+      /* Raised over `.prose a` for the same reason as .gallery-card a below. */
+      .gallery-title a,
+      .prose .gallery-title a {
         color: inherit;
         text-decoration: none;
+        border-bottom: 0;
       }
 
-      .gallery-title a:hover {
-        color: var(--blue);
+      .gallery-title a:hover,
+      .prose .gallery-title a:hover {
+        color: var(--ink);
       }
 
       /*
@@ -323,17 +552,26 @@
         list-style: none;
       }
 
-      .gallery-card a {
+      /*
+       * `.prose a` is defined in docs.html, which loads after this file, and
+       * matches these tiles too — the gallery renders inside the prose column
+       * on the Apps indexes. At equal specificity the later rule would win and
+       * paint every tile name in the accent with a prose underline, so this is
+       * raised a step to keep the tiles ink.
+       */
+      .gallery-card a,
+      .prose .gallery-card a {
         display: grid;
         gap: 0.5rem;
         text-decoration: none;
-        color: var(--navy);
+        border-bottom: 0;
+        color: var(--ink);
       }
 
       .gallery-card a:focus-visible {
-        outline: 2px solid var(--blue);
+        outline: 2px solid var(--brand);
         outline-offset: 4px;
-        border-radius: 12px;
+        border-radius: var(--radius);
       }
 
       /* The title sits above the box, so it is page text rather than card
@@ -353,15 +591,15 @@
         overflow: hidden;
         padding: 0.9rem;
         background: var(--card);
-        border: 1px solid var(--hairline);
-        border-radius: 12px;
+        border: 1px solid var(--rule);
+        border-radius: var(--radius);
         transition:
           border-color var(--fade) ease,
           transform var(--fade) ease;
       }
 
       .gallery-card a:hover .gallery-box {
-        border-color: var(--blue);
+        border-color: var(--brand);
         transform: translateY(-2px);
       }
 
@@ -377,18 +615,17 @@
         aspect-ratio: 3 / 4;
         height: auto;
         object-fit: contain;
-        border-radius: 8px;
+        border-radius: var(--radius);
       }
 
       /* Fallback tile for an application whose templates repo ships no icon. */
       .gallery-initial {
         display: grid;
         place-items: center;
-        background: #e6ecf8;
-        color: var(--blue);
-        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
+        background: color-mix(in srgb, var(--brand) 8%, transparent);
+        color: var(--brand);
         font-size: 2.5rem;
-        font-weight: 700;
+        font-weight: 300;
       }
 
       /*
@@ -400,8 +637,8 @@
         position: absolute;
         inset: auto 0 0;
         padding: 0.7rem 0.9rem;
-        background: rgba(11, 27, 58, 0.92);
-        color: #fff;
+        background: color-mix(in srgb, var(--ink) 92%, transparent);
+        color: var(--paper);
         font-size: 0.9rem;
         line-height: 1.35;
         opacity: 0;
@@ -462,7 +699,11 @@
           {% set item = get_section(path=path, metadata_only=true) %}
           <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
           {% endfor %}
-          <a href="https://nuvolaris.io">Nuvolaris</a>
+          {#
+            The one call to action in the bar, so it is the one thing set as a
+            solid block rather than as another quiet link beside the sections.
+          #}
+          <a class="sitenav-cta" href="https://nuvolaris.io">Nuvolaris</a>
         </nav>
       </div>
     </header>
@@ -472,29 +713,71 @@
 
     {% block footer %}
     <footer class="footer">
-      <div class="wrap footer-inner">
-        <a class="footer-logo-link" href="https://nuvolaris.io">
-          <img src="/logo-nuvolaris.png" alt="Nuvolaris" loading="lazy" />
-        </a>
-        {#
-          Built with get_section rather than hardcoded hrefs: a renamed or
-          removed section fails the build instead of leaving a dead link.
-        #}
-        <nav class="footer-nav" aria-label="Documentation">
-          {% for path in ["documentation/_index.md", "apps/_index.md", "architecture/_index.md"] %}
-          {% set item = get_section(path=path, metadata_only=true) %}
-          <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
-          {% endfor %}
+      <div class="wrap">
+        <div class="footer-inner">
           {#
-            Both leave the site — the demo signup and the Nuvolaris contact
-            form — so they open in a new window and keep the visitor's place on
-            the page. rel="noopener" because target="_blank" otherwise hands
-            the opened page a handle back to this one.
+            The brand column: the Trustable mark this site is about, with one
+            line saying what it is. The Nuvolaris wordmark moves to the bottom
+            bar, where it belongs to the copyright rather than heading the
+            footer of a product site.
           #}
-          <a href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Demo</a>
-          <a href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact Us</a>
-        </nav>
-        <p>&copy; 2026 Nuvolaris. All rights reserved.</p>
+          <div>
+            <a class="footer-logo-link" href="/">
+              <img src="/logo-trustable.png" alt="Trustable" loading="lazy" />
+            </a>
+            <p class="footer-tagline">
+              The serverless platform for Private AI. Develop once, deploy
+              anywhere.
+            </p>
+          </div>
+
+          {#
+            Built with get_section rather than hardcoded hrefs: a renamed or
+            removed section fails the build instead of leaving a dead link.
+          #}
+          <div>
+            <div class="footer-heading">Documentation</div>
+            <nav class="footer-nav" aria-label="Documentation">
+              {% for path in ["documentation/_index.md", "apps/_index.md", "architecture/_index.md"] %}
+              {% set item = get_section(path=path, metadata_only=true) %}
+              <a href="{{ item.permalink | safe }}">{{ item.extra.nav_title | default(value=item.title) }}</a>
+              {% endfor %}
+            </nav>
+          </div>
+
+          <div>
+            <div class="footer-heading">Get started</div>
+            {#
+              Every link here leaves the site — the demo signup and the
+              Nuvolaris pages — so they open in a new window and keep the
+              visitor's place. rel="noopener" because target="_blank"
+              otherwise hands the opened page a handle back to this one.
+            #}
+            <nav class="footer-nav" aria-label="Get started">
+              <a href="https://n7s.co/nuvolaria-suite" target="_blank" rel="noopener">Demo</a>
+              <a href="https://nuvolaris.io/#/contact" target="_blank" rel="noopener">Contact Us</a>
+              <a href="https://nuvolaris.io" target="_blank" rel="noopener">Nuvolaris</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          {#
+            Trustable is a Nuvolaris product, so the parent wordmark belongs
+            with the copyright rather than heading the footer.
+          #}
+          <p class="footer-copyright">
+            <a class="footer-logo-link" href="https://nuvolaris.io" target="_blank" rel="noopener">
+              <img src="/logo-nuvolaris.svg" alt="Nuvolaris" loading="lazy" />
+            </a>
+            <span>&copy; 2026 Nuvolaris. All rights reserved.</span>
+          </p>
+          <div class="footer-bottom-links">
+            <a href="https://x.com/NuvolarisIO" target="_blank" rel="noopener">X</a>
+            <a href="https://www.linkedin.com/company/nuvolaris-io" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://www.youtube.com/@nuvolarisio" target="_blank" rel="noopener">YouTube</a>
+          </div>
+        </div>
       </div>
     </footer>
     {% endblock footer %}

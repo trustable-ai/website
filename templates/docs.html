@@ -46,7 +46,7 @@
       .sidebar a {
         display: block;
         padding: 0.45rem 0.85rem;
-        border-radius: 8px;
+        border-radius: var(--radius);
         text-decoration: none;
         color: var(--navy);
         font-weight: 500;
@@ -54,12 +54,12 @@
       }
 
       .sidebar a:hover {
-        background: #e6ecf8;
+        background: color-mix(in srgb, var(--brand) 8%, transparent);
       }
 
       .sidebar a[aria-current="page"] {
-        background: var(--blue);
-        color: #fff;
+        background: var(--ink);
+        color: var(--paper);
       }
 
       /* ---------- prose ---------- */
@@ -78,12 +78,27 @@
         max-width: none;
       }
 
+      /*
+       * Light at display sizes, matching the landing h2 and the corporate
+       * site — scale carries a heading this large, not weight. The h2 and h3
+       * below stay at 600: further down the page they are closer to body size,
+       * where Light stops reading as a heading at all.
+       */
       .prose h1 {
         margin: 0 0 1.5rem;
         font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem);
-        font-weight: 700;
+        font-weight: 300;
         letter-spacing: -0.02em;
-        line-height: 1.1;
+        line-height: 1.05;
+      }
+
+      /*
+       * The section label above the page title, set by the eyebrow rules in
+       * base.html. It names the part of the site the reader is in, so a page
+       * arrived at from search says where it belongs.
+       */
+      .prose .eyebrow {
+        margin-bottom: 0.75rem;
       }
 
       .prose h2 {
@@ -91,7 +106,7 @@
         padding-top: 1.75rem;
         border-top: 1px solid var(--hairline);
         font-size: 1.65rem;
-        font-weight: 700;
+        font-weight: 600;
         letter-spacing: -0.015em;
         line-height: 1.2;
       }
@@ -99,22 +114,22 @@
       .prose h3 {
         margin: 2.25rem 0 0.75rem;
         font-size: 1.22rem;
-        font-weight: 700;
+        font-weight: 600;
       }
 
       .prose p,
       .prose li {
-        color: #23324f;
+        color: color-mix(in srgb, var(--ink) 88%, var(--paper));
       }
 
       .prose a {
-        color: var(--blue);
+        color: var(--brand);
         text-decoration: none;
-        border-bottom: 1px solid rgba(30, 99, 208, 0.35);
+        border-bottom: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
       }
 
       .prose a:hover {
-        border-bottom-color: var(--blue);
+        border-bottom-color: var(--brand);
       }
 
       .prose strong {
@@ -136,8 +151,8 @@
       .prose img {
         margin: 1.75rem 0;
         background: var(--card);
-        border: 1px solid var(--hairline);
-        border-radius: 12px;
+        border: 1px solid var(--rule);
+        border-radius: var(--radius);
         padding: 0.5rem;
       }
 
@@ -163,15 +178,15 @@
       .prose blockquote {
         margin: 1.75rem 0;
         padding: 0.25rem 0 0.25rem 1.25rem;
-        border-left: 3px solid var(--cyan);
+        border-left: 3px solid var(--brand);
         color: var(--muted);
       }
 
       .prose code {
         font-family: "JetBrains Mono", ui-monospace, monospace;
         font-size: 0.88em;
-        background: #e9edf6;
-        border-radius: 5px;
+        background: color-mix(in srgb, var(--ink) 6%, transparent);
+        border-radius: var(--radius);
         padding: 0.12em 0.38em;
       }
 
@@ -179,8 +194,8 @@
         margin: 1.75rem 0;
         padding: 1rem 1.15rem;
         overflow-x: auto;
-        border: 1px solid var(--hairline);
-        border-radius: 12px;
+        border: 1px solid var(--rule);
+        border-radius: var(--radius);
         font-size: 0.9rem;
       }
 
@@ -234,8 +249,8 @@
         .sidebar {
           position: static;
           background: var(--card);
-          border: 1px solid var(--hairline);
-          border-radius: 12px;
+          border: 1px solid var(--rule);
+          border-radius: var(--radius);
           padding: 1.1rem 1rem;
         }
       }

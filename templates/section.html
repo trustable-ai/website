@@ -5,6 +5,15 @@
 {% block description %}{{ section.description | default(value=config.description) }}{% endblock description %}
 
 {% block doc_content %}
+        {#
+          A nested section — an Apps group — is labelled by the section above
+          it. A top-level section has no parent to name, so it opens on its
+          title alone.
+        #}
+        {% if section.ancestors | length > 1 %}
+        {% set parent = get_section(path=section.ancestors | last, metadata_only=true) %}
+        <span class="eyebrow">{{ parent.extra.nav_title | default(value=parent.title) }}</span>
+        {% endif %}
         <h1>{{ section.title }}</h1>
         {{ section.content | safe }}
         {#

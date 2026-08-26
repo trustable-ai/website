@@ -6,49 +6,14 @@
 
 {% block style %}
 
-      :root {
-        --navy: #0b1b3a;
-        --blue: #1e63d0;
-        --cyan: #22c1e8;
-        /* Sampled from the Nuvolaris wordmark (#1DA1CE), one step darker. */
-        --logo-blue: #198cb3;
-        --bg: #f5f7fb;
-        --card: #ffffff;
-        --hairline: #dde3ee;
-        --muted: #55637d;
-        --fade: 400ms;
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--navy);
-        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
-        font-size: 17px;
-        line-height: 1.6;
-        overflow-x: hidden;
-      }
-
-      img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-      }
-
-      .wrap {
-        width: min(1200px, 100% - 3rem);
-        margin-inline: auto;
-      }
+      {#
+        The palette, the box-sizing reset, the body and img defaults and .wrap
+        all live in base.html and this template inherits them — it renders
+        inside base's {% block style %}, after those rules. They used to be
+        repeated here, which meant the home page carried a second :root that
+        overrode the shared one and quietly pinned this page to the old
+        colours. Only rules specific to the landing page belong below.
+      #}
 
       /* ---------- header ---------- */
 
@@ -66,10 +31,16 @@
       }
 
       /*
-       * The Trustable wordmark is a wide, bold geometric grotesque; Montserrat
-       * Bold is the closest web font, so "It is …" reads as part of the mark
-       * rather than as page copy set next to it. The words are set as written
-       * — so the lockup reads "IT is Trustable".
+       * "IT is Trustable" — the words are set as written, as a lockup with the
+       * wordmark rather than as page copy beside it.
+       *
+       * This is the one place on the site that stays bold. Everywhere else the
+       * display type went Light 300 to match the corporate site (spec 22), but
+       * here the text has to sit against the TRUSTABLE wordmark — a wide, bold
+       * geometric grotesque — and light letters next to it would read as a
+       * caption rather than as part of the mark. Work Sans 700 is the closest
+       * of the two faces the site now loads; Montserrat, which was closer
+       * still, went with the alignment.
        */
       .hero-title {
         display: flex;
@@ -77,7 +48,6 @@
         justify-content: center;
         gap: 0.5rem;
         flex-wrap: wrap;
-        font-family: "Montserrat", "Work Sans", system-ui, sans-serif;
         font-size: clamp(1.8rem, 1.1rem + 3vw, 3.4rem);
         font-weight: 700;
         letter-spacing: 0.04em;
@@ -110,8 +80,8 @@
         height: 1.15em;
         padding-bottom: 0.04em;
         border-radius: 50%;
-        background: #000;
-        color: #fff;
+        background: var(--ink);
+        color: var(--paper);
         font-size: 0.66em;
         line-height: 1;
         translate: 0 0.08em;
@@ -205,9 +175,9 @@
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(245, 247, 251, 0.92);
-        backdrop-filter: blur(8px);
-        border-bottom: 1px solid var(--hairline);
+        background: rgba(250, 250, 247, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
         padding: 0.85rem 0;
       }
 
@@ -240,7 +210,7 @@
         text-transform: uppercase;
         text-decoration: none;
         padding: 0.5rem 1.1rem;
-        border-radius: 999px;
+        border-radius: var(--radius);
         cursor: pointer;
         transition:
           background var(--fade) ease,
@@ -248,21 +218,21 @@
       }
 
       .step-link:hover {
-        background: #e6ecf8;
+        background: color-mix(in srgb, var(--brand) 8%, transparent);
       }
 
       .step-link:focus-visible {
-        outline: 2px solid var(--blue);
+        outline: 2px solid var(--brand);
         outline-offset: 2px;
       }
 
       .step-link[aria-current="step"] {
-        background: var(--blue);
-        color: #fff;
+        background: var(--ink);
+        color: var(--paper);
       }
 
       .step-arrow {
-        color: var(--blue);
+        color: var(--brand);
         font-size: 1rem;
         line-height: 1;
       }
@@ -300,12 +270,17 @@
           visibility 0s;
       }
 
+      /*
+       * Light and large, set tight. At this size weight is not what carries a
+       * heading — scale is — and Light against the body text is a wider
+       * contrast than Bold was. See spec/22-align.md.
+       */
       h2 {
         margin: 0;
         font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem);
-        font-weight: 700;
+        font-weight: 300;
         letter-spacing: -0.02em;
-        line-height: 1.1;
+        line-height: 1.05;
       }
 
       .lede {
@@ -337,7 +312,7 @@
       /*
        * Every panel opens with the same row: one filled button for the step's
        * own destination, then Register for a Demo and Contact us outlined in
-       * the same pill shape. One clear first option rather than three equal
+       * the same block shape. One clear first option rather than three equal
        * buttons competing at the top of the panel. It wraps, because the row
        * is wider than a phone.
        */
@@ -349,27 +324,35 @@
         justify-content: center;
       }
 
+      /*
+       * An ink block that turns brand on hover — the accent arrives on intent
+       * rather than sitting lit the whole time. Sans rather than mono: at 600
+       * with this much tracking the mono face reads as code, and this is the
+       * one control the eye should land on first.
+       */
       .cta {
         display: inline-block;
-        background: var(--blue);
-        color: #fff;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
-        font-size: 0.78rem;
-        font-weight: 500;
-        letter-spacing: 0.14em;
+        background: var(--ink);
+        color: var(--paper);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
         text-decoration: none;
-        padding: 0.7rem 1.6rem;
-        border-radius: 999px;
-        transition: background var(--fade) ease;
+        padding: 0.85rem 1.6rem;
+        border-radius: var(--radius);
+        transition:
+          background var(--fade) ease,
+          color var(--fade) ease;
       }
 
       .cta:hover {
-        background: var(--navy);
+        background: var(--brand);
+        color: var(--paper);
       }
 
       .cta:focus-visible {
-        outline: 2px solid var(--blue);
+        outline: 2px solid var(--brand);
         outline-offset: 2px;
       }
 
@@ -379,13 +362,13 @@
        */
       .cta-quiet {
         background: transparent;
-        color: var(--blue);
-        box-shadow: inset 0 0 0 1px var(--blue);
+        color: var(--ink);
+        box-shadow: inset 0 0 0 1px var(--rule);
       }
 
       .cta-quiet:hover {
-        background: var(--blue);
-        color: #fff;
+        background: var(--ink);
+        color: var(--paper);
       }
 
       /* ---------- Start: three columns with vertical rules ---------- */
@@ -464,8 +447,8 @@
       /* Card keeps the diagram reading as one distinct object. */
       .stack-diagram {
         background: var(--card);
-        border: 1px solid var(--hairline);
-        border-radius: 12px;
+        border: 1px solid var(--rule);
+        border-radius: var(--radius);
         padding: 0.85rem;
         max-height: 340px;
         width: auto;
@@ -501,7 +484,9 @@
         /* Reserve the box while the file loads so the slot never shifts. */
         aspect-ratio: 1200 / 520;
         margin-inline: auto;
-        border-radius: 12px;
+        border-radius: var(--radius);
+        /* Matted to the pre-spec-22 ground — see --legacy-plate. */
+        background: var(--legacy-plate);
       }
 
       /*
@@ -516,6 +501,13 @@
         height: auto;
         aspect-ratio: 1799 / 274;
         margin: 2rem auto 0;
+        /*
+         * This file has no alpha at all, so its own flat ground is part of the
+         * image. Giving the element the same colour turns what would read as a
+         * mismatched block into a plate that ends where the artwork does.
+         */
+        background: var(--legacy-plate);
+        border-radius: var(--radius);
       }
 
       .anim-caption {

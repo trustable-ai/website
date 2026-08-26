@@ -5,6 +5,14 @@
 {% block description %}{{ page.description | default(value=config.description) }}{% endblock description %}
 
 {% block doc_content %}
+        {#
+          The section label above the title. Recomputed here rather than
+          reusing the sidebar's `index`: that is set inside docs.html's own
+          {% block content %}, and a variable set in an outer block is not in
+          scope inside this nested one.
+        #}
+        {% set parent = get_section(path=page.ancestors | last, metadata_only=true) %}
+        <span class="eyebrow">{{ parent.extra.nav_title | default(value=parent.title) }}</span>
         <h1>{{ page.title }}</h1>
         {#
           App pages carry the catalog's screenshot URL (see spec/12-readme.md);
