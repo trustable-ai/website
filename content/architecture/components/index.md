@@ -31,7 +31,7 @@ Nuvolaris setup includes a comprehensive management stack for OpenWhisk and its 
 
 ## 4. Trustable
 
-- [Trustable](@/documentation/_index.md) is the Private AI workbench within Nuvolaris: a Lovable-like experience where you describe the application you want, an AI coding assistant writes it, and the result runs on your own infrastructure — your models, your data, your cluster.
+- [Trustable](@/documentation/_index.md) is the Private AI workbench within Nuvolaris: build apps with local AI on your PC, where you describe the application you want, an AI coding assistant writes it, and the result runs on your own infrastructure — your models, your data, your cluster.
 - Developers start from ready-made starters and from a catalog of templates — reusable multi-step prompts covering common AI use cases — so a project goes from an empty repository to a running application in minutes.
 - Each application lives in its own repository and moves between two states, development and production, so applications built with Trustable can be published across environments, from private clouds to on-premises setups or even public clouds.
 

@@ -1,13 +1,13 @@
 +++
 title = "Documentation"
-description = "Trustable is a Private AI workbench: a Lovable-like experience for building, running and publishing AI applications on your own infrastructure."
+description = "Trustable is a Private AI workbench: build apps with local AI on your PC, running and publishing AI applications on your own infrastructure."
 weight = 10
 sort_by = "weight"
 template = "section.html"
 page_template = "page.html"
 +++
 
-Trustable is a **Private AI workbench**: a Lovable-like experience for building,
+Trustable is a **Private AI workbench**: build apps with local AI on your PC,
 running and publishing AI applications that never leave your own infrastructure.
 You describe what you want, Trustable writes it, and the result runs on your
 hardware — your models, your data, your cluster.
